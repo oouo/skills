@@ -1,0 +1,8 @@
+{
+  "push_channel": "feishu",
+  "timezone": "Asia/Shanghai",
+  "feishu": {
+    "webhook": "",
+    "signing_secret": ""
+  }
+}
