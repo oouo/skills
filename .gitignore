@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Agent local state
+.claude/
+CLAUDE.local.md
+
+# Node (if any scripts use npm)
+node_modules/
+
+# Python (if any scripts use pip)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
