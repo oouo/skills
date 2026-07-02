@@ -1,5 +1,5 @@
 {
-  "push_channel": "feishu",
+  "push_channel": "console",
   "timezone": "Asia/Shanghai",
   "feishu": {
     "webhook": "",
