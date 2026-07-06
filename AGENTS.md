@@ -2,16 +2,13 @@
 
 ## Project Context
 
-This is a personal AI agent skills repository (`oouo/skills`). All skills follow the open `SKILL.md` standard and are placed as **top-level directories** in the repo root (e.g., `neat-freak/SKILL.md`). The `skills/` directory only holds the canonical `_template/`.
+This is a personal AI agent skills repository (`oouo/skills`). All skills follow the open `SKILL.md` standard and are placed as **top-level directories** in the repo root (e.g., `git-commit-push-zh/SKILL.md`).
 
 ## Rules
 
 ### Skill Creation
 
-- Preferred: use the `skill-creator` meta-skill (from `anthropics/skills`,
-  installed at `.agents/skills/skill-creator/`).
-- Alternative: `npx -y skills init <name>` or copy `skills/_template/`.
-- Place new skills at the **repo root**: `<skill-name>/SKILL.md` — never inside `skills/` or `.agents/`.
+- Place new skills at the **repo root**: `<skill-name>/SKILL.md`.
 - This keeps GitHub URLs short and shareable: users paste `https://github.com/oouo/skills/tree/main/<skill-name>` into any AI CLI to install.
 - The directory name and the `name` field in `SKILL.md` frontmatter MUST be identical, using lowercase kebab-case (e.g., `code-review`).
 - Every `SKILL.md` MUST begin with valid YAML frontmatter containing at minimum `name` and `description`.
@@ -33,12 +30,18 @@ This is a personal AI agent skills repository (`oouo/skills`). All skills follow
 
 ### Style
 
-- Write all skill documentation in English.
+- Write all skill documentation in English; output specifications (e.g. commit format, report template) may use target language.
 - Use Markdown headings (`##`) to structure `SKILL.md` sections: Overview, When to Use, Instructions.
 - Prefer bullet lists and tables over paragraphs.
 - Keep lines under 100 characters where practical.
+- Use imperative language in instructions ("Always do X", not "X is preferred").
 
 ### Git
 
 - Commit messages: `feat(skill-name): description` or `fix(skill-name): description`.
 - One skill per commit when creating new skills.
+
+### Common Gotchas
+
+- Frontmatter `description` is the ONLY part loaded at agent startup for routing — make it descriptive and keyword-rich.
+- Files in `references/` are loaded on-demand; files in the skill root are always loaded.

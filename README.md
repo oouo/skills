@@ -20,11 +20,7 @@ skills/
 │   ├── scripts/                  (optional)
 │   ├── references/               (optional)
 │   └── resources/                (optional)
-├── skills/
-│   └── _template/              ← Canonical template (copy to start)
-├── .agents/                    ← Agent config & meta-skills
-│   ├── AGENTS.md
-│   └── skills/skill-creator/
+├── AGENTS.md
 ├── CLAUDE.md
 ├── README.md
 ├── LICENSE
@@ -58,23 +54,11 @@ echo '{"entries": [{"path": "/path/to/this/repo"}]}' > .agents/skills.json
 
 ### Create a new skill
 
-**Option A — Use the `skill-creator` meta-skill (recommended):**
-
-Already installed at `.agents/skills/skill-creator/`. Just tell your agent:
-
-> *"Help me create a skill for X"*
-
-**Option B — Copy the template:**
+Create a new top-level directory with a `SKILL.md`:
 
 ```bash
-cp -r skills/_template <new-skill-name>
+mkdir <new-skill-name>
 # Edit <new-skill-name>/SKILL.md
-```
-
-**Option C — `npx` CLI:**
-
-```bash
-npx -y skills init <new-skill-name>
 ```
 
 ## Skill Anatomy
@@ -129,8 +113,8 @@ Step-by-step procedures...
 
 ## Contributing
 
-1. Copy `skills/_template` to a new top-level directory: `<your-skill-name>/`
-2. Edit the `SKILL.md` frontmatter and body
+1. Create a new top-level directory: `<your-skill-name>/`
+2. Add a `SKILL.md` with valid YAML frontmatter (`name`, `description`)
 3. Add supporting files to the appropriate subdirectory
 4. Ensure the skill name in frontmatter matches the directory name
 5. Keep `SKILL.md` under 500 lines
