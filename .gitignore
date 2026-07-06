@@ -24,5 +24,8 @@ __pycache__/
 .venv/
 venv/
 
+# Secrets
+.env*
+
 # Logs
 *.log

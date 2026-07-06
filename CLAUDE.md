@@ -16,6 +16,7 @@ This is a personal AI agent skills repository. It contains reusable skill module
 - Every skill MUST have a `SKILL.md` with YAML frontmatter (`name`, `description` required)
 - The `name` field in frontmatter MUST match the directory name
 - Skill body should be < 500 lines; use `references/` for deep documentation
+- Skill documentation written in English; output specifications (e.g. commit format, report template) may use target language
 - `description` should be < 100 tokens and action-oriented (starts with "Use when...")
 - Use imperative language in instructions ("Always do X", not "X is preferred")
 
