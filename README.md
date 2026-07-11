@@ -7,7 +7,7 @@
 ## Design Philosophy
 
 1. **Single Responsibility** — Each skill does one thing well, with a clear trigger boundary.
-2. **Progressive Disclosure** — `SKILL.md` frontmatter is loaded at startup for routing; the body and `references/` are loaded on-demand, minimizing token waste.
+2. **Progressive Disclosure** — `SKILL.md` frontmatter is loaded for routing, the body loads after activation, and `references/` load only when needed.
 3. **Composability** — Skills are self-contained directories that can be mixed, linked, and shared across projects without side effects.
 4. **Zero-Friction Sharing** — Skills live at the repo root so you can paste a GitHub URL into any AI CLI and say "install this".
 
@@ -27,6 +27,15 @@ skills/
 └── .gitignore
 ```
 
+## Available Skills
+
+| Skill | Purpose |
+| --- | --- |
+| [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
+| [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
+| [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin, Xiaohongshu, and YouTube videos with resumable verification. |
+| [`video-to-cover-brief`](video-to-cover-brief/) | Turn family-travel or dog-centered videos into evidence-grounded Douyin cover briefs. |
+
 ## Quick Start
 
 ### Install a skill
@@ -43,7 +52,7 @@ Other install methods also work:
 
 ```bash
 # Via npx CLI
-npx -y skills add oouo/skills --skill <skill-name>
+npx skills add https://github.com/oouo/skills/tree/main/<skill-name>
 
 # Via git submodule
 git submodule add git@github.com:oouo/skills.git .agents/skills

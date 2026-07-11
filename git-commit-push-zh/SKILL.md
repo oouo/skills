@@ -1,12 +1,20 @@
 ---
 name: git-commit-push-zh
-description: Git commit with Chinese logs, optional push and PR
+description: Use when reviewing Git changes and creating a Chinese commit message. Covers intentional staging, commit verification, optional push, and user-requested PR creation.
 disable-model-invocation: true
 ---
 
 # Git Commit Push
 
+## Overview
+
 Flow: review changes → compose Chinese commit log → commit → confirm push → optional PR.
+
+## When to Use
+
+Use this skill when the user explicitly requests a Chinese Git commit workflow.
+
+## Instructions
 
 ## Step 1: Review Changes
 

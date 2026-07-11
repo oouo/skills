@@ -34,4 +34,4 @@ Use standard GitHub Flavored Markdown (GFM) as defined in `SKILL.md`.
 
 ## Setup & Credentials
 - No webhooks or API keys are required.
-- Ideal for offline runs, local developer preview, or standard interactive terminal use.
+- Ideal for local developer previews or standard interactive terminal output.
