@@ -1,0 +1,81 @@
+version: 1
+
+presets:
+  travel-family:
+    description: Warm, natural family-travel short-video cover.
+    suitable_for:
+      - family outings
+      - parent-child travel
+      - scenic visits
+    visual:
+      primary_colors:
+        - "#FF7A45"
+        - "#FFC857"
+      background_color: "#FFF7E8"
+      accent_colors:
+        - "#2F80ED"
+        - "#FFFFFF"
+      rendering: digital
+      mood: bold
+      font: display
+      decorative_hints:
+        - clean location tag
+        - warm sunlight
+        - restrained travel accents
+    composition:
+      subject_priority: family
+      banner_default: compact-stacked-corner
+      banner_fallback: single-line-bar
+      rules:
+        - Preserve a warm, candid family atmosphere.
+        - Keep family members, landmarks, and location evidence recognizable.
+        - Use a supplied frame or reference image as the primary visual source.
+        - Keep faces, hands, signs, landmarks, and the main action unobstructed.
+    adapters:
+      baoyu-cover-image:
+        type: hero
+        palette: warm
+        rendering: digital
+        text: text-rich
+        mood: bold
+        font: display
+
+  dog-protagonist:
+    description: Playful, polished dog-centered short-video cover.
+    suitable_for:
+      - dog stories
+      - cute pet videos
+      - healing or playful dog scenes
+      - AI-generated or AI-enhanced dog footage
+    visual:
+      primary_colors:
+        - "#FF8FB1"
+        - "#7C5CFC"
+      background_color: "#FFF5FA"
+      accent_colors:
+        - "#FFD166"
+        - "#FFFFFF"
+      rendering: digital
+      mood: bold
+      font: display
+      decorative_hints:
+        - small corner tag
+        - soft glow
+        - sparse playful accents
+    composition:
+      subject_priority: dog
+      banner_default: small-corner-tag
+      banner_fallback: single-line-bar
+      rules:
+        - Make the dog the unmistakable visual protagonist.
+        - Preserve the dog's appearance when a reference image is available.
+        - Keep the dog's face and the main action unobstructed.
+        - Keep decorative elements playful but sparse.
+    adapters:
+      baoyu-cover-image:
+        type: hero
+        palette: pastel
+        rendering: digital
+        text: text-rich
+        mood: bold
+        font: display
