@@ -26,6 +26,7 @@ venv/
 
 # Secrets
 .env*
+.trending-report-config.json
 
 # Logs
 *.log
