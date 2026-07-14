@@ -41,8 +41,8 @@ their evidence-grounded copy, palette variant, and composition still vary.
   as the brief's public contract.
 - Write the brief before offering image generation.
 - Do not generate an image until the user confirms.
-- Do not create, copy, merge, or overwrite a project's
-  `.baoyu-skills/baoyu-cover-image/EXTEND.md`.
+- Do not manage `.baoyu-skills/baoyu-cover-image/EXTEND.md` on behalf of
+  `baoyu-cover-image`; let that skill own its preferences and first-time setup.
 
 ### Inputs
 
@@ -147,23 +147,32 @@ After the user confirms:
 2. Keep the exact colors, subject priority, series-spine geometry, palette
    variant, and composition rules materialized in the brief.
 3. Read the preset's `adapters.baoyu-cover-image` mapping.
-4. Verify that `baoyu-cover-image` already has an `EXTEND.md` at one of its
-   documented project, XDG, or user paths. If none exists, ask the user to
-   configure that skill separately.
+4. Let `baoyu-cover-image` load or complete its own `EXTEND.md` setup. Resume
+   this same confirmed generation after setup without changing the brief.
 5. Select at least one inspected keyframe that clearly shows the subject and
    composition. Request a reference frame if none is suitable.
-6. Invoke `baoyu-cover-image` with:
+6. Read the **Baoyu Prompt Handoff** section in
+   [references/top-bar-system.md](references/top-bar-system.md). Require
+   `baoyu-cover-image` to inline the resolved top-bar values and visible-text
+   allowlist into its saved final prompt; a link to the brief or reference file
+   is not sufficient.
+7. Invoke `baoyu-cover-image` with:
    - the brief file
    - the mapped `type`, `palette`, `rendering`, `text`, `mood`, and `font`
    - `--aspect 3:4`
    - `--lang zh`
    - `--quick`
    - `--ref` with the selected frame or supplied references
-7. Keep the brief's exact top-bar and visual direction authoritative when the
-   renderer only offers an approximate adapter value.
+8. Before generation, scan the saved final prompt for a corner tag, stacked
+   badge, hanging flag, full-width band, extra keyword tags, or any other text
+   outside the brief. Remove every conflicting instruction before rendering.
+9. Inspect the generated cover at thumbnail size. If the top bar, exact Chinese
+   copy, or visible-text allowlist fails, preserve that candidate and regenerate
+   once from a strengthened prompt.
 
-Never bootstrap `EXTEND.md` from this skill. Report any material renderer
-degradation instead of silently changing the series spine.
+Keep the brief's exact top bar and visual direction authoritative when an
+adapter is only approximate. Report any remaining material degradation instead
+of silently changing the series spine.
 
 ### Extending Presets
 

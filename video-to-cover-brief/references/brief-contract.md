@@ -52,6 +52,8 @@ Collision Plan: <evidence-specific plan that preserves the fixed component>
 - <preset composition rule 1>
 - <preset composition rule 2>
 - Keep the centered split-pill top bar as the stable series spine.
+- Treat the Top Bar, Main Title, and Subtitle as the complete visible-text allowlist.
+- Do not add keyword tags, dates, logos, watermarks, or decorative copy.
 - <evidence-specific subject protection rule>
 - <mobile thumbnail rule>
 
@@ -81,6 +83,8 @@ Before reporting completion, verify:
 - The title and subtitle are grounded in evidence.
 - `Layout Rules` include preset rules, the series-spine invariant, and
   evidence-specific subject protection.
+- `Layout Rules` make the top bar, main title, and subtitle the complete
+  visible-text allowlist and forbid all additional copy.
 - `Evidence Notes` expose uncertainty instead of hiding it.
 - `Evidence Index` cites every material title, top-bar, summary, subject, and
   location claim with a frame timestamp, transcript line, user note, or named

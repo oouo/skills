@@ -32,6 +32,29 @@ color to carry the cover's variation.
 The visual renderer should draw two cells. The `｜` form exists for the brief,
 reporting, and renderers that accept only one text string.
 
+## Baoyu Prompt Handoff
+
+Inline the resolved component into the final `baoyu-cover-image` prompt under a
+`MUST PRESERVE` heading. Do not rely on a path to this file or the brief alone.
+The prompt must state all of these constraints explicitly:
+
+- Draw one top-centered, two-cell rounded capsule with a compact category cell,
+  a content-driven context cell, and one vertical divider.
+- Render the brief's category, context, main title, and subtitle verbatim.
+- Use the resolved geometry, palette variant, exact color tokens, collision
+  plan, and subject-protection rules from the brief.
+- Treat the top bar as the only tag, badge, or label component. The top bar,
+  main title, and subtitle are the complete visible-text allowlist.
+- Add no keyword tags, dates, English copy, logos, watermarks, captions, or
+  decorative text, even when the adapter uses `text-rich`.
+- Preserve the main title as the dominant text hierarchy; the top bar remains
+  compact metadata and must not compete with it.
+
+Before rendering, scan the complete prompt and remove any instruction that asks
+for a corner tag, stacked badge, hanging flag, full-width band, external
+ornaments, or extra text. A contradictory instruction later in the prompt does
+not override the series spine.
+
 ## Collision Ladder
 
 When the top center conflicts with a face, dog, landmark, existing sign, or main
@@ -50,11 +73,12 @@ generation rather than silently breaking the series spine.
 
 ## Thumbnail Acceptance
 
-Validate the planned cover at approximately 25% size:
+Validate the planned and rendered cover at approximately 25% size:
 
 - Category and context remain readable.
 - The capsule is recognizably the same component as other covers.
 - The bar does not cover a protected subject or evidence-bearing detail.
 - Main-title hierarchy remains dominant.
 - Every Chinese character and separator is exact.
+- No text appears outside the top bar, main title, and subtitle.
 - No external ornament makes the component look like a new structure.
