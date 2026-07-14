@@ -1,4 +1,67 @@
-version: 1
+version: 2
+
+top_bar_system:
+  id: centered-split-pill
+  role: series-spine
+  fields:
+    left: category
+    right: context
+    text_form: "{category}｜{context}"
+  geometry:
+    position: top-center
+    top_margin_percent:
+      min: 2.5
+      max: 3.0
+    height_percent:
+      min: 5.0
+      max: 6.0
+    width_percent:
+      preferred_min: 46
+      preferred_max: 64
+      hard_max: 68
+    shape: rounded-capsule
+    left_cell: compact
+    right_cell: content-driven
+    divider: single-vertical
+  typography:
+    language: zh-CN
+    family: simplified-chinese-sans
+    weight: bold
+    alignment: center
+    mobile_preview_scale: 0.25
+  decoration:
+    outside_component: none
+  collision_fallbacks:
+    - Shorten the context without losing evidence.
+    - Choose another evidence-supported keyframe with a calmer top safe zone.
+    - Reserve or reconstruct a calm top-center safe zone.
+    - Reduce width or type size within the geometry limits.
+    - Strengthen the capsule backing while preserving the component shape.
+  forbidden_fallbacks:
+    - corner-tag
+    - stacked-badge
+    - hanging-flag
+    - full-width-band
+    - external-ornaments
+  palette_variants:
+    travel-day:
+      left_background: "#2F80ED"
+      right_background: "#EAF4FF"
+      left_text: "#FFFFFF"
+      right_text: "#1654A8"
+      border: "#FFF7E8"
+    travel-night:
+      left_background: "#E8C56A"
+      right_background: "#15100B"
+      left_text: "#15100B"
+      right_text: "#F5D77A"
+      border: "#E8C56A"
+    dog:
+      left_background: "#F45472"
+      right_background: "#FFE2E8"
+      left_text: "#FFFFFF"
+      right_text: "#4B285F"
+      border: "#FFF7E8"
 
 presets:
   travel-family:
@@ -7,6 +70,10 @@ presets:
       - family outings
       - parent-child travel
       - scenic visits
+    top_bar:
+      category_label: 旅行
+      palette_default: travel-day
+      palette_low_light: travel-night
     visual:
       primary_colors:
         - "#FF7A45"
@@ -19,13 +86,11 @@ presets:
       mood: bold
       font: display
       decorative_hints:
-        - clean location tag
         - warm sunlight
         - restrained travel accents
+        - clear series spine
     composition:
       subject_priority: family
-      banner_default: compact-stacked-corner
-      banner_fallback: single-line-bar
       rules:
         - Preserve a warm, candid family atmosphere.
         - Keep family members, landmarks, and location evidence recognizable.
@@ -47,6 +112,9 @@ presets:
       - cute pet videos
       - healing or playful dog scenes
       - AI-generated or AI-enhanced dog footage
+    top_bar:
+      category_label: 萌宠
+      palette_default: dog
     visual:
       primary_colors:
         - "#FF8FB1"
@@ -59,13 +127,11 @@ presets:
       mood: bold
       font: display
       decorative_hints:
-        - small corner tag
         - soft glow
         - sparse playful accents
+        - clear series spine
     composition:
       subject_priority: dog
-      banner_default: small-corner-tag
-      banner_fallback: single-line-bar
       rules:
         - Make the dog the unmistakable visual protagonist.
         - Preserve the dog's appearance when a reference image is available.

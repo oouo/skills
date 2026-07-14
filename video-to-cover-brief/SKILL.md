@@ -2,8 +2,9 @@
 name: video-to-cover-brief
 description: >-
   Use when turning a local family-travel or dog-centered short video into an
-  evidence-grounded Douyin cover brief. Covers keyframe inspection, auditable
-  evidence, Chinese cover copy, and confirmed handoff to baoyu-cover-image.
+  evidence-grounded Douyin cover brief. Covers keyframe evidence, Simplified
+  Chinese copy, a series-consistent split-pill top bar, semantic presets, and
+  confirmed handoff to baoyu-cover-image.
 ---
 
 # Video to Cover Brief
@@ -11,27 +12,31 @@ description: >-
 ## Overview
 
 Create a renderer-neutral cover brief from a local short video. Route the brief
-to a reusable semantic preset, then invoke `baoyu-cover-image` only after the
-user confirms.
+to a reusable semantic preset and a fixed **series spine**: the same centered
+split-pill top bar on every cover, with only its category, context, and palette
+variant changing.
 
-The primary output is a Markdown brief, not a final image. Keep the brief
-self-contained so another renderer can reproduce its visual direction without
-loading project-level preferences.
+The primary output is a self-contained Markdown brief, not a final image. Invoke
+`baoyu-cover-image` only after the user confirms.
 
 ## When to Use
 
-Use this skill only for local family-travel or dog-centered short videos. Stop
-without writing a brief when neither category fits.
+Use this skill when the user provides a local family-travel or dog-centered
+short video and wants an auditable Douyin cover brief before image generation.
+Use it when multiple covers must share the same split-pill series spine while
+their evidence-grounded copy, palette variant, and composition still vary.
 
 ## Instructions
 
-### Core Rules
+### Non-negotiables
 
-- Ground every title, banner field, subject, location, and story detail in the
+- Ground every title, top-bar field, subject, location, and story detail in the
   available video evidence.
 - Do not invent a city, scenic spot, dog breed, family member, or story beat.
-- Use explicit fallback labels when evidence is weak.
+- Use scene-based fallbacks rather than fake location placeholders.
 - Write all cover copy in natural Simplified Chinese.
+- Keep the series spine fixed. Never switch it to a corner tag, stacked badge,
+  hanging flag, or full-width band to solve a composition collision.
 - Select a semantic cover preset; do not expose renderer-specific style names
   as the brief's public contract.
 - Write the brief before offering image generation.
@@ -50,16 +55,15 @@ without writing a brief when neither category fits.
 
 If no transcript or keyframes exist, inspect the video with available local
 tools. Do not install dependencies only to inspect the video. A user summary can
-support narrative facts, but it cannot replace visual evidence for subject,
-location, composition, or generation references.
+support narrative facts, but it cannot replace visual evidence for subjects,
+locations, composition, or generation references.
 
-### Workflow
+### Steps
 
 1. **Resolve evidence.**
    - Confirm that the video or supplied evidence exists.
-   - Derive `<video-slug>` from the video filename without its extension. In the
-     user's working project, create `briefs/evidence/<video-slug>/` for durable
-     inspection artifacts.
+   - Derive `<video-slug>` from the video filename without its extension. Create
+     `briefs/evidence/<video-slug>/` in the user's working project.
    - When `ffprobe` is available, save metadata:
 
      ```bash
@@ -67,54 +71,56 @@ location, composition, or generation references.
        > 'briefs/evidence/<video-slug>/metadata.json'
      ```
 
-   - Read the duration, then extract frames at approximately 10%, 50%, and 90%:
+   - Read the duration and extract frames at approximately 10%, 50%, and 90%:
 
      ```bash
      ffmpeg -ss '<seconds>' -i '<video>' -frames:v 1 -q:v 2 \
        'briefs/evidence/<video-slug>/frame-<timestamp>.jpg'
      ```
 
-   - Inspect all three frames. Add more frames around cuts, readable text, or an
-     occlusion-sensitive subject. Use supplied keyframes instead when they give
+   - Inspect all three frames. Add frames around cuts, readable text, or an
+     occlusion-sensitive subject. Use supplied keyframes when they provide
      equivalent beginning/middle/end coverage.
    - Gather duration, visible subjects, setting, location clues, emotional tone,
-     readable on-screen text, and the main action. Cite the frame path and
-     timestamp or transcript line for every material claim.
-   - If speech materially affects the story, title, or summary, use a supplied
-     transcript or an already available local transcription tool. Save or cite
-     the transcript with line numbers. If neither exists, request a transcript
-     or user summary and mark spoken details as unknown.
-   - Record uncertain details instead of guessing.
-   - If neither local tools nor supplied frames can provide visual evidence,
-     stop and request keyframes; do not write the brief.
-   - Finish when beginning/middle/end evidence exists and every material claim
-     has a source.
+     readable text, and the main action. Cite a frame path and timestamp or a
+     transcript line for every material claim.
+   - If speech materially affects the title or summary, use a supplied
+     transcript or an already available local transcription tool. Otherwise,
+     request a transcript or user summary and mark spoken details unknown.
+   - If neither local tools nor supplied frames provide visual evidence, stop
+     and request keyframes.
+   - Finish only when beginning/middle/end evidence exists and every material
+     claim has a source.
 2. **Classify the video.**
    - Choose exactly one category: `family-travel` or `dog-story`.
-   - Choose `family-travel` when the outing or family moment is the core story.
-   - Choose `dog-story` when the dog is the actual protagonist, whether or not the
-     footage was AI-generated or AI-enhanced.
+   - Choose `family-travel` when the outing or family moment drives the story.
+   - Choose `dog-story` when the dog is the protagonist, including AI-generated
+     or AI-enhanced footage.
    - When both signals appear, classify by the main emotional focus.
-   - If neither category fits, report that this skill does not cover the video
-     and stop without creating a brief.
-3. **Select and materialize a cover preset.**
+   - If neither category fits, stop without creating a brief.
+   - Finish when one supported category is selected and its evidence is cited.
+3. **Materialize the preset and series spine.**
    - Read [references/preset-routing.md](references/preset-routing.md).
    - Read [resources/cover-presets.yaml](resources/cover-presets.yaml).
-   - Map the category to one preset and copy its renderer-neutral visual values
-     into the brief.
-   - Treat a preset as a reusable visual contract, not a `baoyu-cover-image`
-     `--style` value.
-4. **Write the brief.**
+   - Read [references/top-bar-system.md](references/top-bar-system.md).
+   - Map the category to one semantic preset.
+   - Resolve the top-bar category, factual context, palette variant, exact color
+     tokens, and collision plan. Preserve the fixed component and anchor.
+   - Copy renderer-neutral visual values and applicable composition rules into
+     the brief.
+   - Finish when every field required by the brief contract has one resolved,
+     evidence-grounded value.
+4. **Write and validate the brief.**
    - Read [references/brief-contract.md](references/brief-contract.md).
-   - Draft the banner, title, subtitle, summary, visual focus, layout rules,
+   - Draft the top bar, title, subtitle, summary, visual focus, layout rules,
      preset ID, and visual direction.
-   - Save the exact contract to `briefs/<video-slug>.md`, where `<video-slug>`
-     is the video filename without its extension.
-   - Verify that every required section exists and every factual statement is
-     traceable to evidence or a documented fallback.
+   - Save the exact contract to `briefs/<video-slug>.md`.
+   - Verify every required section, evidence citation, preset token, and top-bar
+     invariant. At least one cited frame must be suitable for `--ref`.
+   - Finish when every validation item in the contract passes.
 5. **Report and pause.**
-   - Report the category, banner fields, banner treatment, title, subtitle,
-     cover preset, brief path, and evidence directory.
+   - Report the category, top-bar display text and palette variant, title,
+     subtitle, preset, brief path, and evidence directory.
    - Ask whether to continue to image generation.
    - Stop before generation until the user confirms.
 
@@ -124,50 +130,48 @@ location, composition, or generation references.
 | --- | --- |
 | Main title | Prefer 6-12 Chinese characters; keep it concrete and visual. |
 | Subtitle | Prefer 10-18 Chinese characters; explain the scene or emotion. |
+| Top-bar category | Use the preset's fixed `旅行` or `萌宠` label. |
+| Top-bar context | Prefer 2-10 factual Chinese characters; shorten before changing layout. |
 | Language | Use Simplified Chinese only. |
 | Tone | Keep it natural, human, Douyin-friendly, and free of fake hype. |
 
-Avoid generic phrases and titles that could fit any video. Keep the main title
-within two lines and the subtitle within one line.
+Keep the main title within two lines and the subtitle within one line. Avoid
+generic phrases that could fit any video.
 
 ### Generation Handoff
 
 After the user confirms:
 
-1. Re-read the selected entry in
+1. Re-read the selected preset and top-bar system in
    [resources/cover-presets.yaml](resources/cover-presets.yaml).
-2. Keep the exact colors, subject priority, banner treatment, and composition
-   rules already materialized in the brief.
+2. Keep the exact colors, subject priority, series-spine geometry, palette
+   variant, and composition rules materialized in the brief.
 3. Read the preset's `adapters.baoyu-cover-image` mapping.
 4. Verify that `baoyu-cover-image` already has an `EXTEND.md` at one of its
-   documented project, XDG, or user paths. If none exists, stop and ask the user
-   to configure that skill separately; do not enter its first-time setup from
-   this workflow.
+   documented project, XDG, or user paths. If none exists, ask the user to
+   configure that skill separately.
 5. Select at least one inspected keyframe that clearly shows the subject and
-   composition. Stop and request a reference frame if none is suitable.
+   composition. Request a reference frame if none is suitable.
 6. Invoke `baoyu-cover-image` with:
    - the brief file
    - the mapped `type`, `palette`, `rendering`, `text`, `mood`, and `font`
    - `--aspect 3:4`
    - `--lang zh`
    - `--quick`
-   - `--ref` with the selected keyframe or supplied reference images
-7. Let `baoyu-cover-image` load its existing preferences. Never
-   bootstrap its `EXTEND.md` from this skill.
+   - `--ref` with the selected frame or supplied references
+7. Keep the brief's exact top-bar and visual direction authoritative when the
+   renderer only offers an approximate adapter value.
 
-The adapter palette is a supported renderer fallback. The exact palette and
-composition in the brief remain authoritative. Do not invent scenery or ignore
-the supplied video frame when a suitable reference image exists.
+Never bootstrap `EXTEND.md` from this skill. Report any material renderer
+degradation instead of silently changing the series spine.
 
 ### Extending Presets
 
-Add a new cover style without expanding the core workflow:
-
 1. Add one semantic preset to `resources/cover-presets.yaml`.
-2. Add or update a category-to-preset rule in
-   `references/preset-routing.md`.
-3. Keep renderer-independent fields authoritative.
-4. Add renderer adapters under the preset instead of adding renderer-specific
-   fields to the brief contract.
-5. Add a new top-level skill only when another workflow needs to consume the
+2. Add or update its category rule in `references/preset-routing.md`.
+3. Reuse `top_bar_system`; do not create a per-preset component shape.
+4. Add a palette variant only when an existing variant cannot maintain contrast.
+5. Keep renderer-independent fields authoritative and adapters nested under the
+   preset.
+6. Add a new top-level skill only when another workflow needs to consume the
    same preset catalog independently.

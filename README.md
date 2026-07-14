@@ -56,9 +56,6 @@ npx skills add https://github.com/oouo/skills/tree/main/<skill-name>
 
 # Via git submodule
 git submodule add git@github.com:oouo/skills.git .agents/skills
-
-# Via skills.json reference
-echo '{"entries": [{"path": "/path/to/this/repo"}]}' > .agents/skills.json
 ```
 
 ### Create a new skill

@@ -9,12 +9,17 @@ all angle brackets from the saved file.
 ## Category
 <family-travel or dog-story>
 
-## Top Banner
-Primary: <city or theme>
-Secondary: <scenic spot or scene>
-
-## Banner Treatment
-<compact-stacked-corner, single-line-bar, top-thin-band, or small-corner-tag>
+## Top Bar
+System: <centered-split-pill>
+Category: <旅行 or 萌宠>
+Context: <factual location or scene>
+Display Text: <Category｜Context>
+Palette Variant: <travel-day, travel-night, or dog>
+Left Cell: <background hex / text hex>
+Right Cell: <background hex / text hex>
+Border: <hex>
+Geometry: <top-center; top margin; height; preferred width and hard maximum>
+Collision Plan: <evidence-specific plan that preserves the fixed component>
 
 ## Main Title
 <6-12 Chinese characters preferred>
@@ -46,7 +51,8 @@ Secondary: <scenic spot or scene>
 ## Layout Rules
 - <preset composition rule 1>
 - <preset composition rule 2>
-- <evidence-specific occlusion rule>
+- Keep the centered split-pill top bar as the stable series spine.
+- <evidence-specific subject protection rule>
 - <mobile thumbnail rule>
 
 ## Evidence Notes
@@ -54,7 +60,8 @@ Secondary: <scenic spot or scene>
 - Uncertain: <important unknowns or none>
 
 ## Evidence Index
-- <claim or fallback>: <frame path @ timestamp, transcript path + line, user note, or documented fallback>
+- <claim or fallback>: <frame path @ timestamp, transcript line, user note, or
+  documented fallback>
 ```
 
 ## Validation
@@ -63,13 +70,21 @@ Before reporting completion, verify:
 
 - `Category` contains one supported evidence category.
 - `Cover Preset` contains one ID present in `resources/cover-presets.yaml`.
-- `Visual Direction` matches that preset exactly.
+- `Visual Direction` matches the selected preset exactly.
+- `Top Bar` uses `centered-split-pill`, the preset's fixed category, one factual
+  context, and one valid palette variant.
+- Top-bar geometry and colors match `top_bar_system` exactly.
+- `Display Text` equals `Category｜Context`; two-level locations use ` · ` inside
+  `Context`.
+- `Collision Plan` follows the collision ladder without changing the component
+  shape or anchor.
 - The title and subtitle are grounded in evidence.
-- The banner uses factual values or documented fallbacks.
-- `Layout Rules` include preset rules and evidence-specific subject protection.
+- `Layout Rules` include preset rules, the series-spine invariant, and
+  evidence-specific subject protection.
 - `Evidence Notes` expose uncertainty instead of hiding it.
-- `Evidence Index` cites every material title, banner, summary, subject, and
+- `Evidence Index` cites every material title, top-bar, summary, subject, and
   location claim with a frame timestamp, transcript line, user note, or named
   fallback from `preset-routing.md`.
 - At least one cited frame is suitable for the generation `--ref` handoff.
+- The planned top bar passes the 25% thumbnail checks in `top-bar-system.md`.
 - The file exists at `briefs/<video-slug>.md`.

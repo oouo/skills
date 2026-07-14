@@ -1,92 +1,96 @@
 # Preset Routing
 
-Use this reference after classifying the video. Keep category detection separate
-from visual preset definitions.
+Read this reference after classifying the video. Keep evidence classification,
+top-bar copy, and preset values separate.
 
 ## Category Mapping
 
-| Category | Cover preset | Reason |
-| --- | --- | --- |
-| `family-travel` | `travel-family` | The family outing or shared travel memory drives the story. |
-| `dog-story` | `dog-protagonist` | The dog drives the story; AI is a production detail. |
+| Category | Cover preset | Top-bar category | Reason |
+| --- | --- | --- | --- |
+| `family-travel` | `travel-family` | `旅行` | The outing or family memory drives the story. |
+| `dog-story` | `dog-protagonist` | `萌宠` | The dog drives the story. |
 
-Do not write the legacy IDs `travel-family-cover` or `dog-ai-cover` into new
-briefs. They were renderer-routing labels rather than reusable preset names.
-Do not use the legacy category `dog-ai`; use `dog-story` and record AI
-generation or enhancement only as an evidence attribute when confirmed.
+Do not use the legacy category `dog-ai` or the legacy preset IDs
+`travel-family-cover` and `dog-ai-cover`.
 
-## Banner Content
+## Top-Bar Context
 
-For `family-travel`, prefer factual location fields:
+The left field is fixed by the selected preset. Resolve only the right `Context`
+field from evidence.
 
-```text
-Primary: <city>
-Secondary: <scenic spot>
-```
+### Family travel
 
-If the scenic spot is unknown, use `Secondary: 出游地`. If the city is also
-unknown, use `Primary: 城市` rather than inventing one.
+Use the most specific factual context that remains readable:
 
-For `dog-story`, prefer a factual location and scene:
+1. Confirmed city and scenic spot: `盱眙 · 白鹭洲`
+2. Confirmed province/city pair: `江苏 · 兴化`
+3. Confirmed scenic spot or setting only: `油菜花田`
+4. No location evidence but a clear visual scene: `湖边散步`, `春日花田`, or
+   another concrete scene supported by frames
 
-```text
-Primary: <city>
-Secondary: <scene>
-```
+Do not write placeholder locations such as `城市` or `出游地`. A concrete scene
+is more honest and more useful to viewers than a fake location slot.
 
-If city evidence is weak but the theme and scene are clear, use:
+### Dog story
 
-```text
-Primary: <theme>
-Secondary: <scene>
-```
+Describe the factual scene, event, or visual hook:
 
-Safe theme fallbacks include `萌宠` and `小狗`. Use a breed only when the
-evidence supports it.
+- `冰雕`
+- `录音棚`
+- `油菜花田`
+- `山野光影`
+- `端午粽子`
 
-## Banner Treatment
+Prefer `萌宠` as the fixed category. Do not spend the context field repeating
+`小狗`, and do not use a breed unless evidence confirms it.
 
-Start with the selected preset's `banner_default`. Use its `banner_fallback`
-when the default would cover a face, dog, landmark, hand, readable sign, or the
-main action.
+### Copy constraints
 
-Supported treatments:
+- Prefer 2-10 Chinese characters for `Context`.
+- Join two confirmed location levels with ` · `.
+- Do not put `｜` inside `Context`; the renderer uses it between the two cells.
+- Shorten context before changing geometry or hiding text.
+- Cite the evidence or named fallback that supports the final context.
 
-| Treatment | Use |
+## Palette Routing
+
+Select the palette variant from `top_bar_system.palette_variants`:
+
+| Condition | Variant |
 | --- | --- |
-| `compact-stacked-corner` | A clean top-left or top-center area can hold a two-line tag. |
-| `single-line-bar` | Important content occupies the top area; minimize occlusion. |
-| `top-thin-band` | Location context matters and the top edge is visually calm. |
-| `small-corner-tag` | The central subject must dominate the cover. |
+| `family-travel` with a bright or midtone top safe zone | `travel-day` |
+| `family-travel` with a predominantly dark, low-light top safe zone | `travel-night` |
+| `dog-story` | `dog` |
 
-Render `single-line-bar` as `Primary｜Secondary`. Keep every other treatment as
-two structured fields; do not force decorative punctuation into the content.
+Judge the top safe zone, not the average brightness of the entire frame. Preserve
+the selected variant's exact tokens. Do not apply one-off seasonal color shifts
+inside a brief; add a named palette variant to the YAML source of truth instead.
 
 ## Preset Materialization
 
-Copy these values from `resources/cover-presets.yaml` into `## Visual Direction`
-in the brief:
+Copy these values into the brief:
 
-- primary colors
-- background color
-- accent colors
-- rendering
-- mood
-- font
-- decorative hints
-- subject priority
+- semantic preset ID
+- top-bar system ID
+- category label
+- evidence-grounded context
+- display text
+- palette variant and exact color tokens
+- top-bar geometry and collision plan
+- primary colors, background color, and accent colors
+- rendering, mood, font, decorative hints, and subject priority
+- applicable composition rules
 
-Copy the applicable composition rules into `## Layout Rules`. This makes the
-brief portable and prevents a renderer from needing project-level configuration.
+The brief must remain portable: a renderer should not need project preferences
+to reconstruct the intended series spine.
 
 ## Renderer Boundary
 
 Treat `adapters` as invocation mappings only. Do not copy adapter values into
-the semantic preset ID, and do not install them into a project's preference
-files.
+the semantic preset ID or install them into project preference files.
 
-When a renderer does not support an exact value:
+When a renderer lacks an exact value:
 
-1. Preserve the brief's exact visual direction in the generation prompt.
+1. Preserve the brief's exact visual and top-bar direction in the prompt.
 2. Use the adapter's closest supported fallback.
-3. Report any material degradation instead of silently changing the style.
+3. Report material degradation instead of changing the series spine.
