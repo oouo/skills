@@ -1,7 +1,7 @@
 ---
 name: social-video-archiver
 description: >
-  Use when downloading or archiving authorized videos from Douyin,
+  Use when downloading or archiving authorized videos or image posts from Douyin,
   Xiaohongshu, or YouTube. Covers single posts, profiles, channels,
   playlists, metadata, resumable downloads, and browser fallbacks.
 ---
@@ -18,6 +18,7 @@ select the platform branch, preserve metadata, and verify every collected item.
 Use this skill when the user wants to:
 
 - download one authorized video from a supported platform
+- download one authorized Douyin image post
 - archive public videos from an owned or authorized profile
 - back up a YouTube channel, playlist, or Shorts collection
 - resume a partial social-video archive without downloading duplicates
@@ -85,6 +86,7 @@ Run the unified entry point:
 - Keep archive files and completed media so reruns skip existing items.
 - Let profile jobs continue past individual failures and record failed URLs.
 - Fall back to browser capture when a supported single-item extractor fails.
+  Douyin single-item capture saves either an MP4 or an image-set directory.
 - When login or CAPTCHA is required, rerun with `HEADLESS=0` and a sufficient
   `LOGIN_WAIT_MS`, then let the user complete the normal challenge.
 - Never print cookie values, authorization headers, or signed media URLs.
@@ -97,7 +99,8 @@ after all remaining items have been attempted.
 
 ```bash
 find '<output-dir>' -type f -size +1024c \
-  \( -name '*.mp4' -o -name '*.webm' -o -name '*.mkv' \) -print
+  \( -name '*.mp4' -o -name '*.webm' -o -name '*.mkv' \
+    -o -name '*.jpg' -o -name '*.png' -o -name '*.webp' \) -print
 find '<output-dir>' -type f -name '*.json' -print
 du -sh '<output-dir>'
 ```

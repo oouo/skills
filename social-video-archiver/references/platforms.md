@@ -19,10 +19,12 @@ actually played by the page. Use `ffmpeg` for YouTube stream merging and HLS.
 
 ## Douyin
 
-- For one `/video/<id>` URL, try `yt-dlp`; the entry point falls back to browser
-  capture when extraction fails.
+- For one `/video/<id>` or image-post URL, try `yt-dlp`; the entry point falls
+  back to browser capture when extraction fails.
+- Browser capture saves a Douyin image post as `<output>/<post-id>/001.<ext>`,
+  `<output>/<post-id>/002.<ext>`, and `<post-id>.json`.
 - For `/user/<sec_uid>`, run `scripts/download-douyin-profile.mjs`. It scrolls
-  the profile, collects post links, and captures media from each post page.
+  the profile, collects video links, and captures media from each video page.
 - Resolve share links before classifying them. Do not mix search results,
   recommendations, or related posts into the profile archive.
 - Compare the profile work count with `video-urls.txt`. If no total is visible,

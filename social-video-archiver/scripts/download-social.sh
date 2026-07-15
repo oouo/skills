@@ -167,7 +167,7 @@ ensure_browser_runtime() {
 
 download_with_ytdlp() {
   local url=$1
-  find_ytdlp
+  find_ytdlp || return 1
 
   local ytdlp_args=(
     --continue
