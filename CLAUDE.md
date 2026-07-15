@@ -24,4 +24,7 @@ find . -maxdepth 2 -name "SKILL.md"
 
 # Validate frontmatter
 find . -maxdepth 2 -name "SKILL.md" -exec head -5 {} \;
+
+# Run a skill-local Python unittest suite when present
+python3 -m unittest discover -s "<skill-name>/tests" -p "test_*.py"
 ```

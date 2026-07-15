@@ -19,7 +19,8 @@ skills/
 │   ├── SKILL.md                  (required)
 │   ├── scripts/                  (optional)
 │   ├── references/               (optional)
-│   └── resources/                (optional)
+│   ├── resources/                (optional)
+│   └── tests/                    (optional)
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── README.md
@@ -31,6 +32,7 @@ skills/
 
 | Skill | Purpose |
 | --- | --- |
+| [`codebase-reader`](codebase-reader/) | Find the real entry, execution spine, and reading order of an unfamiliar codebase. |
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
@@ -77,7 +79,8 @@ my-skill/
 ├── scripts/          # Optional: Executable helpers (Python, Bash, etc.)
 ├── examples/         # Optional: Reference implementations
 ├── references/       # Optional: Deep docs loaded on-demand (saves tokens)
-└── resources/        # Optional: Templates, configs, static assets
+├── resources/        # Optional: Templates, configs, static assets
+└── tests/            # Optional: Self-contained checks and fixtures
 ```
 
 ### SKILL.md Format
@@ -122,8 +125,9 @@ Step-by-step procedures...
 1. Create a new top-level directory: `<your-skill-name>/`
 2. Add a `SKILL.md` with valid YAML frontmatter (`name`, `description`)
 3. Add supporting files to the appropriate subdirectory
-4. Ensure the skill name in frontmatter matches the directory name
-5. Keep `SKILL.md` under 500 lines
+4. Run any skill-local tests
+5. Ensure the skill name in frontmatter matches the directory name
+6. Keep `SKILL.md` under 500 lines
 
 ## License
 

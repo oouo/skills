@@ -26,6 +26,7 @@ This is a personal AI agent skills repository (`oouo/skills`). All skills follow
 - `examples/` — Reference implementations the agent can study.
 - `references/` — Deep documentation loaded on-demand (progressive disclosure).
 - `resources/` — Templates, configs, static assets.
+- `tests/` — Self-contained skill checks and fixtures; avoid network access by default.
 - Do NOT add empty subdirectories. Only create them when you have content.
 
 ### Style
