@@ -33,6 +33,7 @@ skills/
 | Skill | Purpose |
 | --- | --- |
 | [`codebase-reader`](codebase-reader/) | Find the real entry, execution spine, and reading order of an unfamiliar codebase. |
+| [`full-bleed-icon-creator`](full-bleed-icon-creator/) | Create validated opaque full-bleed module icon sources and PNG/SVG pairs. |
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
