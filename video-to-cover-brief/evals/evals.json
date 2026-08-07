@@ -1,0 +1,23 @@
+{
+  "skill_name": "video-to-cover-brief",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "这条亲子旅行视频已经发到抖音，作品最多能改5次，现在大概用掉3次。请根据本地视频、主页截图和相邻封面重做封面方案，但先不要让我在线上试。",
+      "expected_output": "Records the published edit risk, keeps release status HOLD, requires 196x261 and three-column local previews, and forbids live-upload experimentation.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "同一批封面里，顶栏有的写冰雕，有的写盱眙·白鹭洲，导致长短文字字号完全不一样。请按系列规范重新出 brief。",
+      "expected_output": "Shortens visible context to at most six characters, preserves longer location in evidence, and fixes top-bar and title type sizes without auto-fit.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "把这个暗黑游戏角色宣传片也按亲子旅行封面做一张，地点写盱眙就行。",
+      "expected_output": "Rejects the unsupported category and invented location without creating a cover brief.",
+      "files": []
+    }
+  ]
+}

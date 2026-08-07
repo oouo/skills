@@ -11,14 +11,15 @@ properties stable across every cover:
 
 - centered at the top
 - one rounded outer capsule
-- compact left category cell
-- content-driven right context cell
+- fixed-width category and context cells
 - one vertical divider
-- bold Simplified Chinese sans-serif text
+- one fixed Simplified Chinese sans-serif type size
 - no ornaments outside the capsule
 
-Allow the main title, subject composition, illustration treatment, and scene
-color to carry the cover's variation.
+The fixed cells and type size are deliberate. A generative renderer tends to
+shrink longer strings and enlarge shorter ones; that variation becomes obvious
+in a three-column profile grid even when each full-size cover looks acceptable.
+Allow the subject composition and scene color to carry the cover's variation.
 
 ## Materialize the Component
 
@@ -27,33 +28,32 @@ color to carry the cover's variation.
 3. Form the auditable text as `Category｜Context`.
 4. Select a palette variant from the top safe zone's brightness and category.
 5. Copy the variant's exact left/right background, text, and border colors.
-6. Copy the geometry bounds and state an evidence-specific collision plan.
+6. Copy the fixed 1080×1440 geometry and 52 px type size.
+7. State an evidence-specific collision plan that protects the fixed component.
 
-The visual renderer should draw two cells. The `｜` form exists for the brief,
-reporting, and renderers that accept only one text string.
+The visible component uses two cells. The `｜` form exists only for the brief
+and reporting. Do not render the separator glyph in addition to the divider.
 
-## Baoyu Prompt Handoff
+Never ask a generative image model to typeset the final top bar. Generate the
+visual layer without text, then compose the capsule and its text with
+`scripts/render-cover-type.sh` or an equivalent deterministic vector/canvas
+step. Deterministic composition is what makes the font size, cell widths,
+spelling, and divider repeatable across the series.
 
-Inline the resolved component into the final `baoyu-cover-image` prompt under a
-`MUST PRESERVE` heading. Do not rely on a path to this file or the brief alone.
-The prompt must state all of these constraints explicitly:
+## Visual-Generation Handoff
 
-- Draw one top-centered, two-cell rounded capsule with a compact category cell,
-  a content-driven context cell, and one vertical divider.
-- Render the brief's category, context, main title, and subtitle verbatim.
-- Use the resolved geometry, palette variant, exact color tokens, collision
-  plan, and subject-protection rules from the brief.
-- Treat the top bar as the only tag, badge, or label component. The top bar,
-  main title, and subtitle are the complete visible-text allowlist.
-- Add no keyword tags, dates, English copy, logos, watermarks, captions, or
-  decorative text, even when the adapter uses `text-rich`.
-- Preserve the main title as the dominant text hierarchy; the top bar remains
-  compact metadata and must not compete with it.
+Invoke `baoyu-cover-image` with `--text none`. Its saved prompt must state:
 
-Before rendering, scan the complete prompt and remove any instruction that asks
-for a corner tag, stacked badge, hanging flag, full-width band, external
-ornaments, or extra text. A contradictory instruction later in the prompt does
-not override the series spine.
+- Render a text-free 3:4 visual layer.
+- Reserve the brief's fixed top-bar and title safe zones.
+- Keep the protected face, dog, landmark, and main action outside those zones.
+- Add no letters, Chinese characters, numbers, tags, signs, logos, or watermark.
+- Preserve the supplied subject's identity instead of replacing it with a
+  generic person or dog.
+
+After generation, scan the visual layer for accidental text before composing
+the deterministic typography. Reject rather than paint over material text that
+would remain visible.
 
 ## Collision Ladder
 
@@ -63,22 +63,37 @@ action, resolve the collision in this order:
 1. Shorten the context while preserving its factual meaning.
 2. Choose another evidence-supported keyframe with a calmer top safe zone.
 3. Reserve or reconstruct the top safe zone without changing the subject.
-4. Reduce the capsule width or type size within the YAML geometry limits.
-5. Strengthen the capsule backing with the selected palette tokens.
+4. Recompose or recrop the text-free visual layer.
+5. Pause if the collision remains.
 
 Do not move the component to a corner, stack its fields, stretch it across the
 canvas, or attach flowers, hearts, rays, flags, and decorative lines. If the
 collision remains after the ladder, record it in `Layout Rules` and pause before
-generation rather than silently breaking the series spine.
+generation rather than silently breaking the series spine. Never reduce the
+52 px type size to rescue an overlong context.
 
 ## Thumbnail Acceptance
 
-Validate the planned and rendered cover at approximately 25% size:
+Full-size inspection catches spelling; it does not prove mobile usability.
+Validate the planned and rendered cover in both of these views:
+
+- one exact 196×261 profile cell, viewed without zoom
+- one three-column grid in intended profile order, including existing covers
+  when the user supplies them
+
+The 196×261 baseline comes from the supplied real profile result. If a newer
+user screenshot provides a different measured cell, use that measurement and
+record it in the brief instead of guessing.
+
+Acceptance requires:
 
 - Category and context remain readable.
 - The capsule is recognizably the same component as other covers.
+- Category and context use the same apparent type size on short and long labels.
 - The bar does not cover a protected subject or evidence-bearing detail.
 - Main-title hierarchy remains dominant.
 - Every Chinese character and separator is exact.
-- No text appears outside the top bar, main title, and subtitle.
+- No text appears outside the top bar and main title.
 - No external ornament makes the component look like a new structure.
+- The grid does not expose font-size drift, repeated color blocks, or a single
+  cover that breaks the series spine.

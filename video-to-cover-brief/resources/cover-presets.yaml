@@ -1,4 +1,46 @@
-version: 2
+version: 3
+
+output_system:
+  canonical_canvas_px:
+    width: 1080
+    height: 1440
+  profile_thumbnail_px:
+    width: 196
+    height: 261
+    columns: 3
+  platform_overlays:
+    play_count:
+      anchor: bottom-left
+      protected_zone_px:
+        x: 0
+        y: 229
+        width: 72
+        height: 32
+      rule: keep evidence-bearing faces, paws, hands, and small subjects outside
+  text_composition: deterministic-after-visual-generation
+  visible_text_allowlist:
+    - top_bar.category
+    - top_bar.context
+    - main_title
+  subtitle:
+    brief_only: true
+    visible_by_default: false
+
+main_title_system:
+  max_characters: 8
+  max_lines: 2
+  font_size_px: 116
+  line_height: 0.94
+  weight: 900
+  alignment: center
+  max_rendered_width_px: 860
+  default_top_px: 190
+  auto_fit: false
+  overflow_resolution:
+    - Rewrite the title without losing the factual hook.
+    - Insert an intentional line break with at most four characters per line.
+    - Choose a calmer evidence-supported frame or recompose the visual layer.
+    - Pause instead of shrinking, condensing, or horizontally scaling the type.
 
 top_bar_system:
   id: centered-split-pill
@@ -9,34 +51,40 @@ top_bar_system:
     text_form: "{category}｜{context}"
   geometry:
     position: top-center
-    top_margin_percent:
-      min: 2.5
-      max: 3.0
-    height_percent:
-      min: 5.0
-      max: 6.0
-    width_percent:
-      preferred_min: 46
-      preferred_max: 64
-      hard_max: 68
+    canonical_px:
+      top: 43
+      height: 112
+      total_width: 610
+      left_cell_width: 180
+      right_cell_width: 430
+      border: 4
+    percent_of_canvas:
+      top_margin: 3.0
+      height: 7.8
+      total_width: 56.5
     shape: rounded-capsule
-    left_cell: compact
-    right_cell: content-driven
+    left_cell: fixed-width
+    right_cell: fixed-width
     divider: single-vertical
   typography:
     language: zh-CN
     family: simplified-chinese-sans
-    weight: bold
+    font_size_px: 52
+    weight: 800
     alignment: center
-    mobile_preview_scale: 0.25
+    auto_fit: false
+    glyph_scaling: forbidden
+    context_characters:
+      preferred_min: 2
+      hard_max: 6
   decoration:
     outside_component: none
   collision_fallbacks:
     - Shorten the context without losing evidence.
     - Choose another evidence-supported keyframe with a calmer top safe zone.
     - Reserve or reconstruct a calm top-center safe zone.
-    - Reduce width or type size within the geometry limits.
-    - Strengthen the capsule backing while preserving the component shape.
+    - Recompose the visual layer while preserving the protected subject.
+    - Pause instead of shrinking the fixed typography.
   forbidden_fallbacks:
     - corner-tag
     - stacked-badge
@@ -50,18 +98,24 @@ top_bar_system:
       left_text: "#FFFFFF"
       right_text: "#1654A8"
       border: "#FFF7E8"
+      title_fill: "#D94117"
+      title_stroke: "#FFF7E8"
     travel-night:
       left_background: "#E8C56A"
       right_background: "#15100B"
       left_text: "#15100B"
       right_text: "#F5D77A"
       border: "#E8C56A"
+      title_fill: "#FFF4C7"
+      title_stroke: "#24150B"
     dog:
       left_background: "#F45472"
       right_background: "#FFE2E8"
       left_text: "#FFFFFF"
       right_text: "#4B285F"
       border: "#FFF7E8"
+      title_fill: "#FFFFFF"
+      title_stroke: "#4B285F"
 
 presets:
   travel-family:
@@ -85,6 +139,7 @@ presets:
       rendering: digital
       mood: bold
       font: display
+      main_title_family: bold-simplified-chinese-sans
       decorative_hints:
         - warm sunlight
         - restrained travel accents
@@ -96,12 +151,13 @@ presets:
         - Keep family members, landmarks, and location evidence recognizable.
         - Use a supplied frame or reference image as the primary visual source.
         - Keep faces, hands, signs, landmarks, and the main action unobstructed.
+        - Keep protected evidence outside the profile play-count overlay zone.
     adapters:
       baoyu-cover-image:
         type: hero
         palette: warm
         rendering: digital
-        text: text-rich
+        text: none
         mood: bold
         font: display
 
@@ -126,6 +182,7 @@ presets:
       rendering: digital
       mood: bold
       font: display
+      main_title_family: rounded-simplified-chinese-sans
       decorative_hints:
         - soft glow
         - sparse playful accents
@@ -136,12 +193,13 @@ presets:
         - Make the dog the unmistakable visual protagonist.
         - Preserve the dog's appearance when a reference image is available.
         - Keep the dog's face and the main action unobstructed.
+        - Keep protected evidence outside the profile play-count overlay zone.
         - Keep decorative elements playful but sparse.
     adapters:
       baoyu-cover-image:
         type: hero
         palette: pastel
         rendering: digital
-        text: text-rich
+        text: none
         mood: bold
         font: display

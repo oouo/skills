@@ -18,6 +18,7 @@ skills/
 ├── <skill-name>/               ← Each skill is a top-level directory
 │   ├── SKILL.md                  (required)
 │   ├── scripts/                  (optional)
+│   ├── evals/                    (optional)
 │   ├── references/               (optional)
 │   ├── resources/                (optional)
 │   └── tests/                    (optional)
@@ -37,7 +38,7 @@ skills/
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
-| [`video-to-cover-brief`](video-to-cover-brief/) | Turn family-travel or dog-centered videos into evidence-grounded Douyin cover briefs. |
+| [`video-to-cover-brief`](video-to-cover-brief/) | Create evidence-grounded Douyin cover briefs with fixed typography and release gates. |
 
 ## Quick Start
 
@@ -78,6 +79,7 @@ Every skill is a directory containing at minimum a `SKILL.md`:
 my-skill/
 ├── SKILL.md          # Required: YAML frontmatter + instructions (< 500 lines)
 ├── scripts/          # Optional: Executable helpers (Python, Bash, etc.)
+├── evals/            # Optional: Evaluation prompts and expected outcomes
 ├── examples/         # Optional: Reference implementations
 ├── references/       # Optional: Deep docs loaded on-demand (saves tokens)
 ├── resources/        # Optional: Templates, configs, static assets
