@@ -7,9 +7,12 @@
 ## Design Philosophy
 
 1. **Single Responsibility** — Each skill does one thing well, with a clear trigger boundary.
-2. **Progressive Disclosure** — `SKILL.md` frontmatter is loaded for routing, the body loads after activation, and `references/` load only when needed.
-3. **Composability** — Skills are self-contained directories that can be mixed, linked, and shared across projects without side effects.
-4. **Zero-Friction Sharing** — Skills live at the repo root so you can paste a GitHub URL into any AI CLI and say "install this".
+2. **Progressive Disclosure** — `name` and `description` load for discovery, the
+   body loads after activation, and `references/` load only when needed.
+3. **Composability** — Skills are self-contained directories that can be mixed,
+   linked, and shared across projects without side effects.
+4. **Zero-Friction Sharing** — Skills live at the repo root, so a compatible AI
+   CLI can install one directly from its GitHub URL.
 
 ## Repository Structure
 
@@ -44,7 +47,7 @@ skills/
 
 ### Install a skill
 
-Paste the GitHub URL into any AI CLI (Claude Code, Cursor, Gemini CLI, etc.):
+Paste the GitHub URL into a compatible AI CLI (Claude Code, Cursor, Gemini CLI, etc.):
 
 ```
 https://github.com/oouo/skills/tree/main/<skill-name>
@@ -110,7 +113,7 @@ Step-by-step procedures...
 
 **Key rules:**
 - `name` must match the directory name
-- `description` should be < 100 tokens, keyword-rich (it's the only part loaded at startup)
+- `description` should be < 100 tokens and keyword-rich; it drives discovery-time routing
 - Body should be < 500 lines; move deep docs to `references/`
 
 ## Writing Good Skills

@@ -2,13 +2,15 @@
 
 ## Project Overview
 
-This is a personal AI agent skills repository. It contains reusable skill modules, each following the open `SKILL.md` standard format. Skills are placed as **top-level directories** in the repo root for easy URL-based sharing.
+This is a personal AI agent skills repository. It contains reusable skill
+modules that follow the open `SKILL.md` standard. Skills live in **top-level
+directories** in the repo root for easy URL-based sharing.
 
 For full rules see `AGENTS.md`.
 
 ## Install Pattern
 
-Users paste a GitHub URL into any AI CLI to install:
+Users paste a GitHub URL into a compatible AI CLI to install:
 
 ```
 https://github.com/oouo/skills/tree/main/<skill-name>

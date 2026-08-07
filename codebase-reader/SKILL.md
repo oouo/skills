@@ -23,6 +23,11 @@ Keep business source, configuration, tests, and dependencies unchanged. Answer
 in chat by default. Write a guide only when the user explicitly requests a file.
 Apply the same process to any language; language names are clues, not a whitelist.
 
+## When to Use
+
+Use for fast, read-only orientation to an unfamiliar repository or subsystem.
+Use a deeper workflow for exhaustive documentation, review, or implementation.
+
 ## Instructions
 
 ### 1. Frame the Reading Question
@@ -112,5 +117,4 @@ Before finishing, verify that every material claim has evidence, the reading
 order follows execution rather than filenames, and the answer contains current
 behavior rather than redesign or refactoring advice.
 
-Completion criterion: the user gets a concise source-backed route through the
-code, and no repository file changed unless a report was explicitly requested.
+Completion criterion: deliver a concise source-backed route without changing repository files.
