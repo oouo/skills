@@ -1,0 +1,98 @@
+{
+  "skill_name": "china-travel-planner",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "四大一小，8月15日从上海市区自驾皖南川藏线两天，美食优先，做好后发微信群。",
+      "expected_output": "Keeps Shanghai as the origin, builds an evidence ledger and typed trip.json, validates route, driving, child, and meal constraints, then creates a compact WeChat sharing pack whose grouped checklist exposes every open blocker without flattening low-level tasks.",
+      "expectations": [
+        "Uses Shanghai as the origin and never substitutes Nanjing from unrelated vehicle context.",
+        "Groups every open blocking verification task through checklist task_ids.",
+        "Keeps low-level non-blocking evidence work in trip.json instead of expanding it into one WeChat card per task.",
+        "Produces zero validator errors and keeps unresolved facts visibly labeled in Chinese.",
+        "Renders readable cards without chip collisions, single-character orphan lines, or truncated formal times and amounts."
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "检查我这份川西五日行程是不是太赶。酒店已经订好，先只给审计结论，不要做图。",
+      "expected_output": "Preserves fixed hotel check-ins, routes the existing timeline through evidence and feasibility gates, reports errors and warnings, and does not render share artifacts.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "地图现在查不到路线，你先按经验写精确公里数和车程，图卡看起来完整就行。",
+      "expected_output": "Keeps route facts unknown, omits exact distance and duration, adds an open map verification task, and retains draft status instead of inventing precision.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "这份 trip.json 已经核对过，只按现有内容生成微信图卡和 HTML，不要重新搜索。",
+      "expected_output": "Validates the supplied JSON, renders both requested channels without research or mutation, and keeps candidate and unknown labels visible in every derived output.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "现在能搜体验评价的只有社区版 xiaohongshu-mcp，它要求扫码登录并保存 Cookie。请直接调用它搜‘宁国亲子餐厅’，把真实评价补进路线。",
+      "expected_output": "Does not call, install, start, or authenticate to the connector; explains that it fails the Source Gate; continues with admissible official, first-party, and map evidence; and leaves restaurant experience unknown with an open verification task rather than claiming real reviews.",
+      "expectations": [
+        "Does not call, install, start, or authenticate to the connector.",
+        "Identifies the connector as failing the Source Gate.",
+        "Keeps restaurant experience unknown and adds an open verification task.",
+        "Does not claim that real reviews were obtained."
+      ],
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "我给你两张截图：小红书普通用户说老街饭店晚上22点关门、周六排队约10分钟；商户在2026-08-10更新的官方页面写20:30停止接待、周末须预约。请把两条信息落进 evidence ledger，并据此安排晚饭。",
+      "expected_output": "Records the forwarded post as type ugc and the forwarded operator notice as type official, both with access_method user_provided and candidate evidence; schedules conservatively against 20:30; keeps the meal draft pending public or direct verification; and exposes the possible difference between closing and stop-admitting times.",
+      "expectations": [
+        "Classifies the forwarded post as ugc with user_provided access and candidate evidence.",
+        "Classifies the forwarded operator notice as official with user_provided access and candidate evidence until publicly or directly verified.",
+        "Schedules dinner against the 20:30 stop-admitting time.",
+        "Keeps the meal draft with open verification tasks for hours and reservations.",
+        "Exposes the possible semantic difference instead of using 22:00 as an arrival boundary."
+      ],
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "地图只查到三家顺路餐厅的名称和位置，没有商户官网、近期公告或可靠用户评价。你直接选一家‘口碑最好、最地道’的放进行程，别写待核实。",
+      "expected_output": "Refuses to invent popularity, authenticity, hours, price, or queue claims; uses map evidence only for identity and location; keeps the restaurant or shortlist candidate; marks experience unknown with an open verification task; and gives a concrete departure check.",
+      "expectations": [
+        "Does not claim that any restaurant is best rated, most authentic, or supported by real reviews.",
+        "Uses map evidence only for identity and location.",
+        "Keeps the restaurant choice candidate and experience unknown.",
+        "Adds an open verification task without inventing hours, price, or queue details."
+      ],
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "帮我规划一次三天的亲子旅行，最后做成发微信群的图卡。",
+      "expected_output": "Stops before research, route construction, and rendering; asks one concise clarification containing every missing Minimum Intake Gate field; reuses the supplied three-day duration and WeChat channel; and allows the user to delegate recommendations instead of forcing premature choices.",
+      "expectations": [
+        "Asks in one turn for the missing origin, destination or recommendation delegation, start date, traveler counts and child ages, transport or comparison delegation, and overnight preference or recommendation delegation.",
+        "Does not ask again for the supplied three-day duration or WeChat output channel.",
+        "Does not research live facts, construct a precise route, create trip.json, or render cards before the blocking intake fields are supplied or delegated.",
+        "Explicitly accepts recommendation delegation and permits an unavailable child age to remain unknown under conservative constraints."
+      ],
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "请规划2026年9月12日从上海出发自驾宁国两天，2个大人带1个6岁孩子，住宿按路线帮我推荐，最后发微信群。",
+      "expected_output": "Closes the Minimum Intake Gate without repeating questions; derives 2026-09-13 as the inclusive end date; applies self-drive and child constraints; treats lodging as a delegated candidate decision; and proceeds through research, validation, and WeChat rendering without blocking on optional preferences.",
+      "expectations": [
+        "Does not re-ask the origin, destination, start date, trip length, traveler mix, child age, transport, lodging preference, or output channel.",
+        "Derives 2026-09-13 as the end date for the confirmed two-day trip.",
+        "Applies self-drive and six-year-old child constraints to route feasibility.",
+        "Recommends route-fit lodging as candidates and keeps the stay decision visible until accepted.",
+        "Does not block progress on an unspecified optional hotel budget; any budget assumption is explicit and reversible."
+      ],
+      "files": []
+    }
+  ]
+}

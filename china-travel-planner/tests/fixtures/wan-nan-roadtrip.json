@@ -1,0 +1,659 @@
+{
+  "schema_version": "1.0",
+  "title": "上海出发皖南川藏线两日亲子自驾",
+  "subtitle": "四大一小 · 美食优先 · 保守节奏",
+  "status": "draft",
+  "timezone": "Asia/Shanghai",
+  "generated_at": "2026-08-09T10:00:00+08:00",
+  "last_verified_at": "2026-08-09T09:30:00+08:00",
+  "fixture": true,
+  "brief": {
+    "origin_place_id": "shanghai-test-origin",
+    "destination_place_ids": [
+      "qinglong-bay",
+      "taohualing-view",
+      "jingxian-lunch"
+    ],
+    "start_date": "2026-08-15",
+    "end_date": "2026-08-16",
+    "transport": "self-drive",
+    "party": {
+      "adults": 4,
+      "children": [
+        {
+          "age_years": 8
+        }
+      ],
+      "seniors": 0
+    },
+    "priorities": [
+      "food",
+      "scenery",
+      "child-friendly"
+    ],
+    "notes": [
+      "Keep every drive block within the family limit.",
+      "Treat meals as route nodes rather than detached recommendations."
+    ]
+  },
+  "constraints": {
+    "max_unscheduled_gap_minutes": 30,
+    "driving": {
+      "max_continuous_minutes": 120,
+      "min_break_minutes": 20,
+      "max_daily_minutes": 360,
+      "hard_max_daily_minutes": 480,
+      "latest_end": "18:30"
+    },
+    "child": {
+      "max_continuous_vehicle_minutes": 120,
+      "latest_day_end": "20:30"
+    },
+    "meal_windows": {
+      "lunch": {
+        "start": "11:30",
+        "end": "14:00",
+        "required": true
+      },
+      "dinner": {
+        "start": "17:30",
+        "end": "20:30",
+        "required": true
+      }
+    }
+  },
+  "overview": {
+    "summary": "两天闭环自驾，午餐直接锚定路线，长车程之间安排明确休息。",
+    "decisions": [],
+    "risks": []
+  },
+  "sources": [
+    {
+      "id": "src-user-brief",
+      "type": "user",
+      "title": "Fixture traveler brief",
+      "access_method": "user_provided",
+      "accessed_at": "2026-08-09T09:00:00+08:00"
+    },
+    {
+      "id": "src-map-fixture",
+      "type": "map",
+      "title": "Fixture route and location results",
+      "access_method": "fixture",
+      "locator": "fixture:map:wan-nan-roadtrip",
+      "accessed_at": "2026-08-09T09:10:00+08:00"
+    },
+    {
+      "id": "src-food-fixture",
+      "type": "first_party",
+      "title": "Fixture restaurant information",
+      "access_method": "fixture",
+      "locator": "fixture:first-party:wan-nan-food",
+      "accessed_at": "2026-08-09T09:15:00+08:00"
+    },
+    {
+      "id": "src-official-fixture",
+      "type": "official",
+      "title": "Fixture attraction information",
+      "access_method": "fixture",
+      "locator": "fixture:official:wan-nan-attractions",
+      "accessed_at": "2026-08-09T09:20:00+08:00"
+    },
+    {
+      "id": "src-stay-fixture",
+      "type": "first_party",
+      "title": "Fixture stay information",
+      "access_method": "fixture",
+      "locator": "fixture:first-party:fangtang-stay",
+      "accessed_at": "2026-08-09T09:25:00+08:00"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-shanghai-origin-identity",
+      "target_id": "shanghai-test-origin",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-user-brief"]
+    },
+    {
+      "id": "ev-shanghai-origin-location",
+      "target_id": "shanghai-test-origin",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-user-brief"]
+    },
+    {
+      "id": "ev-service-identity",
+      "target_id": "huzhou-service",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-service-location",
+      "target_id": "huzhou-service",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-ningguo-lunch-identity",
+      "target_id": "ningguo-lunch",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-food-fixture"]
+    },
+    {
+      "id": "ev-ningguo-lunch-location",
+      "target_id": "ningguo-lunch",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-ningguo-lunch-hours",
+      "target_id": "ningguo-lunch",
+      "aspect": "hours",
+      "status": "candidate",
+      "source_ids": ["src-food-fixture"]
+    },
+    {
+      "id": "ev-qinglong-identity",
+      "target_id": "qinglong-bay",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-official-fixture"]
+    },
+    {
+      "id": "ev-qinglong-location",
+      "target_id": "qinglong-bay",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-qinglong-hours",
+      "target_id": "qinglong-bay",
+      "aspect": "hours",
+      "status": "verified",
+      "source_ids": ["src-official-fixture"]
+    },
+    {
+      "id": "ev-stay-identity",
+      "target_id": "fangtang-stay",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-stay-fixture"]
+    },
+    {
+      "id": "ev-stay-location",
+      "target_id": "fangtang-stay",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-stay-parking",
+      "target_id": "fangtang-stay",
+      "aspect": "parking",
+      "status": "unknown",
+      "source_ids": [],
+      "note": "住宿方尚未确认当晚是否保留固定停车位。"
+    },
+    {
+      "id": "ev-taohualing-identity",
+      "target_id": "taohualing-view",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-official-fixture"]
+    },
+    {
+      "id": "ev-taohualing-location",
+      "target_id": "taohualing-view",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-taohualing-hours",
+      "target_id": "taohualing-view",
+      "aspect": "hours",
+      "status": "verified",
+      "source_ids": ["src-official-fixture"]
+    },
+    {
+      "id": "ev-jingxian-lunch-identity",
+      "target_id": "jingxian-lunch",
+      "aspect": "identity",
+      "status": "verified",
+      "source_ids": ["src-food-fixture"]
+    },
+    {
+      "id": "ev-jingxian-lunch-location",
+      "target_id": "jingxian-lunch",
+      "aspect": "location",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-jingxian-lunch-hours",
+      "target_id": "jingxian-lunch",
+      "aspect": "hours",
+      "status": "verified",
+      "source_ids": ["src-food-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-1-route",
+      "target_id": "d1-drive-1",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-1-duration",
+      "target_id": "d1-drive-1",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-2-route",
+      "target_id": "d1-drive-2",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-2-duration",
+      "target_id": "d1-drive-2",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-3-route",
+      "target_id": "d1-drive-3",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-3-duration",
+      "target_id": "d1-drive-3",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-4-route",
+      "target_id": "d1-drive-4",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d1-drive-4-duration",
+      "target_id": "d1-drive-4",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-1-route",
+      "target_id": "d2-drive-1",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-1-duration",
+      "target_id": "d2-drive-1",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-2-route",
+      "target_id": "d2-drive-2",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-2-duration",
+      "target_id": "d2-drive-2",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-3-route",
+      "target_id": "d2-drive-3",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-3-duration",
+      "target_id": "d2-drive-3",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-4-route",
+      "target_id": "d2-drive-4",
+      "aspect": "route",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    },
+    {
+      "id": "ev-d2-drive-4-duration",
+      "target_id": "d2-drive-4",
+      "aspect": "duration",
+      "status": "verified",
+      "source_ids": ["src-map-fixture"]
+    }
+  ],
+  "places": [
+    {
+      "id": "shanghai-test-origin",
+      "name": "上海公开测试锚点",
+      "kind": "origin",
+      "details": {
+        "privacy": "Render only the city name."
+      }
+    },
+    {
+      "id": "huzhou-service",
+      "name": "湖州途中休息点",
+      "kind": "service",
+      "details": {
+        "child_fit": "有卫生间，可活动二十分钟以上。"
+      }
+    },
+    {
+      "id": "ningguo-lunch",
+      "name": "宁国地方菜午餐候选",
+      "kind": "restaurant",
+      "details": {
+        "must_order": ["宁国粑粑", "不辣土鸡汤"],
+        "parking_note": "优先选择有自有停车位的门店。",
+        "child_fit": "可做不辣菜。"
+      }
+    },
+    {
+      "id": "qinglong-bay",
+      "name": "青龙湾观景点",
+      "kind": "attraction",
+      "details": {
+        "pace": "保留两小时轻松活动。"
+      }
+    },
+    {
+      "id": "fangtang-stay",
+      "name": "方塘住宿点",
+      "kind": "stay",
+      "details": {
+        "parking_note": "固定车位待住宿方确认。",
+        "child_fit": "当天提早结束，不安排夜路。"
+      }
+    },
+    {
+      "id": "taohualing-view",
+      "name": "桃岭观景点",
+      "kind": "attraction",
+      "details": {
+        "pace": "上午低强度停留。"
+      }
+    },
+    {
+      "id": "jingxian-lunch",
+      "name": "泾县地方菜午餐",
+      "kind": "restaurant",
+      "details": {
+        "must_order": ["琴鱼蒸蛋", "清淡炖菜"],
+        "parking_note": "停车后再步行进店。",
+        "child_fit": "预留一小时正餐。"
+      }
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "date": "2026-08-15",
+      "title": "宁国入线与青龙湾",
+      "start_place_id": "shanghai-test-origin",
+      "end_place_id": "fangtang-stay",
+      "segments": [
+        {
+          "id": "d1-drive-1",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "上海至湖州途中休息点",
+          "start_at": "2026-08-15T06:30:00+08:00",
+          "end_at": "2026-08-15T08:20:00+08:00",
+          "from_place_id": "shanghai-test-origin",
+          "to_place_id": "huzhou-service",
+          "notes": []
+        },
+        {
+          "id": "d1-rest-1",
+          "type": "rest",
+          "plan_status": "fixed",
+          "title": "司机与儿童休息",
+          "start_at": "2026-08-15T08:20:00+08:00",
+          "end_at": "2026-08-15T09:20:00+08:00",
+          "place_id": "huzhou-service",
+          "notes": []
+        },
+        {
+          "id": "d1-drive-2",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "休息点至宁国午餐候选",
+          "start_at": "2026-08-15T09:20:00+08:00",
+          "end_at": "2026-08-15T10:40:00+08:00",
+          "from_place_id": "huzhou-service",
+          "to_place_id": "ningguo-lunch",
+          "notes": []
+        },
+        {
+          "id": "d1-lunch",
+          "type": "meal",
+          "meal_kind": "lunch",
+          "plan_status": "candidate",
+          "title": "宁国地方菜午餐",
+          "start_at": "2026-08-15T10:40:00+08:00",
+          "end_at": "2026-08-15T11:40:00+08:00",
+          "place_id": "ningguo-lunch",
+          "notes": ["门店营业状态待群内确认后复核。"]
+        },
+        {
+          "id": "d1-drive-3",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "宁国午餐点至青龙湾",
+          "start_at": "2026-08-15T11:40:00+08:00",
+          "end_at": "2026-08-15T12:40:00+08:00",
+          "from_place_id": "ningguo-lunch",
+          "to_place_id": "qinglong-bay",
+          "notes": []
+        },
+        {
+          "id": "d1-activity-1",
+          "type": "activity",
+          "plan_status": "planned",
+          "title": "青龙湾轻松观景",
+          "start_at": "2026-08-15T12:40:00+08:00",
+          "end_at": "2026-08-15T14:40:00+08:00",
+          "place_id": "qinglong-bay",
+          "notes": []
+        },
+        {
+          "id": "d1-drive-4",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "青龙湾至方塘住宿点",
+          "start_at": "2026-08-15T14:40:00+08:00",
+          "end_at": "2026-08-15T15:40:00+08:00",
+          "from_place_id": "qinglong-bay",
+          "to_place_id": "fangtang-stay",
+          "notes": []
+        },
+        {
+          "id": "d1-checkin",
+          "type": "checkin",
+          "plan_status": "planned",
+          "title": "办理入住并结束当日行程",
+          "start_at": "2026-08-15T15:40:00+08:00",
+          "end_at": "2026-08-15T16:10:00+08:00",
+          "place_id": "fangtang-stay",
+          "notes": []
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "date": "2026-08-16",
+      "title": "桃岭、泾县地方菜与返程",
+      "start_place_id": "fangtang-stay",
+      "end_place_id": "shanghai-test-origin",
+      "segments": [
+        {
+          "id": "d2-breakfast",
+          "type": "meal",
+          "meal_kind": "breakfast",
+          "plan_status": "planned",
+          "title": "住宿点早餐",
+          "start_at": "2026-08-16T07:30:00+08:00",
+          "end_at": "2026-08-16T08:00:00+08:00",
+          "place_id": "fangtang-stay",
+          "notes": []
+        },
+        {
+          "id": "d2-drive-1",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "方塘住宿点至桃岭观景点",
+          "start_at": "2026-08-16T08:00:00+08:00",
+          "end_at": "2026-08-16T09:00:00+08:00",
+          "from_place_id": "fangtang-stay",
+          "to_place_id": "taohualing-view",
+          "notes": []
+        },
+        {
+          "id": "d2-activity-1",
+          "type": "activity",
+          "plan_status": "planned",
+          "title": "桃岭观景与儿童活动",
+          "start_at": "2026-08-16T09:00:00+08:00",
+          "end_at": "2026-08-16T11:00:00+08:00",
+          "place_id": "taohualing-view",
+          "notes": []
+        },
+        {
+          "id": "d2-drive-2",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "桃岭观景点至泾县午餐",
+          "start_at": "2026-08-16T11:00:00+08:00",
+          "end_at": "2026-08-16T11:30:00+08:00",
+          "from_place_id": "taohualing-view",
+          "to_place_id": "jingxian-lunch",
+          "notes": []
+        },
+        {
+          "id": "d2-lunch",
+          "type": "meal",
+          "meal_kind": "lunch",
+          "plan_status": "fixed",
+          "title": "泾县地方菜午餐",
+          "start_at": "2026-08-16T11:30:00+08:00",
+          "end_at": "2026-08-16T12:30:00+08:00",
+          "place_id": "jingxian-lunch",
+          "notes": []
+        },
+        {
+          "id": "d2-drive-3",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "泾县午餐点至湖州休息点",
+          "start_at": "2026-08-16T12:30:00+08:00",
+          "end_at": "2026-08-16T14:00:00+08:00",
+          "from_place_id": "jingxian-lunch",
+          "to_place_id": "huzhou-service",
+          "notes": []
+        },
+        {
+          "id": "d2-rest-1",
+          "type": "rest",
+          "plan_status": "fixed",
+          "title": "返程前司机与儿童休息",
+          "start_at": "2026-08-16T14:00:00+08:00",
+          "end_at": "2026-08-16T14:30:00+08:00",
+          "place_id": "huzhou-service",
+          "notes": []
+        },
+        {
+          "id": "d2-drive-4",
+          "type": "travel",
+          "mode": "drive",
+          "plan_status": "planned",
+          "title": "湖州休息点返回上海",
+          "start_at": "2026-08-16T14:30:00+08:00",
+          "end_at": "2026-08-16T16:20:00+08:00",
+          "from_place_id": "huzhou-service",
+          "to_place_id": "shanghai-test-origin",
+          "notes": []
+        }
+      ]
+    }
+  ],
+  "verification_tasks": [
+    {
+      "id": "verify-ningguo-lunch-hours",
+      "evidence_id": "ev-ningguo-lunch-hours",
+      "action": "出发前复核宁国午餐候选门店营业状态。",
+      "due": "T-48h",
+      "blocking": false,
+      "status": "open"
+    },
+    {
+      "id": "verify-stay-parking",
+      "evidence_id": "ev-stay-parking",
+      "action": "出发前联系住宿方确认固定停车位。",
+      "due": "T-48h",
+      "blocking": true,
+      "status": "open"
+    }
+  ],
+  "checklist": [
+    {
+      "group": "now",
+      "item": "确定宁国午餐门店并复核营业状态",
+      "status": "open",
+      "task_ids": ["verify-ningguo-lunch-hours"]
+    },
+    {
+      "group": "t-48h",
+      "item": "确认方塘住宿停车位",
+      "status": "open",
+      "task_ids": ["verify-stay-parking"]
+    },
+    {
+      "group": "pack",
+      "item": "儿童安全座椅、饮水和晕车备用品",
+      "status": "open",
+      "task_ids": []
+    }
+  ]
+}
