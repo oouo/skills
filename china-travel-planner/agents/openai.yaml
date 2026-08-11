@@ -1,0 +1,4 @@
+interface:
+  display_name: "China Travel Planner"
+  short_description: "Plan feasible China trips and WeChat roadbooks"
+  default_prompt: "Use $china-travel-planner to plan a source-grounded China trip and create a WeChat-ready roadbook."
