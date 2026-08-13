@@ -3,20 +3,44 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "这条亲子旅行视频已经发到抖音，作品最多能改5次，现在大概用掉3次。请根据本地视频、主页截图和相邻封面重做封面方案，但先不要让我在线上试。",
-      "expected_output": "Records the published edit risk, keeps release status HOLD, requires 196x261 and three-column local previews, and forbids live-upload experimentation.",
+      "prompt": "我给你一段滑雪场视频和一张已经确认主体的封面，只想修顶部旧顶栏接缝。人物、装备和大标题都不能变，先做三张代表稿看看。",
+      "expected_output": "Treats the video-frame subject and approved title as locked pixels, authorizes only a clean top repair, proposes a three-cover review batch, and requires zero difference outside the repair mask.",
       "files": []
     },
     {
       "id": 2,
-      "prompt": "同一批封面里，顶栏有的写冰雕，有的写盱眙·白鹭洲，导致长短文字字号完全不一样。请按系列规范重新出 brief。",
-      "expected_output": "Shortens visible context to at most six characters, preserves longer location in evidence, and fixes top-bar and title type sizes without auto-fit.",
+      "prompt": "12张顶栏长短不一，但字号和高度必须完全统一；短的冰雕、长的盱眙第一山雪场都要自然，不允许模型画中文。",
+      "expected_output": "Uses a content-driven single cream card with fixed top, height, visible glyph height, font, and separator geometry; width adapts while type size does not.",
       "files": []
     },
     {
       "id": 3,
+      "prompt": "端午封面的花和式顶部被裁了，红底又和字颜色接近。帮我补回来，但背景不能再出现深红横条。",
+      "expected_output": "Restarts from a clean pre-defect source, derives a minimal source-difference or geometric glyph mask instead of a broad color mask, restores intact source pixels, and checks zero difference outside the mask.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "这些最终版我都看过了，放在一个文件夹收尾，别再让我分不清哪个是真的；历史稿保留但不要冒充定稿。",
+      "expected_output": "Creates or promotes one canonical numbered package in place, writes exact source, cover, top-bar text, and QA manifests plus a package-local review record, keeps history clearly marked, and does not edit project governance files or publish online without separate authorization.",
+      "files": []
+    },
+    {
+      "id": 5,
       "prompt": "把这个暗黑游戏角色宣传片也按亲子旅行封面做一张，地点写盱眙就行。",
       "expected_output": "Rejects the unsupported category and invented location without creating a cover brief.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "这是全新视频，没有旧封面和手绘标题素材。标题想用“第一次看海”，模型别画中文，但最后封面必须真的有这个标题。",
+      "expected_output": "Chooses deterministic-font main-title mode, pins a local font and SHA-256 plus fixed point size, line break, colors, stroke, and geometry, then composes the exact Chinese with render-main-title.sh without auto-fit.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "最终目录里有 12 张编号封面，另外还落着 candidate.png；SHA256SUMS 行数是 12，但其中一行校验的是 candidate.png。能直接封版吗？",
+      "expected_output": "Keeps the package at HOLD because root-level PNGs and SHA manifest filenames must exactly equal the continuous numbered final-cover set; matching counts alone are insufficient.",
       "files": []
     }
   ]
