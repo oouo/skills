@@ -6,6 +6,7 @@ usage() {
   echo "Usage: $0 OUTPUT COVER_1 [COVER_2 ...]" >&2
   echo "Pass covers in exact newest-to-oldest profile order." >&2
   echo "Set SINGLE_CELL_OUTPUT to retain the first exact-size cell." >&2
+  echo "PROFILE_CELL_W/H and PROFILE_COLUMNS override the measured layout." >&2
 }
 
 if [[ $# -lt 2 ]]; then
@@ -23,6 +24,13 @@ shift
 covers=("$@")
 single_cell_output=${SINGLE_CELL_OUTPUT:-}
 
+for cover in "${covers[@]}"; do
+  if [[ "$output" == "$cover" ]]; then
+    echo "Grid output must not overwrite an input cover." >&2
+    exit 5
+  fi
+done
+
 if [[ -n "$single_cell_output" ]]; then
   if [[ "$single_cell_output" == "$output" ]]; then
     echo "SINGLE_CELL_OUTPUT must differ from the grid output path." >&2
@@ -36,12 +44,25 @@ if [[ -n "$single_cell_output" ]]; then
   done
 fi
 
-cell_w=196
-cell_h=261
-columns=3
+cell_w=${PROFILE_CELL_W:-196}
+cell_h=${PROFILE_CELL_H:-261}
+columns=${PROFILE_COLUMNS:-3}
 show_play_overlay=${SHOW_PLAY_OVERLAY:-1}
 preview_count=${PREVIEW_PLAY_COUNT:-88}
 preview_font=${PREVIEW_FONT:-/System/Library/Fonts/Supplemental/Arial\ Bold.ttf}
+preview_background=${PROFILE_BACKGROUND:-#111111}
+
+for number in "$cell_w" "$cell_h" "$columns"; do
+  if [[ ! "$number" =~ ^[1-9][0-9]*$ ]]; then
+    echo "PROFILE_CELL_W/H and PROFILE_COLUMNS must be positive integers." >&2
+    exit 6
+  fi
+done
+
+play_top=$((cell_h - 22))
+play_bottom=$((cell_h - 8))
+play_middle=$((cell_h - 15))
+play_geometry="polygon 10,${play_top} 10,${play_bottom} 21,${play_middle}"
 
 tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/douyin-grid.XXXXXX")
 trap 'rm -rf "$tmp_dir"' EXIT
@@ -61,7 +82,7 @@ for cover in "${covers[@]}"; do
     -resize "${cell_w}x${cell_h}^" \
     -gravity center \
     -extent "${cell_w}x${cell_h}" \
-    -background '#111111' \
+    -background "$preview_background" \
     -alpha remove \
     -alpha off \
     -type TrueColor \
@@ -72,14 +93,14 @@ for cover in "${covers[@]}"; do
     if [[ -f "$preview_font" ]]; then
       magick "$raw_cell" \
         -fill '#FFFFFF' -stroke '#00000099' -strokewidth 1 \
-        -draw 'polygon 10,239 10,253 21,246' \
+        -draw "$play_geometry" \
         -font "$preview_font" -pointsize 16 -gravity southwest \
         -annotate '+27+5' "$preview_count" \
         "$cell"
     else
       magick "$raw_cell" \
         -fill '#FFFFFF' -stroke '#00000099' -strokewidth 1 \
-        -draw 'polygon 10,239 10,253 21,246' \
+        -draw "$play_geometry" \
         "$cell"
     fi
   else
@@ -101,7 +122,7 @@ if (( remainder != 0 )); then
   missing=$(( columns - remainder ))
   for ((pad = 0; pad < missing; pad++)); do
     blank="$tmp_dir/blank-${pad}.png"
-    magick -size "${cell_w}x${cell_h}" xc:'#111111' "$blank"
+    magick -size "${cell_w}x${cell_h}" xc:"$preview_background" "$blank"
     cells+=("$blank")
   done
 fi
@@ -113,7 +134,8 @@ for ((start = 0; start < ${#cells[@]}; start += columns)); do
   rows+=("$row")
 done
 
-magick "${rows[@]}" -append +repage "$output"
+magick "${rows[@]}" -append -alpha off -type TrueColor +repage -strip \
+  -define png:color-type=2 -define png:exclude-chunk=date,time "$output"
 
 if [[ -n "$single_cell_output" ]]; then
   echo "$single_cell_output"

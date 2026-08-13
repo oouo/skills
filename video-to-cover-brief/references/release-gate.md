@@ -1,103 +1,122 @@
 # Douyin Cover Release Gate
 
-Use this gate after image generation and before recommending an upload or a
-published-cover edit. A live edit is a scarce release action, not a preview
-tool. Keep exploration, comparison, and rejection local.
+Run this gate after each review batch and again on the canonical package. A live
+edit is a release action, not a preview tool.
 
-## Risk States
+## States
 
 | State | Meaning | Required behavior |
 | --- | --- | --- |
-| `DRAFT` | Brief or visual layer is incomplete. | Continue locally. |
-| `HOLD` | A candidate exists but any gate is unverified or failed. | Do not recommend upload or edit. |
-| `LOCAL_READY` | Full-size, single-cell, and grid checks pass. | Present no more than two finalists to the user. |
-| `READY_TO_PUBLISH` | The user explicitly approves one exact local candidate. | Recommend only that file; any later change returns to `HOLD`. |
+| `DRAFT` | Brief, clean plate, or assembly is incomplete. | Continue locally. |
+| `HOLD` | Any automated or human gate is unverified or failed. | Do not publish. |
+| `LOCAL_READY` | One candidate passes local mechanical and visual review. | Present it for approval. |
+| `FINAL` | The user approves the exact package and the package hashes pass. | Treat it as the only current local release. |
+| `READY_TO_PUBLISH` | The user separately authorizes the exact online action. | Publish only that exact file. |
 
-For a published work, record the user's reported edits used and remaining edit
-budget. If unknown, treat the budget as scarce. Never infer that an edit is
-safe merely because the platform still exposes the edit button.
+Any change to a `LOCAL_READY`, `FINAL`, or `READY_TO_PUBLISH` file returns the
+new artifact to `HOLD` until the full gate is rerun.
 
-## Required Artifacts
+## Required package artifacts
 
-1. The final 1080×1440 cover.
-2. A 196×261 single-cell preview, or a cell measured from the user's newer
-   real profile screenshot.
-3. A three-column grid preview in intended newest-to-oldest order.
-4. Existing neighboring covers in the grid when the user supplies them.
-5. A short pass/fail report naming the exact candidate file.
+1. Numbered final PNGs in one canonical directory.
+2. `meta/SOURCES.tsv` mapping sequence, filename, video ID, source file, and
+   version note.
+3. `meta/SHA256SUMS` for every final cover.
+4. `meta/TOPBAR-TEXT.txt` with one final label per cover.
+5. A full-series montage and top-bar montage.
+6. Main-title, subject-middle, and bottom/edge QA montages.
+7. Exact-cell and three-column profile previews in intended order.
+8. SHA-256 manifests for QA and profile previews.
+9. A package-local review record naming the exact package and status.
 
-Use `scripts/build-douyin-grid-preview.sh` for the baseline cell and grid when
-ImageMagick is available. Set `SINGLE_CELL_OUTPUT` to retain the first cover's
-exact-size cell, and pass files in the exact order they should appear. The script
-includes a bottom-left play-count placeholder by default; set
-`SHOW_PLAY_OVERLAY=0` only when a separate app-shell mock already supplies it.
+## Mechanical gates
 
-## Gates
+### File contract
 
-### 1. Text Integrity
+- expected continuous numbered cover set and no extra root-level PNG
+- `meta/SHA256SUMS` names that exact cover set once each, not merely the same
+  number of arbitrary files
+- exact canonical dimensions and sRGB color space
+- no unexpected alpha channel in flattened finals
+- virtual canvas normalized to the image dimensions
+- image decode succeeds without corruption warnings
 
-- The visual layer contains no accidental text.
-- The final visible text is only the fixed top bar and main title.
-- Every Simplified Chinese character is exact at full size.
-- The subtitle remains editorial-only and is not rendered.
+### Typography
 
-### 2. Fixed Typography
+- pinned font file exists and matches its recorded SHA-256
+- HarfBuzz shapes every top-bar string without `.notdef` or `gid0`
+- top edge, card height, component height, text color, card color, and visible
+  glyph height match the series contract
+- context length changes card width, not font size
+- the image model has not generated the final visible top-bar Chinese
+- each main title is either immutable `locked-artwork` or fixed-size
+  `deterministic-font`; no unresolved title direction reaches release
 
-- The top bar uses the fixed 52 px source type in both cells.
-- Short and long context labels keep the same font size, weight, and glyph
-  width; neither auto-fit nor horizontal compression is allowed.
-- The main title uses the fixed 116 px source type.
-- Its font file/family stays fixed within each semantic preset.
-- When text overflows, rewrite or rebalance the line break. Do not shrink it.
+### Provenance
 
-### 3. Actual-Size Readability
+- each packaged file equals its source file by SHA-256
+- every `SOURCES.tsv` filename maps exactly once to the packaged cover set
+- each video ID has one original video, one evidence contact sheet, one brief,
+  and one source record
+- final sequence and profile sequence are explicit, not inferred from lexical
+  filename sorting
 
-View the 196×261 cell at 100% with no zoom:
+### Pixel protection
 
-- category and context can be read rather than merely recognized as a pill
-- the main title can be read in one glance
-- no thin subtitle, ornamental text, or micro-badge turns into visual noise
-- title and top bar remain subordinate to the protected face, dog, or main
-  action
-- the bottom-left play-count overlay does not cover a face, paw, hand, or small
-  evidence-bearing subject
+- every repair has an explicit authorized mask or lock boundary
+- maximum pixel difference outside the authorized region is zero
+- source-derived title or subject regions equal the intact authoritative source
+- clean background replacement contains no card residue or seam outside the new
+  card
+- every previously reported defect has a regression check that fails on the
+  known-bad version and passes on the candidate
 
-### 4. Three-Column Profile Fit
+Use ImageMagick `Difference` or equivalent direct pixel comparison. Compare
+authentic same-size pixels; perceptual similarity is not sufficient for locked
+material.
 
-- the new cover does not expose font-size drift against neighboring covers
-- the series spine is stable in position, width, height, and apparent type size
-- adjacent covers do not merge into an undifferentiated color block
-- the subject remains identifiable in every cell
-- a legacy or outlier cover is called out instead of silently treating the grid
-  as consistent
+## Human gates
 
-### 5. Evidence and Identity
+Inspect all of the following; no single montage replaces another:
 
-- the person, dog, landmark, and event still match the source evidence
-- generative enhancement does not replace a recognizable subject with a generic
-  substitute
-- the cover promises the same kind of moment the video actually delivers
+- full-cover overview
+- enlarged top bars and their lower seams
+- main titles, including all stroke caps and descenders
+- subject middle sections for redrawing, deformation, or wrong identities
+- bottom and outer edges for crops, patches, and residue
+- exact profile cells and the real/app-shell three-column layout
+- each cover beside its video contact sheet
 
-### 6. Human Release Approval
+Pay special attention to defects automation commonly misses: clipped title
+strokes, similarly colored rectangular bands, isolated alpha residue, subtle
+subject redraws, and composition changes that are harmless at full size but
+obvious in the profile grid.
 
-Show the exact final candidate and its actual-size grid preview together. Ask
-for approval once. Do not describe an unreviewed candidate as publishable. If
-the user requests any visual or copy change, return the status to `HOLD`, make
-the change locally, and rebuild both previews.
+## Repair decision
 
-## Report Template
+| Failure | Response |
+| --- | --- |
+| Top-bar geometry/font drift | Re-render deterministically from the contract. |
+| Old card corner or lower seam | Rebuild from a clean top plate; do not cover the old card. |
+| Main-title stroke clipped | Recover the exact pixels from an intact source with a minimal mask. |
+| Background changes outside title | Replace a color mask with a source-difference/geometric mask. |
+| Recognizable subject changed | Reject; restart from the video-frame material and lock the subject. |
+| Profile grid exposes imbalance | Recompose the clean visual; do not silently alter shared typography. |
+
+## Final report template
 
 ```markdown
-Release status: <HOLD, LOCAL_READY, or READY_TO_PUBLISH>
-Candidate: <exact path>
-Publication state: <unpublished or published>
-Edits used / remaining: <user-reported values or unknown>
-Single-cell preview: <path>
-Grid preview: <path>
-Text integrity: <pass/fail + reason>
-Fixed typography: <pass/fail + reason>
-Actual-size readability: <pass/fail + reason>
-Profile fit: <pass/fail + reason>
-Evidence and identity: <pass/fail + reason>
-User approval: <pending or confirmed>
+Release status: <HOLD, LOCAL_READY, FINAL, or READY_TO_PUBLISH>
+Canonical package: <exact path>
+Cover count: <actual/expected>
+Cover SHA-256: <pass/fail>
+QA SHA-256: <pass/fail>
+Source/video mapping: <pass/fail>
+Typography contract: <pass/fail>
+Locked-pixel checks: <pass/fail>
+Regression checks: <pass/fail>
+Human full/top/title/subject/edge/profile review: <pass/fail>
+Package contains no extra root-level PNG: <pass/fail>
+User approval: <pending or exact approval>
+Online publication authorization: <absent or exact authorization>
 ```
