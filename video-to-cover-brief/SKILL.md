@@ -2,227 +2,255 @@
 name: video-to-cover-brief
 description: >-
   Use when turning a local family-travel or dog-centered short video into an
-  evidence-grounded Douyin cover brief or replacing an already-published cover.
-  Covers keyframe evidence, fixed Simplified Chinese typography, a deterministic
-  split-pill series spine, semantic presets, real-size profile-grid previews,
-  scarce edit-budget handling, and confirmed handoff to baoyu-cover-image.
+  evidence-grounded Douyin cover brief, cover series, or published-cover
+  replacement. Covers keyframe provenance, source-material preservation,
+  deterministic Simplified Chinese top bars, protected main-title pixels,
+  staged image generation, profile-grid QA, pixel-diff release gates, and final
+  version packaging.
+compatibility: >-
+  Requires local video or keyframes. Deterministic rendering and QA use
+  ffmpeg/ffprobe, ImageMagick 7, HarfBuzz, Bash, shasum, and user-approved
+  Chinese fonts.
 ---
 
 # Video to Cover Brief
 
 ## Overview
 
-Create a renderer-neutral cover brief from a local short video. Route the brief
-to a reusable semantic preset and a fixed **series spine**. Generate the visual
-layer without text, then compose the top bar and main title deterministically so
-short and long copy cannot silently change font size.
+Turn a local family-travel or dog-centered video into an auditable Douyin cover
+workflow. Start with evidence and a renderer-neutral brief. Preserve supplied
+video-frame material as immutable source pixels, use an image model only where
+generation is actually authorized, and compose measurable Chinese typography
+deterministically.
 
-The primary output is a self-contained Markdown brief. A confirmed generation
-continues through exact-size single-cell and three-column profile previews. Do
-not describe a candidate as publishable until the local release gate passes and
-the user approves that exact file.
+The workflow can stop after the brief or continue through generation, local
+review, repair, and packaging. A candidate is never a release merely because it
+looks plausible at full size.
 
 ## When to Use
 
 Use this skill for a local family-travel or dog-centered short video that needs
-an auditable cover brief, a new cover, or a replacement for a published cover.
-Reject unrelated genres and stop before image generation until the user confirms.
+an auditable brief, a new cover, a repaired cover, or a canonical local release
+package. Reject unrelated genres instead of forcing them into these presets.
 
-## Instructions
+## Non-negotiables
 
-### Non-negotiables
+- Ground every subject, action, location, top-bar field, and story claim in
+  inspected frames, transcript lines, metadata, or an explicit user statement.
+- Treat supplied video frames and confirmed cover material as source assets,
+  not loose visual references. Do not redraw recognizable people, dogs,
+  landmarks, props, poses, or scenery unless the user explicitly asks for it.
+- Treat an approved hand-brushed main title as locked artwork. Do not regenerate,
+  retype, stretch, compress, or replace it. Move an intact title layer only when
+  the user approves the layout change.
+- Give every main title one complete mode: preserve approved source artwork, or
+  compose a new title with a pinned local font. Never leave a new title as an
+  unimplemented visual direction.
+- Never ask an image model to generate final visible Chinese whose spelling,
+  glyph shape, or metrics must be exact. Generate a text-free visual or repair
+  source, then compose exact typography with pinned local fonts or restore
+  approved title pixels from an intact source.
+- Start every repair from the cleanest authoritative source that predates the
+  defect. Do not repeatedly paint over a damaged flattened candidate.
+- Limit model output to the authorized region with a mask. After compositing,
+  require a maximum pixel difference of zero everywhere else.
+- Do not identify Chinese-title repairs by broad color selection on a similar
+  background. Derive a minimal geometric or source-difference mask; color-only
+  masks can capture the background and create rectangular bands.
+- Work in small review batches—three covers by default—until the user approves
+  the system. Do not generate an entire series before representative review.
+- Keep all exploration local. Never upload, publish, or edit a live Douyin work
+  without explicit authorization for that exact file.
+- Keep only one canonical final package. Preserve rejected and superseded work
+  as history, but do not expose multiple folders as competing final versions.
 
-- Ground every title, top-bar field, subject, location, and story detail in the
-  available video evidence.
-- Do not invent a city, scenic spot, dog breed, family member, or story beat.
-- Use scene-based fallbacks rather than fake location placeholders.
-- Write all cover copy in natural Simplified Chinese.
-- Keep the series spine fixed. Never switch it to a corner tag, stacked badge,
-  hanging flag, or full-width band to solve a composition collision.
-- Keep the top-bar and main-title font sizes fixed. Rewrite, rebreak, reframe, or
-  pause instead of using auto-fit, condensed glyphs, or per-cover type scaling.
-- Generate a text-free visual layer and apply visible typography with a
-  deterministic compositor. Do not ask an image model to draw final Chinese
-  text whose metrics must stay consistent across a series.
-- Treat a published edit as a scarce release action. Never upload or modify a
-  live work merely to preview a candidate.
-- Validate at the measured profile-cell size and in a three-column grid. A
-  full-size cover or an enlarged contact sheet is not a mobile acceptance test.
-- Protect the profile's bottom-left play-count overlay zone; the raw cover is
-  not the whole final interface.
-- Select a semantic cover preset; do not expose renderer-specific style names
-  as the brief's public contract.
-- Write the brief before offering image generation.
-- Do not generate an image until the user confirms.
-- Do not manage `.baoyu-skills/baoyu-cover-image/EXTEND.md` on behalf of
-  `baoyu-cover-image`; let that skill own its preferences and first-time setup.
-
-### Inputs
+## Inputs
 
 | Input | Required | Use |
 | --- | --- | --- |
-| Local video path | Yes | Inspect metadata, frames, audio, and visible subjects. |
-| Transcript file | Optional | Prefer it for title hooks and the factual summary. |
-| Extracted keyframes | Optional | Use them for visual focus and occlusion constraints. |
-| User note | Optional | Treat it as intent and verify it against evidence. |
-| Publication state | Optional | Record whether this is new or already published. |
-| Edits used / remaining | Optional | Preserve the user's reported release budget; never guess. |
-| Profile screenshot | Optional | Measure the real three-column cell and calibrate preview size. |
-| Existing neighboring covers | Optional | Build the intended profile grid rather than judging one cover alone. |
+| Local video or evidence frames | Yes | Establish the real subject, action, and scene. |
+| User-approved canvas/profile screenshot | Recommended | Lock canvas and measure the actual grid cell. |
+| Existing cover or clean source plate | Optional | Preserve approved pixels and repair only the named area. |
+| Approved top-bar font | Required before final type | Make Chinese deterministic and auditable. |
+| Approved title artwork or title font | Required before final title | Resolve the title as locked artwork or deterministic type. |
+| Existing neighboring covers | Recommended for a series | Judge consistency in the actual three-column layout. |
+| Publication state/edit budget | Optional | Treat reported live edits as scarce; never guess. |
 
-If no transcript or keyframes exist, inspect the video with available local
-tools. Do not install dependencies only to inspect the video. A user summary can
-support narrative facts, but it cannot replace visual evidence for subjects,
-locations, composition, or generation references.
+If the user provides no usable video or keyframe evidence, stop and request it.
+Do not substitute a verbal summary for visual identity or layout evidence.
 
-### Steps
+## Instructions
 
-1. **Resolve evidence.**
-   - Confirm that the video or supplied evidence exists.
-   - Derive `<video-slug>` from the video filename without its extension. Create
-     `briefs/evidence/<video-slug>/` in the user's working project.
-   - When `ffprobe` is available, save metadata:
+### 1. Resolve evidence
 
-     ```bash
-     ffprobe -v error -show_format -show_streams -of json '<video>' \
-       > 'briefs/evidence/<video-slug>/metadata.json'
-     ```
-
-   - Read the duration and extract frames at approximately 10%, 50%, and 90%:
-
-     ```bash
-     ffmpeg -ss '<seconds>' -i '<video>' -frames:v 1 -q:v 2 \
-       'briefs/evidence/<video-slug>/frame-<timestamp>.jpg'
-     ```
-
-   - Inspect all three frames. Add frames around cuts, readable text, or an
-     occlusion-sensitive subject. Use supplied keyframes when they provide
-     equivalent beginning/middle/end coverage.
-   - Gather duration, visible subjects, setting, location clues, emotional tone,
-     readable text, and the main action. Cite a frame path and timestamp or a
-     transcript line for every material claim.
-   - If speech materially affects the title or summary, use a supplied
-     transcript or an already available local transcription tool. Otherwise,
-     request a transcript or user summary and mark spoken details unknown.
-   - If neither local tools nor supplied frames provide visual evidence, stop
-     and request keyframes.
-   - Finish only when beginning/middle/end evidence exists and every material
-     claim has a source.
-2. **Classify the video.**
-   - Choose exactly one category: `family-travel` or `dog-story`.
-   - Choose `family-travel` when the outing or family moment drives the story.
-   - Choose `dog-story` when the dog is the protagonist, including AI-generated
-     or AI-enhanced footage.
-   - When both signals appear, classify by the main emotional focus.
-   - If neither category fits, stop without creating a brief.
-   - Finish when one supported category is selected and its evidence is cited.
-3. **Materialize the preset and series spine.**
-   - Read [references/preset-routing.md](references/preset-routing.md).
-   - Read [resources/cover-presets.yaml](resources/cover-presets.yaml).
-   - Read [references/top-bar-system.md](references/top-bar-system.md).
-   - Map the category to one semantic preset.
-   - Resolve a two-to-six-character top-bar context, palette variant, exact
-     color tokens, and collision plan. Preserve the fixed component, cell
-     widths, anchor, and 52 px typography.
-   - Write a four-to-eight-character main title. Choose its intentional line
-     break, fixed 116 px type, palette fill/stroke, and safe vertical position.
-     Rewrite the copy if it cannot fit; do not shrink it.
-   - Copy renderer-neutral visual values, fixed typography, and applicable
-     composition rules into the brief.
-   - Finish when every field required by the brief contract has one resolved,
-     evidence-grounded value.
-4. **Write and validate the brief.**
-   - Read [references/brief-contract.md](references/brief-contract.md).
-   - Draft publication risk, top bar, main-title lines, brief-only subtitle,
-     typography contract, profile-preview contract, summary, visual focus,
-     layout rules, preset ID, and visual direction.
-   - Save the exact contract to `briefs/<video-slug>.md`.
-   - Verify every required section, evidence citation, preset token, and top-bar
-     invariant. At least one cited frame must be suitable for `--ref`.
-   - Finish when every validation item in the contract passes.
-5. **Report and pause.**
-   - Report publication risk, category, top-bar display text and palette variant,
-     title lines, preset, preview target, brief path, and evidence directory.
-   - State that the release gate is `HOLD`; a brief is not a publishable cover.
-   - Ask whether to continue to image generation.
-   - Stop before generation until the user confirms.
-
-### Copy Rules
-
-| Field | Rule |
-| --- | --- |
-| Main title | Use 4-8 Chinese characters; concrete hook, at most two lines and four characters per line. |
-| Subtitle | Optional editorial support only; do not render by default. |
-| Top-bar category | Use the preset's fixed `旅行` or `萌宠` label. |
-| Top-bar context | Use 2-6 factual Chinese characters; shorten before any layout change. |
-| Language | Use Simplified Chinese only. |
-| Tone | Keep it natural, human, Douyin-friendly, and free of fake hype. |
-
-Prefer an event, reaction, contrast, or specific moment over a lyrical phrase
-that merely repeats the visible scene. The same fixed title size applies to
-every cover; line breaks absorb length differences.
-
-### Generation Handoff
-
-After the user confirms:
-
-1. Re-read the selected preset and top-bar system in
-   [resources/cover-presets.yaml](resources/cover-presets.yaml).
-   Read [references/release-gate.md](references/release-gate.md).
-2. Keep the exact colors, subject priority, series-spine geometry, palette
-   variant, and composition rules materialized in the brief.
-3. Read the preset's `adapters.baoyu-cover-image` mapping.
-4. Let `baoyu-cover-image` load or complete its own `EXTEND.md` setup. Resume
-   this same confirmed generation after setup without changing the brief.
-5. Select at least one inspected keyframe that clearly shows the subject and
-   composition. Request a reference frame if none is suitable.
-6. Read the **Visual-Generation Handoff** section in
-   [references/top-bar-system.md](references/top-bar-system.md). Require a
-   text-free visual layer with the fixed top-bar and title zones reserved.
-7. Invoke `baoyu-cover-image` with:
-   - the brief file
-   - the mapped `type`, `palette`, `rendering`, `text`, `mood`, and `font`
-   - `--aspect 3:4`
-   - `--lang zh`
-   - `--ref` with the selected frame or supplied references
-8. Before generation, scan the saved final prompt and remove every request for
-   visible text, tag, badge, logo, sign, caption, or watermark. The adapter's
-   `text` value must be `none`.
-9. Reject any generated visual layer containing accidental text. Compose the
-   fixed top bar and title with `scripts/render-cover-type.sh` or an equivalent
-   deterministic vector/canvas step. Never resize the composed text to fit. The
-   script accepts an intentional `\\n` title break, for example:
+1. Confirm that the local video or supplied frames exist.
+2. Derive `<video-id>` or `<video-slug>` from the source filename.
+3. Create `briefs/evidence/<video-id>/` in the working project.
+4. When available, save `ffprobe` metadata and frames near 10%, 50%, and 90%:
 
    ```bash
-   scripts/render-cover-type.sh visual.png cover.png \
-     '萌宠' '录音棚' dog '小狗开麦\n当主播' 190
+   ffprobe -v error -show_format -show_streams -of json '<video>' \
+     > 'briefs/evidence/<video-id>/metadata.json'
+   ffmpeg -ss '<seconds>' -i '<video>' -frames:v 1 -q:v 2 \
+     'briefs/evidence/<video-id>/frame-<timestamp>.jpg'
    ```
 
-10. Build a 196×261 single-cell preview and a three-column profile grid. Use
-    `scripts/build-douyin-grid-preview.sh` when ImageMagick is available and
-    include supplied neighboring covers in intended newest-to-oldest order:
+5. Add frames around cuts, readable text, or the intended cover moment.
+6. Build a contact sheet and inspect it. Record the subject, action, setting,
+   readable source text, location clues, and uncertainty.
+7. Cite a frame path and timestamp or transcript line for every material claim.
 
-    ```bash
-    SINGLE_CELL_OUTPUT=cell.png \
-      scripts/build-douyin-grid-preview.sh grid.png \
-      candidate.png neighbor-1.png neighbor-2.png
-    ```
-11. Run every check in `references/release-gate.md`. Failed or unverified checks
-    keep the candidate at `HOLD`; iterate locally without spending a live edit.
-12. Present no more than two `LOCAL_READY` finalists with their grid previews.
-    Only the exact user-approved file becomes `READY_TO_PUBLISH`.
+Finish only when beginning/middle/end evidence exists and at least one frame is
+suitable for the generation or compositing handoff.
 
-Keep the brief's exact typography, top bar, and visual direction authoritative
-when an adapter is only approximate. Report remaining degradation and hold the
-release instead of silently changing the series spine.
+### 2. Classify and write the brief
 
-### Extending Presets
+1. Choose exactly one category: `family-travel` or `dog-story`.
+2. Read [references/preset-routing.md](references/preset-routing.md),
+   [resources/cover-presets.yaml](resources/cover-presets.yaml), and
+   [references/top-bar-system.md](references/top-bar-system.md).
+3. Resolve a factual top-bar label, semantic preset, palette, protected source
+   regions, and an intentional collision plan.
+4. Propose a concrete Simplified Chinese main title and choose exactly one mode:
+   - `locked-artwork`: record the intact approved title source and pixel lock
+   - `deterministic-font`: pin the title font, SHA-256, point size, line break,
+     fill, stroke, top edge, and maximum width; do not use auto-fit
+5. Read [references/brief-contract.md](references/brief-contract.md), write
+   `briefs/<video-id>.md`, validate every field, report `HOLD`, and pause for the
+   user's confirmation before image generation.
 
-1. Add one semantic preset to `resources/cover-presets.yaml`.
-2. Add or update its category rule in `references/preset-routing.md`.
-3. Reuse `top_bar_system`; do not create a per-preset component shape.
-4. Add a palette variant only when an existing variant cannot maintain contrast.
-5. Keep renderer-independent fields authoritative and adapters nested under the
-   preset.
-6. Add a new top-level skill only when another workflow needs to consume the
-   same preset catalog independently.
+### 3. Establish the series contract
+
+Before the first cover is generated, lock the following in the brief set or a
+package-local contract. Do not edit project governance files without a separate
+user request:
+
+- canonical canvas and color space; use `1086×1448` sRGB PNG when matching the
+  validated reference implementation, otherwise use the user's measured canvas
+- exact top-bar font file and SHA-256
+- top-bar top edge, card height, component height, visible glyph height, color,
+  stroke, padding, corner radius, and separator geometry
+- main-title mode and either its authoritative artwork path or its complete
+  deterministic-font contract
+- visible-text allowlist
+- source-material protection boundaries
+- preview cell dimensions and newest-to-oldest grid order
+- naming for candidates, rejected work, and the single canonical final package
+
+Do not silently inherit obsolete geometry from an older series. The bundled
+reference profile is a proven default, not authority over explicit user assets.
+
+### 4. Generate in representative batches
+
+After confirmation:
+
+1. For a series, select three covers that stress different conditions: a short
+   top-bar label, a long label, and a subject/title close to the top safe zone.
+   For one cover, present up to three local candidates when useful.
+2. Use the inspected frame as an edit/composition reference, not permission to
+   invent a new subject.
+3. Ask the image model for a text-free clean visual or a clean repair plate. If
+   the existing subject and title are already approved, generate only the
+   missing background region.
+4. Compose the deterministic top bar with `scripts/render-cover-type.sh`. It
+   requires `TOP_FONT`, accepts `INPUT OUTPUT LEFT [RIGHT]`, rejects unstable
+   visible-height normalization, and changes only the top-card rectangle.
+5. Resolve the main title according to its mode:
+   - for `locked-artwork`, restore the exact approved title pixels from the
+     authoritative source without retyping or scaling them
+   - for `deterministic-font`, run `scripts/render-main-title.sh` with the pinned
+     font and brief values; it uses a fixed point size and never auto-fits
+
+   ```bash
+   TITLE_FONT='<font>' TITLE_FONT_SHA256='<digest>' \
+     TITLE_POINT_SIZE=116 TITLE_FILL='#FFFFFF' TITLE_STROKE='#4B285F' \
+     scripts/render-main-title.sh '<input>' '<output>' '第一次\n看海' 190
+   ```
+
+   Never pass approved hand-brushed title artwork to this compositor.
+6. Build full-size, top-bar, main-title, subject, edge, exact-cell, and
+   three-column previews.
+7. Present the three as a batch and collect concrete feedback before generating
+   the next three. Change the shared rule first when the problem is systemic.
+
+### 5. Repair without collateral damage
+
+When the user marks a defect:
+
+1. Translate the red circle into an exact region and symptom: clipping,
+   residue, seam, color band, collision, or unwanted person/object.
+2. Find the cleanest source that still has the intended subject and complete
+   title. Never assume the latest flattened candidate is the best base.
+3. Decide whether the fix is deterministic compositing, source-pixel recovery,
+   or a newly generated clean background patch.
+4. Build the smallest mask that covers the defect plus anti-aliased edges.
+5. Composite from the intact source or clean plate.
+6. Hard-lock every unapproved area back to the authoritative pixels.
+7. Generate a detail QA crop for the marked region and a full-cover comparison.
+8. Add an automated regression check that fails on the old defect.
+
+For real video-frame material, the model may supply a background repair source;
+the final subject must still come from the original material pixels.
+
+### 6. Run the release gate
+
+Read [references/release-gate.md](references/release-gate.md). Require:
+
+- exact dimensions, color space, channel contract, and normalized virtual canvas
+- expected top-bar geometry and visible glyph height
+- approved top-bar and deterministic-title font SHA plus HarfBuzz glyph coverage
+- a complete `locked-artwork` or `deterministic-font` main-title contract
+- source manifest and SHA-256 equality between packaged files and sources
+- zero pixel difference outside every repair mask or locked boundary
+- regression checks for every previously observed defect
+- human review of the full cover, top bar, main title, subject, edges, and actual
+  Douyin profile layout
+- side-by-side comparison with video contact sheets to catch a correct filename
+  paired with the wrong subject or scene
+
+Any failed or unverified gate returns the candidate to `HOLD`.
+
+### 7. Package and close
+
+1. Collect the exact user-approved files into one numbered package.
+2. Write `meta/SOURCES.tsv`, `meta/SHA256SUMS`, `meta/TOPBAR-TEXT.txt`, hashed QA
+   artifacts, and a package-local review record.
+3. Run the generic gate with explicit provenance and font inputs:
+
+   ```bash
+   PROJECT_ROOT='<project>' TOP_FONT='<font>' TOP_FONT_SHA256='<digest>' \
+     scripts/check-cover-release.sh '<package>' '<expected-count>'
+   ```
+
+4. Run the project's top-bar, pixel-lock, and known-defect checks. Verify that the
+   package contains exactly the intended root-level cover PNGs and no accidental
+   candidate.
+5. Record the sole current release inside the package. Update a project README
+   only when the user asks; never edit agent rules merely to promote a cover.
+6. Do not create another folder merely to change the status. Promote the
+   reviewed package in place when the user explicitly approves it.
+7. Do not publish online unless the user separately authorizes the live action.
+
+## Generation handoff
+
+When a raster image model or `baoyu-cover-image` is used:
+
+- provide the brief and at least one inspected reference frame
+- request `3:4`, Simplified Chinese context, and a text-free visual layer
+- remove all prompt requests for visible Chinese, tags, badges, logos, dates,
+  captions, signs, and watermarks
+- reserve the deterministic top-bar zone plus the locked-artwork or
+  deterministic-font main-title zone
+- preserve subject identity and composition from the supplied material
+- reject accidental visible text instead of painting another card over it
+
+The model creates visual material; deterministic tools own final typography and
+pixel-locked assembly.
+
+## Extending the skill
+
+1. Add semantic presets only to `resources/cover-presets.yaml`.
+2. Add category and top-bar copy rules to `references/preset-routing.md`.
+3. Keep detailed release checks in `references/release-gate.md`.
+4. Add repeatable mechanical work to `scripts/`; do not duplicate it in prose.
+5. Add an eval whenever a real failure reveals a reusable boundary.

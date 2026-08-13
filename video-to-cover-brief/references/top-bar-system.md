@@ -1,99 +1,122 @@
-# Top-Bar System
+# Deterministic Top-Bar System
 
-Use this reference after selecting the semantic preset. Treat
-`resources/cover-presets.yaml#top_bar_system` as the source of truth for IDs,
-geometry, palette tokens, and forbidden fallbacks.
+Use this reference when defining or rendering the series top bar. Treat
+`resources/cover-presets.yaml#top_bar_system` as the bundled default profile.
+If the user supplies an existing approved series, measure that series and record
+the resulting project contract instead of forcing a legacy profile onto it.
 
-## Series Spine
+## Why the top bar is deterministic
 
-The top bar is the cover series' **spine**, not free decoration. Keep these
-properties stable across every cover:
+The top bar is the repeating series spine. A model-generated bar can change
+Chinese glyphs, font weight, padding, height, and corner geometry on every
+cover. Those differences become obvious in a three-column grid even when each
+cover looks acceptable alone.
 
-- centered at the top
-- one rounded outer capsule
-- fixed-width category and context cells
-- one vertical divider
-- one fixed Simplified Chinese sans-serif type size
-- no ornaments outside the capsule
+Generate the visual layer without the final bar. Compose the bar with a real
+font file after generation and verify its pixels mechanically.
 
-The fixed cells and type size are deliberate. A generative renderer tends to
-shrink longer strings and enlarge shorter ones; that variation becomes obvious
-in a three-column profile grid even when each full-size cover looks acceptable.
-Allow the subject composition and scene color to carry the cover's variation.
+## Validated 1086×1448 profile
 
-## Materialize the Component
+The reference implementation uses:
 
-1. Copy the category label from the selected preset.
-2. Resolve the context with `preset-routing.md`.
-3. Form the auditable text as `Category｜Context`.
-4. Select a palette variant from the top safe zone's brightness and category.
-5. Copy the variant's exact left/right background, text, and border colors.
-6. Copy the fixed 1080×1440 geometry and 52 px type size.
-7. State an evidence-specific collision plan that protects the fixed component.
+- canvas: `1086×1448`, sRGB PNG
+- component: one centered, opaque cream rounded rectangle
+- card top: `y=38`
+- card height: `96px`
+- transparent component height: `106px`
+- cream: `rgb(255,248,237)`
+- text: `#1654A8`
+- source type: 120pt, 2px kerning, 4px same-color stroke, then resampled to a
+  fixed visible glyph height of `48px` as one whole label
+- corner radius: `22px`
+- paired labels: one `14px` blue dot, with `45px` from each adjacent visible
+  text edge to the dot
+- shadow, glow, outline, bottom strip, and external ornament: none
 
-The visible component uses two cells. The `｜` form exists only for the brief
-and reporting. Do not render the separator glyph in addition to the divider.
+The font is a project dependency. Pin its path and SHA-256. Check every label
+with HarfBuzz before rendering; `.notdef` or `gid0` is a release failure.
 
-Never ask a generative image model to typeset the final top bar. Generate the
-visual layer without text, then compose the capsule and its text with
-`scripts/render-cover-type.sh` or an equivalent deterministic vector/canvas
-step. Deterministic composition is what makes the font size, cell widths,
-spelling, and divider repeatable across the series.
+The 120pt-to-48px step is the validated system's one allowed
+`uniform-visible-height` normalization. It preserves the label's aspect ratio
+and is not an overflow rescue. Reject a label whose trimmed source ink is below
+`60px` at the reference settings because thin-only strings can otherwise be
+enlarged into a visibly different type size. Never stretch one axis, normalize
+individual glyphs, or apply an extra per-cover scale after this step.
 
-## Visual-Generation Handoff
+## Content-driven width
 
-Invoke `baoyu-cover-image` with `--text none`. Its saved prompt must state:
+Keep height, top edge, font metrics, and padding fixed. Let width respond to the
+measured text group. Short labels stay compact; long labels grow horizontally.
+Do not shrink type to rescue a long label.
 
-- Render a text-free 3:4 visual layer.
-- Reserve the brief's fixed top-bar and title safe zones.
-- Keep the protected face, dog, landmark, and main action outside those zones.
-- Add no letters, Chinese characters, numbers, tags, signs, logos, or watermark.
-- Preserve the supplied subject's identity instead of replacing it with a
-  generic person or dog.
+For a single label:
 
-After generation, scan the visual layer for accidental text before composing
-the deterministic typography. Reject rather than paint over material text that
-would remain visible.
+1. Render the complete label at the fixed source settings and verify its source
+   ink height is at least `60px`; then uniformly normalize the whole label to the
+   fixed visible glyph height.
+2. Add the approved horizontal padding. The bundled renderer uses `180px`
+   total as a neutral default; set `CARD_WIDTH` to the measured series width
+   when matching an approved project.
+3. Round to the series' width step when one exists.
+4. Center the resulting card on the canvas.
 
-## Collision Ladder
+For a paired label:
 
-When the top center conflicts with a face, dog, landmark, existing sign, or main
-action, resolve the collision in this order:
+1. Render the left and right labels separately with the same source settings,
+   source-ink guard, and whole-label normalization.
+2. Compute `left width + 45 + 14 + 45 + right width`.
+3. Add the approved outer padding and center the group. The bundled renderer's
+   neutral paired-label default is `320px` total because the validated project
+   intentionally gave long location labels generous breathing room.
+4. Draw the blue dot; do not render a separator glyph from the font.
 
-1. Shorten the context while preserving its factual meaning.
-2. Choose another evidence-supported keyframe with a calmer top safe zone.
-3. Reserve or reconstruct the top safe zone without changing the subject.
-4. Recompose or recrop the text-free visual layer.
-5. Pause if the collision remains.
+The brief may report paired text as `left · right`. The actual dot is geometry,
+not a text character.
 
-Do not move the component to a corner, stack its fields, stretch it across the
-canvas, or attach flowers, hearts, rays, flags, and decorative lines. If the
-collision remains after the ladder, record it in `Layout Rules` and pause before
-generation rather than silently breaking the series spine. Never reduce the
-52 px type size to rescue an overlong context.
+## Collision ladder
 
-## Thumbnail Acceptance
+When the bar or its lower seam collides with the main title or subject:
 
-Full-size inspection catches spelling; it does not prove mobile usability.
-Validate the planned and rendered cover in both of these views:
+1. shorten only the factual context, without changing its meaning
+2. choose another evidence-supported keyframe with calmer top space
+3. use or generate a clean text-free top plate
+4. reconstruct only the authorized background region
+5. restore approved main-title and subject pixels from the authoritative source
+6. pause if no clean solution remains
 
-- one exact 196×261 profile cell, viewed without zoom
-- one three-column grid in intended profile order, including existing covers
-  when the user supplies them
+Do not move the bar to a corner, add decorative ears/flowers, reduce its height,
+or shrink the type. Do not place a solid rectangle under it to hide a seam.
 
-The 196×261 baseline comes from the supplied real profile result. If a newer
-user screenshot provides a different measured cell, use that measurement and
-record it in the brief instead of guessing.
+## Clean-source compositing
 
-Acceptance requires:
+If an old bar or shadow is baked into the base:
 
-- Category and context remain readable.
-- The capsule is recognizably the same component as other covers.
-- Category and context use the same apparent type size on short and long labels.
-- The bar does not cover a protected subject or evidence-bearing detail.
-- Main-title hierarchy remains dominant.
-- Every Chinese character and separator is exact.
-- No text appears outside the top bar and main title.
-- No external ornament makes the component look like a new structure.
-- The grid does not expose font-size drift, repeated color blocks, or a single
-  cover that breaks the series spine.
+- obtain a clean plate from an intact earlier source or a text-free image-model
+  output
+- use a full-width vertical mask that replaces only the approved top region and
+  feathers back into the authoritative cover before the locked boundary
+- restore title pixels with a source-derived mask when title strokes cross the
+  feather band
+- require zero pixel difference beneath the lock boundary
+
+Never edit a rounded rectangle in place by covering it with another rectangle.
+That workflow produces the protruding corners, underlines, gray bands, and color
+seams that a top-bar QA crop is designed to expose.
+
+## Acceptance
+
+Check both full size and the actual profile cell:
+
+- the centerline first cream pixel is at the contract's top edge
+- four interior corner samples match the exact card color
+- the visible blue glyph bounding box has the fixed height
+- every label passed the source-ink-height guard before normalization
+- short and long labels have identical apparent type size
+- no old card, shadow, strip, or background patch appears outside the new card
+- the bar does not clip or overlap the approved main title
+- every Chinese character is exact
+- the profile grid shows one coherent series spine
+
+Connected-component bounding boxes can be misleading when a background pixel
+has the same color as the card. Prefer centerline and interior-point geometry
+checks plus explicit pixel-difference masks.

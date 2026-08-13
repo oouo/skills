@@ -1,101 +1,79 @@
-# Preset Routing
+# Preset and Copy Routing
 
-Read this reference after classifying the video. Keep evidence classification,
-top-bar copy, and preset values separate.
+Keep evidence classification, top-bar copy, visual preset, and renderer adapter
+separate. The brief is the portable contract.
 
-## Category Mapping
+## Category mapping
 
-| Category | Cover preset | Top-bar category | Reason |
-| --- | --- | --- | --- |
-| `family-travel` | `travel-family` | `旅行` | The outing or family memory drives the story. |
-| `dog-story` | `dog-protagonist` | `萌宠` | The dog drives the story. |
+| Category | Preset | Subject priority |
+| --- | --- | --- |
+| `family-travel` | `travel-family` | real family/travel moment and place |
+| `dog-story` | `dog-protagonist` | the dog and its action |
 
-Do not use the legacy category `dog-ai` or the legacy preset IDs
-`travel-family-cover` and `dog-ai-cover`.
+Reject unrelated genres rather than forcing them into a supported preset.
 
-## Top-Bar Context
+## Top-bar copy
 
-The left field is fixed by the selected preset. Resolve only the right `Context`
-field from evidence.
+Use one centered cream card. A short factual scene can be a single label; a
+confirmed location hierarchy may be a left/right pair separated by a geometric
+blue dot.
 
 ### Family travel
 
-Use the most distinctive factual context that fits the fixed six-character
-cell. Keep a longer confirmed location in `Evidence Notes`; do not force the
-entire hierarchy into the visible top bar.
+Prefer, in order:
 
-1. Confirmed scenic spot: `白鹭洲`
-2. Confirmed city plus short scene: `兴化花海`
-3. Confirmed setting only: `油菜花田`
-4. No location evidence but a clear visual scene: `湖边散步`, `春日花田`, or
-   another concrete scene supported by frames
-
-Do not write placeholder locations such as `城市` or `出游地`. A concrete scene
-is more honest and more useful to viewers than a fake location slot.
+1. confirmed city/scenic spot pair, such as `盱眙 · 白鹭洲`
+2. confirmed province/city pair, such as `江苏 · 兴化`
+3. confirmed scenic spot or setting, such as `第一山雪场` or `油菜花田`
+4. concrete evidence-supported scene, such as `春日花田`
 
 ### Dog story
 
-Describe the factual scene, event, or visual hook:
-
-- `冰雕`
-- `录音棚`
-- `油菜花田`
-- `山野光影`
-- `端午粽子`
-
-Prefer `萌宠` as the fixed category. Do not spend the context field repeating
-`小狗`, and do not use a breed unless evidence confirms it.
+Use the factual event or setting: `冰雕`, `山野光影`, `录音棚`, `油菜花田`,
+`端午粽子`, or another visible hook. Do not repeat `小狗` merely to fill a
+category slot, and do not invent a breed.
 
 ### Copy constraints
 
-- Prefer 2-5 Chinese characters for `Context`; six is a hard maximum.
-- Keep a longer two-level location in the evidence and summary, then choose its
-  most distinctive short visible form.
-- Do not put `｜` inside `Context`; the renderer uses it between the two cells.
-- Shorten context before changing any composition. Never shrink or condense the
-  fixed top-bar type to fit.
-- Cite the evidence or named fallback that supports the final context.
+- Keep the exact user-confirmed wording when one exists.
+- Keep punctuation deterministic. Use the geometric dot for a pair; do not ask
+  the image model to draw it.
+- Shorten meaning before changing shared typography.
+- Let the card grow horizontally for longer labels; never shrink glyphs per
+  cover.
+- Cite the evidence or explicit user confirmation behind the final wording.
 
-## Palette Routing
+## Visual preset routing
 
-Select the palette variant from `top_bar_system.palette_variants`:
+The preset controls palette and composition priorities, not the identity of the
+subject. A video-frame subject remains the authoritative source even when the
+visual layer receives generative enhancement.
 
-| Condition | Variant |
-| --- | --- |
-| `family-travel` with a bright or midtone top safe zone | `travel-day` |
-| `family-travel` with a predominantly dark, low-light top safe zone | `travel-night` |
-| `dog-story` | `dog` |
+### `travel-family`
 
-Judge the top safe zone, not the average brightness of the entire frame. Preserve
-the selected variant's exact tokens. Do not apply one-off seasonal color shifts
-inside a brief; add a named palette variant to the YAML source of truth instead.
+- preserve people, faces, clothing, poses, landmarks, signs, boats, bridges,
+  water, and scenery from the selected frame when they are part of the material
+- use warm natural light and restrained travel accents
+- protect hands, faces, and evidence-bearing landmarks from title and platform
+  overlays
 
-## Preset Materialization
+### `dog-protagonist`
 
-Copy these values into the brief:
+- keep the dog recognizable from the source frame
+- protect the face, paws, props, and main action
+- use playful accents sparingly; do not replace the dog with a generic breed or
+  a newly invented pose
 
-- semantic preset ID
-- top-bar system ID
-- category label
-- evidence-grounded context
-- display text
-- palette variant and exact color tokens
-- fixed top-bar geometry, fixed typography, and collision plan
-- main-title line break, fixed size, fill, stroke, and vertical position
-- primary colors, background color, and accent colors
-- rendering, mood, font, decorative hints, and subject priority
-- applicable composition rules
+## Generation boundary
 
-The brief must remain portable: a renderer should not need project preferences
-to reconstruct the intended series spine.
+Choose the narrowest valid mode:
 
-## Renderer Boundary
+1. `none`: deterministic typography or source-pixel repair only
+2. `clean-top-only`: model supplies a text-free top background plate
+3. `background-only`: model supplies a masked background repair source
+4. `full-visual`: allowed only for a genuinely new visual whose subject identity
+   is not locked to supplied material, or when the user explicitly requests a
+   full redraw
 
-Treat `adapters` as invocation mappings only. Do not copy adapter values into
-the semantic preset ID or install them into project preference files.
-
-When a renderer lacks an exact value:
-
-1. Preserve the brief's exact visual and top-bar direction in the prompt.
-2. Use the adapter's closest supported fallback.
-3. Report material degradation instead of changing the series spine.
+When a renderer lacks an exact semantic value, use its closest adapter while
+preserving the brief. Report degradation; do not alter the series contract.

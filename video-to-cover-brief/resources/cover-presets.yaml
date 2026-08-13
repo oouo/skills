@@ -1,121 +1,109 @@
-version: 3
+version: 5
 
 output_system:
-  canonical_canvas_px:
-    width: 1080
-    height: 1440
-  profile_thumbnail_px:
+  validated_canvas_px:
+    width: 1086
+    height: 1448
+  color_space: sRGB
+  format: PNG
+  profile_reference_px:
     width: 196
     height: 261
     columns: 3
-  platform_overlays:
-    play_count:
-      anchor: bottom-left
-      protected_zone_px:
-        x: 0
-        y: 229
-        width: 72
-        height: 32
-      rule: keep evidence-bearing faces, paws, hands, and small subjects outside
+  sequence: newest-to-oldest
   text_composition: deterministic-after-visual-generation
   visible_text_allowlist:
-    - top_bar.category
-    - top_bar.context
-    - main_title
+    - top_bar
+    - locked_or_deterministic_main_title
   subtitle:
     brief_only: true
     visible_by_default: false
 
-main_title_system:
-  max_characters: 8
-  max_lines: 2
-  font_size_px: 116
-  line_height: 0.94
-  weight: 900
-  alignment: center
-  max_rendered_width_px: 860
-  default_top_px: 190
-  auto_fit: false
-  overflow_resolution:
-    - Rewrite the title without losing the factual hook.
-    - Insert an intentional line break with at most four characters per line.
-    - Choose a calmer evidence-supported frame or recompose the visual layer.
-    - Pause instead of shrinking, condensing, or horizontally scaling the type.
-
 top_bar_system:
-  id: centered-split-pill
+  id: centered-adaptive-cream-card
   role: series-spine
-  fields:
-    left: category
-    right: context
-    text_form: "{category}｜{context}"
   geometry:
     position: top-center
-    canonical_px:
-      top: 43
-      height: 112
-      total_width: 610
-      left_cell_width: 180
-      right_cell_width: 430
-      border: 4
-    percent_of_canvas:
-      top_margin: 3.0
-      height: 7.8
-      total_width: 56.5
-    shape: rounded-capsule
-    left_cell: fixed-width
-    right_cell: fixed-width
-    divider: single-vertical
+    validated_canvas_px:
+      top: 38
+      card_height: 96
+      component_height: 106
+      corner_radius: 22
+    width: content-driven
+    single_label_outer_padding_px:
+      bundled_default_total: 180
+      project_override: preferred
+    paired_label:
+      separator: geometric-blue-dot
+      separator_diameter_px: 14
+      text_to_dot_gap_px: 45
+      bundled_default_outer_padding_total_px: 320
   typography:
     language: zh-CN
-    family: simplified-chinese-sans
-    font_size_px: 52
-    weight: 800
-    alignment: center
+    family: user-approved-local-font
+    source_point_size: 120
+    source_kerning_px: 2
+    source_stroke_px: 4
+    visible_glyph_height_px: 48
+    normalization:
+      method: uniform-visible-height
+      unit: whole-label
+      minimum_source_ink_height_px: 60
     auto_fit: false
-    glyph_scaling: forbidden
-    context_characters:
-      preferred_min: 2
-      hard_max: 6
-  decoration:
-    outside_component: none
+    non_uniform_scaling: forbidden
+  colors:
+    card: "#FFF8ED"
+    text: "#1654A8"
+  effects:
+    shadow: none
+    glow: none
+    outline: none
+    external_ornaments: none
   collision_fallbacks:
-    - Shorten the context without losing evidence.
-    - Choose another evidence-supported keyframe with a calmer top safe zone.
-    - Reserve or reconstruct a calm top-center safe zone.
-    - Recompose the visual layer while preserving the protected subject.
-    - Pause instead of shrinking the fixed typography.
+    - Shorten context without losing evidence.
+    - Choose another evidence-supported frame.
+    - Use or generate a clean text-free top plate.
+    - Reconstruct only the authorized background region.
+    - Restore locked title and subject pixels from the authoritative source.
+    - Pause instead of changing shared typography.
   forbidden_fallbacks:
     - corner-tag
+    - split-pill
     - stacked-badge
     - hanging-flag
     - full-width-band
-    - external-ornaments
-  palette_variants:
-    travel-day:
-      left_background: "#2F80ED"
-      right_background: "#EAF4FF"
-      left_text: "#FFFFFF"
-      right_text: "#1654A8"
-      border: "#FFF7E8"
-      title_fill: "#D94117"
-      title_stroke: "#FFF7E8"
-    travel-night:
-      left_background: "#E8C56A"
-      right_background: "#15100B"
-      left_text: "#15100B"
-      right_text: "#F5D77A"
-      border: "#E8C56A"
-      title_fill: "#FFF4C7"
-      title_stroke: "#24150B"
-    dog:
-      left_background: "#F45472"
-      right_background: "#FFE2E8"
-      left_text: "#FFFFFF"
-      right_text: "#4B285F"
-      border: "#FFF7E8"
-      title_fill: "#FFFFFF"
-      title_stroke: "#4B285F"
+    - model-generated-final-chinese
+    - ad-hoc-overflow-scaling
+
+main_title_system:
+  modes:
+    locked-artwork:
+      source_path: required
+      source_pixels: immutable
+      scaling: forbidden
+    deterministic-font:
+      font_path: required
+      font_sha256: required
+      point_size: fixed
+      line_break: intentional
+      fill_and_stroke: required
+      auto_fit: forbidden
+      compositor: scripts/render-main-title.sh
+
+material_protection:
+  source_frame_is_authoritative: true
+  model_reference_does_not_authorize_redraw: true
+  locked_by_default:
+    - recognizable people and faces
+    - dog identity, pose, and expression
+    - clothing and equipment
+    - landmarks, props, boats, bridges, water, and scenery
+    - approved hand-brushed main-title pixels
+  repair_rules:
+    cleanest_pre_defect_source: required
+    explicit_authorized_mask: required
+    outside_mask_max_pixel_difference: 0
+    broad_color_mask_on_similar_background: forbidden
 
 presets:
   travel-family:
@@ -124,34 +112,21 @@ presets:
       - family outings
       - parent-child travel
       - scenic visits
-    top_bar:
-      category_label: 旅行
-      palette_default: travel-day
-      palette_low_light: travel-night
     visual:
-      primary_colors:
-        - "#FF7A45"
-        - "#FFC857"
+      primary_colors: ["#FF7A45", "#FFC857"]
       background_color: "#FFF7E8"
-      accent_colors:
-        - "#2F80ED"
-        - "#FFFFFF"
+      accent_colors: ["#2F80ED", "#FFFFFF"]
       rendering: digital
       mood: bold
-      font: display
-      main_title_family: bold-simplified-chinese-sans
       decorative_hints:
         - warm sunlight
         - restrained travel accents
-        - clear series spine
+      subject_priority: family-and-place
     composition:
-      subject_priority: family
       rules:
-        - Preserve a warm, candid family atmosphere.
-        - Keep family members, landmarks, and location evidence recognizable.
-        - Use a supplied frame or reference image as the primary visual source.
-        - Keep faces, hands, signs, landmarks, and the main action unobstructed.
-        - Keep protected evidence outside the profile play-count overlay zone.
+        - Preserve supplied people and scenery as source material.
+        - Keep faces, hands, landmarks, signs, and the main action unobstructed.
+        - Keep evidence-bearing subjects outside the profile overlay zone.
     adapters:
       baoyu-cover-image:
         type: hero
@@ -168,32 +143,20 @@ presets:
       - cute pet videos
       - healing or playful dog scenes
       - AI-generated or AI-enhanced dog footage
-    top_bar:
-      category_label: 萌宠
-      palette_default: dog
     visual:
-      primary_colors:
-        - "#FF8FB1"
-        - "#7C5CFC"
+      primary_colors: ["#FF8FB1", "#7C5CFC"]
       background_color: "#FFF5FA"
-      accent_colors:
-        - "#FFD166"
-        - "#FFFFFF"
+      accent_colors: ["#FFD166", "#FFFFFF"]
       rendering: digital
       mood: bold
-      font: display
-      main_title_family: rounded-simplified-chinese-sans
       decorative_hints:
         - soft glow
         - sparse playful accents
-        - clear series spine
-    composition:
       subject_priority: dog
+    composition:
       rules:
-        - Make the dog the unmistakable visual protagonist.
-        - Preserve the dog's appearance when a reference image is available.
-        - Keep the dog's face and the main action unobstructed.
-        - Keep protected evidence outside the profile play-count overlay zone.
+        - Preserve the supplied dog's identity, pose, and expression.
+        - Keep the face, paws, props, and main action unobstructed.
         - Keep decorative elements playful but sparse.
     adapters:
       baoyu-cover-image:
