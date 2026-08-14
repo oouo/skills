@@ -1,12 +1,11 @@
 # CLAUDE.md
 
-## Project Overview
+@AGENTS.md
 
-This is a personal AI agent skills repository. It contains reusable skill
-modules that follow the open `SKILL.md` standard. Skills live in **top-level
-directories** in the repo root for easy URL-based sharing.
+## Claude Code Compatibility
 
-For full rules see `AGENTS.md`.
+Treat `AGENTS.md` as the canonical repository rulebook. Keep this file limited
+to Claude Code-specific entry points and commands.
 
 ## Install Pattern
 
