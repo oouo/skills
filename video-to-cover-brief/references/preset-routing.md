@@ -1,16 +1,42 @@
 # Preset and Copy Routing
 
-Keep evidence classification, top-bar copy, visual preset, and renderer adapter
+Keep the content profile, top-bar copy, visual preset, and renderer adapter
 separate. The brief is the portable contract.
 
-## Category mapping
+## Content profile
 
-| Category | Preset | Subject priority |
+Record a small evidence-grounded profile instead of assigning the video to a
+closed genre list:
+
+| Field | Record |
+| --- | --- |
+| Primary subject | Cover-carrying person, animal, product, place, character, interface, or scene. |
+| Story hook | Visible action, event, contrast, question, result, or topic. |
+| Factual context | Confirmed location, event, object, topic, stage, episode, or none. |
+| Protection priorities | Recognizable or evidence-bearing regions that must stay intact. |
+
+Use short natural phrases. Do not expose an invented taxonomy to the user or
+reject a video because it lacks a named genre.
+
+## Preset routing
+
+Choose in this order:
+
+1. Use an explicit user- or series-approved preset when one exists.
+2. Use a specialized preset when the inspected evidence clearly matches its
+   `suitable_for` signals.
+3. Use `source-led-neutral` for every other subject. This fallback preserves the
+   source palette and primary subject instead of fabricating a genre style.
+
+| Evidence signal | Preset | Subject priority |
 | --- | --- | --- |
-| `family-travel` | `travel-family` | real family/travel moment and place |
-| `dog-story` | `dog-protagonist` | the dog and its action |
+| no approved specialized preset | `source-led-neutral` | primary evidence subject |
+| family outing, parent-child travel, or scenic visit | `travel-family` | family and place |
+| dog-led story or action | `dog-protagonist` | the dog and its action |
 
-Reject unrelated genres rather than forcing them into a supported preset.
+Presets are adapters behind the routing seam, not eligibility rules. Adding a
+new preset improves a known visual treatment; it must not narrow the base
+workflow.
 
 ## Top-bar copy
 
@@ -18,20 +44,15 @@ Use one centered cream card. A short factual scene can be a single label; a
 confirmed location hierarchy may be a left/right pair separated by a geometric
 blue dot.
 
-### Family travel
+Prefer the shortest factual context that helps distinguish the video:
 
-Prefer, in order:
+1. a confirmed hierarchy when both sides matter, such as `盱眙 · 白鹭洲`
+2. a confirmed event or action, such as `第一次下厨` or `录音棚`
+3. a confirmed object, topic, stage, or episode, such as `开箱实测` or `第二关`
+4. a concrete visible setting, such as `春日花田`
 
-1. confirmed city/scenic spot pair, such as `盱眙 · 白鹭洲`
-2. confirmed province/city pair, such as `江苏 · 兴化`
-3. confirmed scenic spot or setting, such as `第一山雪场` or `油菜花田`
-4. concrete evidence-supported scene, such as `春日花田`
-
-### Dog story
-
-Use the factual event or setting: `冰雕`, `山野光影`, `录音棚`, `油菜花田`,
-`端午粽子`, or another visible hook. Do not repeat `小狗` merely to fill a
-category slot, and do not invent a breed.
+Do not prepend a genre label merely to classify the video. Do not invent a
+location, product model, animal breed, episode, result, or story beat.
 
 ### Copy constraints
 
@@ -48,6 +69,15 @@ category slot, and do not invent a breed.
 The preset controls palette and composition priorities, not the identity of the
 subject. A video-frame subject remains the authoritative source even when the
 visual layer receives generative enhancement.
+
+### `source-led-neutral`
+
+- preserve the authoritative frame's palette, lighting, and primary subject
+- protect faces, bodies, animals, products, characters, interfaces, readable
+  evidence, and the main action when present
+- add no genre-coded decoration; use only accents approved by the series
+- default to deterministic assembly from source material rather than a full
+  redraw
 
 ### `travel-family`
 

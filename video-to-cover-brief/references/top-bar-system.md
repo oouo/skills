@@ -27,7 +27,7 @@ The reference implementation uses:
 - cream: `rgb(255,248,237)`
 - text: `#1654A8`
 - source type: 120pt, 2px kerning, 4px same-color stroke, then resampled to a
-  fixed visible glyph height of `48px` as one whole label
+  fixed visible glyph height of `72px` as one whole label
 - corner radius: `22px`
 - paired labels: one `14px` blue dot, with `45px` from each adjacent visible
   text edge to the dot
@@ -36,12 +36,30 @@ The reference implementation uses:
 The font is a project dependency. Pin its path and SHA-256. Check every label
 with HarfBuzz before rendering; `.notdef` or `gid0` is a release failure.
 
-The 120pt-to-48px step is the validated system's one allowed
+The 120pt-to-72px step is the validated system's one allowed
 `uniform-visible-height` normalization. It preserves the label's aspect ratio
 and is not an overflow rescue. Reject a label whose trimmed source ink is below
 `60px` at the reference settings because thin-only strings can otherwise be
 enlarged into a visibly different type size. Never stretch one axis, normalize
 individual glyphs, or apply an extra per-cover scale after this step.
+
+Keep the card and component geometry unchanged when adopting `72px`; this is a
+typography revision, not a proportional enlargement of the entire top bar.
+At the reference geometry, the visible text leaves about `12px` above and below
+inside the `96px` card. Verify long labels and title collisions in the exact
+profile cell rather than shrinking the shared type size.
+
+## Legacy published covers
+
+- Treat `48px` as the legacy value used by previously published covers.
+- Do not spend a live edit merely to migrate a visually acceptable legacy cover
+  to `72px`.
+- Start new covers at `72px` and let them form a clear series-version boundary.
+- Change an already published cover only with explicit authorization for that
+  file, prioritizing factual errors, wrong-cover pairing, severe clipping, and
+  other material defects over cosmetic consistency.
+- Record the actual legacy value in its brief and package; never relabel a
+  `48px` artifact as compliant with the new-cover default.
 
 ## Content-driven width
 

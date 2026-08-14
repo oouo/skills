@@ -10,7 +10,7 @@
     {
       "id": 2,
       "prompt": "12张顶栏长短不一，但字号和高度必须完全统一；短的冰雕、长的盱眙第一山雪场都要自然，不允许模型画中文。",
-      "expected_output": "Uses a content-driven single cream card with fixed top, height, visible glyph height, font, and separator geometry; width adapts while type size does not.",
+      "expected_output": "Uses the 72px new-cover visible glyph height inside the unchanged approved card and component geometry; keeps top, font, and separator geometry fixed while width adapts and type size does not.",
       "files": []
     },
     {
@@ -28,7 +28,7 @@
     {
       "id": 5,
       "prompt": "把这个暗黑游戏角色宣传片也按亲子旅行封面做一张，地点写盱眙就行。",
-      "expected_output": "Rejects the unsupported category and invented location without creating a cover brief.",
+      "expected_output": "Accepts the game genre through source-led-neutral, rejects the invented location, derives factual top-bar copy from inspected evidence, and protects the recognizable character and interface instead of forcing the travel-family preset.",
       "files": []
     },
     {
@@ -41,6 +41,24 @@
       "id": 7,
       "prompt": "最终目录里有 12 张编号封面，另外还落着 candidate.png；SHA256SUMS 行数是 12，但其中一行校验的是 candidate.png。能直接封版吗？",
       "expected_output": "Keeps the package at HOLD because root-level PNGs and SHA manifest filenames must exactly equal the continuous numbered final-cover set; matching counts alone are insufficient.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "这是一段咖啡机开箱实测，既不是旅行也不是宠物。按现在统一的奶油色顶栏和固定标题系统做封面 brief，产品外观、型号和面板文字不能变。",
+      "expected_output": "Accepts the product-review genre, routes to source-led-neutral, uses an evidence-backed object or topic label, and locks the product, model, controls, and readable evidence while keeping the shared typography contract.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "我只有这期播客的音频和一句摘要，没有视频、截图或现成封面。先直接按摘要生成一个人物封面 brief。",
+      "expected_output": "Stops because genre-agnostic eligibility still requires visual evidence; it requests video frames or approved cover material instead of inventing a person or composition from the summary.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "旧作品顶栏还是48px，已经发布并可能接近5次修改限制；新作品准备改用72px。为了主页统一，把旧作品也都改了吗？",
+      "expected_output": "Keeps published legacy covers at their measured 48px by default, preserves scarce live edit capacity, and starts new covers at 72px with unchanged card and component geometry; it requires exact authorization before any published-cover edit.",
       "files": []
     }
   ]

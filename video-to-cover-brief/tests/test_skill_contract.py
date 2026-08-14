@@ -39,7 +39,13 @@ class SkillContractTests(unittest.TestCase):
         presets = (ROOT / "resources" / "cover-presets.yaml").read_text(
             encoding="utf-8"
         )
-        combined = "\n".join((skill, topbar, presets))
+        routing = (ROOT / "references" / "preset-routing.md").read_text(
+            encoding="utf-8"
+        )
+        brief = (ROOT / "references" / "brief-contract.md").read_text(
+            encoding="utf-8"
+        )
+        combined = "\n".join((skill, topbar, presets, routing, brief))
         for marker in (
             "1086×1448",
             "centered-adaptive-cream-card",
@@ -48,6 +54,8 @@ class SkillContractTests(unittest.TestCase):
             "deterministic-font",
             "render-main-title.sh",
             "uniform-visible-height",
+            "source-led-neutral",
+            "Content Profile",
         ):
             self.assertIn(marker, combined)
         self.assertIn("split-pill", presets)
@@ -58,10 +66,33 @@ class SkillContractTests(unittest.TestCase):
             "   agent rules",
             skill,
         )
+        self.assertIn("visible_glyph_height_px: 72", presets)
+        renderer = (SCRIPTS / "render-cover-type.sh").read_text()
+        self.assertIn("VISIBLE_TEXT_H:-72", renderer)
+        self.assertIn("Legacy published covers", topbar)
+        self.assertRegex(skill, r"48px.*legacy published-cover value")
+
+    def test_genre_is_a_routing_signal_not_an_eligibility_gate(self) -> None:
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        routing = (ROOT / "references" / "preset-routing.md").read_text(
+            encoding="utf-8"
+        )
+        presets = (ROOT / "resources" / "cover-presets.yaml").read_text(
+            encoding="utf-8"
+        )
+        combined = "\n".join((skill, routing, presets))
+        self.assertIn("local short video of any subject", skill)
+        self.assertRegex(skill, r"Genre\s+never determines eligibility")
+        self.assertIn("Presets are adapters behind the routing seam", routing)
+        self.assertIn("source-led-neutral:", presets)
+        self.assertIn("travel-family:", presets)
+        self.assertIn("dog-protagonist:", presets)
+        self.assertNotIn("Reject unrelated genres", combined)
+        self.assertNotIn("Choose exactly one category", combined)
 
     def test_eval_file(self) -> None:
         data = json.loads((ROOT / "evals" / "evals.json").read_text("utf-8"))
-        self.assertGreaterEqual(len(data["evals"]), 7)
+        self.assertGreaterEqual(len(data["evals"]), 9)
         for item in data["evals"]:
             self.assertIn("prompt", item)
             self.assertIn("expected_output", item)
@@ -216,6 +247,7 @@ class SkillContractTests(unittest.TestCase):
                 capture_output=True,
             )
             self.assertIn("outside-max=0", result.stdout)
+            self.assertIn("visible-text=72px", result.stdout)
             self.assertEqual(
                 self._outside_max(source, output, (193, 38, 700, 96), tmp_path),
                 "0",

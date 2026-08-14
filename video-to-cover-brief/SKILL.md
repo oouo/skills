@@ -1,12 +1,11 @@
 ---
 name: video-to-cover-brief
 description: >-
-  Use when turning a local family-travel or dog-centered short video into an
-  evidence-grounded Douyin cover brief, cover series, or published-cover
-  replacement. Covers keyframe provenance, source-material preservation,
-  deterministic Simplified Chinese top bars, protected main-title pixels,
-  staged image generation, profile-grid QA, pixel-diff release gates, and final
-  version packaging.
+  Use when turning a local short video of any subject into an evidence-grounded
+  Douyin cover brief, cover series, or published-cover replacement. Covers
+  keyframe provenance, source-material preservation, deterministic Simplified
+  Chinese typography, preset routing, staged generation, profile-grid QA,
+  pixel-diff release gates, and final version packaging.
 compatibility: >-
   Requires local video or keyframes. Deterministic rendering and QA use
   ffmpeg/ffprobe, ImageMagick 7, HarfBuzz, Bash, shasum, and user-approved
@@ -17,11 +16,10 @@ compatibility: >-
 
 ## Overview
 
-Turn a local family-travel or dog-centered video into an auditable Douyin cover
-workflow. Start with evidence and a renderer-neutral brief. Preserve supplied
-video-frame material as immutable source pixels, use an image model only where
-generation is actually authorized, and compose measurable Chinese typography
-deterministically.
+Turn a local short video of any subject into an auditable Douyin cover workflow.
+Start with evidence and a renderer-neutral brief. Preserve supplied video-frame
+material as immutable source pixels, use an image model only where generation is
+actually authorized, and compose measurable Chinese typography deterministically.
 
 The workflow can stop after the brief or continue through generation, local
 review, repair, and packaging. A candidate is never a release merely because it
@@ -29,17 +27,19 @@ looks plausible at full size.
 
 ## When to Use
 
-Use this skill for a local family-travel or dog-centered short video that needs
-an auditable brief, a new cover, a repaired cover, or a canonical local release
-package. Reject unrelated genres instead of forcing them into these presets.
+Use this skill for any local short video that needs an auditable brief, a new
+cover, a repaired cover, or a canonical local release package for Douyin. Genre
+never determines eligibility; available evidence and the requested cover
+workflow do.
 
 ## Non-negotiables
 
 - Ground every subject, action, location, top-bar field, and story claim in
   inspected frames, transcript lines, metadata, or an explicit user statement.
 - Treat supplied video frames and confirmed cover material as source assets,
-  not loose visual references. Do not redraw recognizable people, dogs,
-  landmarks, props, poses, or scenery unless the user explicitly asks for it.
+  not loose visual references. Do not redraw recognizable people, animals,
+  products, characters, interfaces, landmarks, props, poses, or scenery unless
+  the user explicitly asks for it.
 - Treat an approved hand-brushed main title as locked artwork. Do not regenerate,
   retype, stretch, compress, or replace it. Move an intact title layer only when
   the user approves the layout change.
@@ -61,6 +61,13 @@ package. Reject unrelated genres instead of forcing them into these presets.
   the system. Do not generate an entire series before representative review.
 - Keep all exploration local. Never upload, publish, or edit a live Douyin work
   without explicit authorization for that exact file.
+- Use `72px` visible top-bar glyph height for new covers in the validated
+  `1086×1448` profile while keeping the approved card and component geometry
+  unchanged. Treat `48px` as a legacy published-cover value, not a new default.
+- Do not retrofit a published legacy cover merely to adopt `72px`. Preserve its
+  remaining edit budget unless the user explicitly authorizes the exact edit;
+  reserve scarce live edits for factual errors, wrong-cover pairing, severe
+  clipping, or similarly material defects.
 - Keep only one canonical final package. Preserve rejected and superseded work
   as history, but do not expose multiple folders as competing final versions.
 
@@ -69,11 +76,11 @@ package. Reject unrelated genres instead of forcing them into these presets.
 | Input | Required | Use |
 | --- | --- | --- |
 | Local video or evidence frames | Yes | Establish the real subject, action, and scene. |
-| User-approved canvas/profile screenshot | Recommended | Lock canvas and measure the actual grid cell. |
-| Existing cover or clean source plate | Optional | Preserve approved pixels and repair only the named area. |
+| Canvas/profile screenshot | Recommended | Lock canvas and measure the profile cell. |
+| Existing cover or clean source plate | Optional | Preserve pixels; repair only named regions. |
 | Approved top-bar font | Required before final type | Make Chinese deterministic and auditable. |
-| Approved title artwork or title font | Required before final title | Resolve the title as locked artwork or deterministic type. |
-| Existing neighboring covers | Recommended for a series | Judge consistency in the actual three-column layout. |
+| Title artwork or font | Required before final type | Lock artwork or render deterministic type. |
+| Existing neighboring covers | Recommended for a series | Judge the three-column grid. |
 | Publication state/edit budget | Optional | Treat reported live edits as scarce; never guess. |
 
 If the user provides no usable video or keyframe evidence, stop and request it.
@@ -103,19 +110,24 @@ Do not substitute a verbal summary for visual identity or layout evidence.
 Finish only when beginning/middle/end evidence exists and at least one frame is
 suitable for the generation or compositing handoff.
 
-### 2. Classify and write the brief
+### 2. Profile the content and write the brief
 
-1. Choose exactly one category: `family-travel` or `dog-story`.
+1. Build a concise, evidence-grounded content profile: primary subject, story
+   hook, factual context, and material that must remain recognizable.
 2. Read [references/preset-routing.md](references/preset-routing.md),
    [resources/cover-presets.yaml](resources/cover-presets.yaml), and
    [references/top-bar-system.md](references/top-bar-system.md).
-3. Resolve a factual top-bar label, semantic preset, palette, protected source
-   regions, and an intentional collision plan.
-4. Propose a concrete Simplified Chinese main title and choose exactly one mode:
+3. Prefer a user- or series-approved preset, otherwise use a specialized preset
+   when its evidence signals clearly match. Fall back to `source-led-neutral`
+   for every other genre; never reject a video merely because no specialized
+   preset exists.
+4. Resolve a factual top-bar label, palette or source-preservation rule,
+   protected source regions, and an intentional collision plan.
+5. Propose a concrete Simplified Chinese main title and choose exactly one mode:
    - `locked-artwork`: record the intact approved title source and pixel lock
    - `deterministic-font`: pin the title font, SHA-256, point size, line break,
      fill, stroke, top edge, and maximum width; do not use auto-fit
-5. Read [references/brief-contract.md](references/brief-contract.md), write
+6. Read [references/brief-contract.md](references/brief-contract.md), write
    `briefs/<video-id>.md`, validate every field, report `HOLD`, and pause for the
    user's confirmation before image generation.
 
@@ -130,6 +142,9 @@ user request:
 - exact top-bar font file and SHA-256
 - top-bar top edge, card height, component height, visible glyph height, color,
   stroke, padding, corner radius, and separator geometry
+- for the validated profile, `72px` visible glyph height on new covers without
+  enlarging the existing card or component; record any legacy published value
+  explicitly instead of silently migrating it
 - main-title mode and either its authoritative artwork path or its complete
   deterministic-font contract
 - visible-text allowlist
@@ -243,6 +258,9 @@ When a raster image model or `baoyu-cover-image` is used:
   deterministic-font main-title zone
 - preserve subject identity and composition from the supplied material
 - reject accidental visible text instead of painting another card over it
+- for `source-led-neutral`, resolve exact palette, rendering, and mood values
+  from the approved series or inspected evidence before calling the renderer;
+  never pass placeholders such as `source-preserved` to a renderer
 
 The model creates visual material; deterministic tools own final typography and
 pixel-locked assembly.
@@ -250,7 +268,8 @@ pixel-locked assembly.
 ## Extending the skill
 
 1. Add semantic presets only to `resources/cover-presets.yaml`.
-2. Add category and top-bar copy rules to `references/preset-routing.md`.
+2. Add evidence signals and top-bar copy rules to
+   `references/preset-routing.md`; do not turn a new preset into a genre gate.
 3. Keep detailed release checks in `references/release-gate.md`.
 4. Add repeatable mechanical work to `scripts/`; do not duplicate it in prose.
 5. Add an eval whenever a real failure reveals a reusable boundary.

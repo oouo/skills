@@ -1,4 +1,4 @@
-version: 5
+version: 7
 
 output_system:
   validated_canvas_px:
@@ -44,7 +44,7 @@ top_bar_system:
     source_point_size: 120
     source_kerning_px: 2
     source_stroke_px: 4
-    visible_glyph_height_px: 48
+    visible_glyph_height_px: 72
     normalization:
       method: uniform-visible-height
       unit: whole-label
@@ -94,10 +94,10 @@ material_protection:
   source_frame_is_authoritative: true
   model_reference_does_not_authorize_redraw: true
   locked_by_default:
-    - recognizable people and faces
-    - dog identity, pose, and expression
-    - clothing and equipment
-    - landmarks, props, boats, bridges, water, and scenery
+    - recognizable people, faces, bodies, and clothing
+    - animal identity, pose, and expression
+    - products, packaging, characters, and interfaces
+    - equipment, landmarks, props, readable evidence, and scenery
     - approved hand-brushed main-title pixels
   repair_rules:
     cleanest_pre_defect_source: required
@@ -106,6 +106,28 @@ material_protection:
     broad_color_mask_on_similar_background: forbidden
 
 presets:
+  source-led-neutral:
+    description: Source-preserving fallback for any evidence-grounded short video.
+    suitable_for:
+      - any subject without an approved specialized preset
+      - mixed or emerging genres
+      - source-led covers that need deterministic typography only
+    visual:
+      palette_source: approved-series-contract-or-authoritative-source
+      primary_colors: []
+      background_color: source-preserved
+      accent_colors: []
+      rendering: source-preserving
+      mood: evidence-led
+      decorative_hints: []
+      subject_priority: primary-evidence-subject
+    composition:
+      rules:
+        - Preserve the authoritative frame's subject, palette, lighting, and scene.
+        - Protect identity-bearing and evidence-bearing regions from overlays.
+        - Add no genre-coded decoration without explicit approval.
+        - Prefer deterministic assembly over a full redraw.
+
   travel-family:
     description: Warm, natural family-travel short-video cover.
     suitable_for:

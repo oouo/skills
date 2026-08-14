@@ -15,7 +15,7 @@ Optional environment variables:
   CARD_TOP              default 38
   CARD_H                opaque card height; default 96
   COMPONENT_H           transparent component height; default 106
-  VISIBLE_TEXT_H        default 48
+  VISIBLE_TEXT_H        default 72 for new covers
   CARD_WIDTH            exact project-approved width; otherwise content-driven
   SINGLE_OUTER_PAD      default 180 total pixels
   PAIR_OUTER_PAD        default 320 total pixels
@@ -73,7 +73,7 @@ canvas_h=${CANVAS_H:-1448}
 card_top=${CARD_TOP:-38}
 card_h=${CARD_H:-96}
 component_h=${COMPONENT_H:-106}
-visible_text_h=${VISIBLE_TEXT_H:-48}
+visible_text_h=${VISIBLE_TEXT_H:-72}
 card_radius=${CARD_RADIUS:-22}
 blue=${TOP_TEXT_COLOR:-#1654A8}
 cream=${TOP_CARD_COLOR:-#FFF8ED}

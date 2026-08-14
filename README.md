@@ -42,7 +42,7 @@ skills/
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
-| [`video-to-cover-brief`](video-to-cover-brief/) | Build evidence-grounded Douyin covers with source-pixel locks, deterministic Chinese typography, staged QA, and release packaging. |
+| [`video-to-cover-brief`](video-to-cover-brief/) | Build genre-agnostic Douyin covers with source-pixel locks, deterministic Chinese typography, and staged release QA. |
 
 ## Quick Start
 

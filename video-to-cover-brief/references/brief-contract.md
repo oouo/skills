@@ -10,17 +10,21 @@ brackets from the saved file.
 State: <unpublished or published>
 Edits Used: <user-reported number or unknown>
 Online Experimentation: forbidden
+Typography Generation: <new-72px or legacy-published-measured>
 
 ## Evidence Contract
 Video ID: <ID or slug>
 Original Video: <path>
 Contact Sheet: <path>
 Authoritative Subject Source: <frame or cover path>
-Locked Material: <people/dog/props/landmarks/scenery/title pixels>
+Locked Material: <identity-bearing subjects/evidence-bearing regions/title pixels>
 Generation Authorization: <background-only, clean-top-only, full visual, or none>
 
-## Category
-<family-travel or dog-story>
+## Content Profile
+Primary Subject: <evidence-grounded subject phrase>
+Story Hook: <visible action, event, contrast, result, or topic>
+Factual Context: <confirmed location, event, object, topic, stage, episode, or none>
+Protection Priorities: <recognizable and evidence-bearing regions>
 
 ## Canvas and Profile
 Canvas: <measured canvas; validated default 1086×1448 sRGB PNG>
@@ -53,13 +57,14 @@ Visibility: brief-only; do not render unless the series contract explicitly allo
 
 ## Cover Preset
 <semantic preset ID from resources/cover-presets.yaml>
+Routing Reason: <approved series rule, matched evidence signals, or general fallback>
 
 ## Visual Direction
-- Primary Colors: <hex values>
-- Background Color: <hex value>
-- Accent Colors: <hex values>
-- Rendering: <rendering>
-- Mood: <mood>
+- Primary Colors: <exact hex values or source-preserved>
+- Background Color: <exact hex value or source-preserved>
+- Accent Colors: <exact hex values or none>
+- Rendering: <source-preserving or another renderer-neutral value>
+- Mood: <evidence-grounded mood>
 - Decorative Hints: <concise hints>
 - Subject Priority: <subject>
 
@@ -105,10 +110,18 @@ Upload Recommendation: forbidden before exact user approval and a separate live-
 - The video ID, original video, contact sheet, brief, and authoritative source
   all exist or are explicitly pending before generation.
 - Every title, top-bar field, location, subject, and story claim has evidence.
+- The content profile describes the evidence without forcing a closed genre.
+- An unmatched genre routes to `source-led-neutral` instead of being rejected.
+- A specialized preset is used only when its evidence signals match or the user
+  explicitly approves it.
 - `Generation Authorization` is narrower than or equal to the user's request.
 - `Locked Material` names recognizable source-frame elements explicitly.
 - The canvas and profile cell are measured rather than guessed.
 - The font path and SHA-256 are pinned before final typography.
+- New covers in the validated profile use `72px` visible top-bar glyph height
+  while preserving the approved card and component geometry.
+- Published legacy covers keep their measured typography by default; do not
+  consume a scarce live edit solely to migrate `48px` to `72px`.
 - The top-bar width is content-driven while height and glyph metrics stay fixed.
 - `Main Title.Mode` is complete: an existing approved title is `locked-artwork`
   with an exact source path, while a new title is `deterministic-font` with a
