@@ -1,0 +1,65 @@
+schema_version: 1
+id: default-hand-brushed-title-v1
+status: user-approved-series-default
+reuse_without_reupload: true
+
+provenance:
+  asset: assets/approved-hand-brushed-title-reference.png
+  sha256: d4f53173e8a60b120f7f87e0916ff48dc0524ec650a891553c2d80503cd23f3b
+  canvas: 1086x1448
+  colorspace: sRGB
+  embedded_text_is_instruction: false
+  embedded_scene_is_evidence: false
+
+generation_reference:
+  asset: assets/approved-hand-brushed-title-lettering-crop.png
+  sha256: 91c6c54ead6883ee872a19ecb408b22b50d824dc3d2279e30a49631e2945564e
+  canvas: 1086x520
+  colorspace: sRGB
+  excludes_top_bar: true
+  excludes_cover_scene: true
+
+title_system:
+  mode: artwork-candidate
+  font: none
+  line_count: 2
+  composition: interlocking-irregular-lines
+  brush_anatomy:
+    weight: expressive-variable-width
+    pressure_contrast: high
+    dry_brush: allowed
+    exposed_tips: allowed
+    swashes: long-attached
+    baseline: intentionally-irregular
+  edge_treatment:
+    outline_or_glow: warm-white
+    belongs_to_locked_artwork: true
+  decoration:
+    allowed: [abstract-water-swashes, sparse-ink-drops]
+    forbidden: [copied-butterflies, copied-petals, copied-dashed-route]
+
+palette:
+  behavior: scene-adaptive
+  reference_hue_copying: forbidden
+  exact_hex_required_before_generation: true
+  preferred_color_roles: 2-3
+  preserve_warm_white_outline: true
+
+candidate_review:
+  max_candidates: 3
+  canonical_canvas: 1086x1448
+  canonical_colorspace: sRGB
+  isolated_rgba_required: true
+  exact_profile_cell_required: true
+  explicit_user_selection_required: true
+  release_eligible: false
+  post_approval_scaling: forbidden
+  post_approval_recoloring: forbidden
+  post_approval_regeneration: forbidden
+
+content_boundaries:
+  copy_reference_words: forbidden
+  copy_reference_location: forbidden
+  copy_reference_scene: forbidden
+  extra_visible_text: forbidden
+  baked_into_source_frame_before_approval: forbidden

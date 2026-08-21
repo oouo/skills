@@ -3,6 +3,17 @@
 Keep the content profile, top-bar copy, visual preset, and renderer adapter
 separate. The brief is the portable contract.
 
+Keep the main-title system separate as well. An approved hand-brushed style
+comes from the series contract and its style reference, not from a travel, pet,
+or other semantic preset. When its palette is scene-adaptive, derive exact title
+colors from the inspected source frame while preserving the approved brush,
+outline/glow, and composition grammar.
+
+For the established series design, resolve `default-hand-brushed-title-v1` from
+`resources/hand-brushed-title-default.yaml`. Use the bundled lettering crop for
+generation and do not ask the user to re-upload the approval reference. A
+semantic cover preset never overrides or silently replaces this title contract.
+
 ## Content profile
 
 Record a small evidence-grounded profile instead of assigning the video to a

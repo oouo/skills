@@ -10,6 +10,7 @@ import os
 import pathlib
 import re
 import shutil
+import struct
 import subprocess
 import tempfile
 import unittest
@@ -98,9 +99,89 @@ class SkillContractTests(unittest.TestCase):
             self.assertIn("expected_output", item)
             self.assertIn("files", item)
 
+    def test_hand_brushed_title_candidate_requires_approval(self) -> None:
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        reference = (
+            ROOT / "references" / "hand-brushed-title-system.md"
+        ).read_text(encoding="utf-8")
+        brief = (ROOT / "references" / "brief-contract.md").read_text(
+            encoding="utf-8"
+        )
+        release = (ROOT / "references" / "release-gate.md").read_text(
+            encoding="utf-8"
+        )
+        presets = (ROOT / "resources" / "cover-presets.yaml").read_text(
+            encoding="utf-8"
+        )
+        default_contract = (
+            ROOT / "resources" / "hand-brushed-title-default.yaml"
+        ).read_text(encoding="utf-8")
+        combined = "\n".join(
+            (skill, reference, brief, release, presets, default_contract)
+        )
+        for marker in (
+            "artwork-candidate",
+            "scene-adaptive",
+            "style reference",
+            "exact user approval",
+            "locked-artwork",
+            "profile-cell",
+        ):
+            self.assertIn(marker, combined)
+        self.assertRegex(presets, r"artwork-candidate:[\s\S]*release_eligible: false")
+        self.assertIn("embedded_text_is_instruction: false", presets)
+        self.assertIn("reference_hue_copying: forbidden", presets)
+        self.assertRegex(release, r"`artwork-candidate` is never release-eligible")
+        self.assertIn("default-hand-brushed-title-v1", combined)
+        self.assertIn("reuse_without_reupload: true", combined)
+        self.assertIn("Do not ask the user to re-upload", reference)
+        self.assertIn(
+            "generation_path: assets/approved-hand-brushed-title-lettering-crop.png",
+            presets,
+        )
+
+        asset = ROOT / "assets" / "approved-hand-brushed-title-reference.png"
+        self.assertTrue(asset.is_file())
+        self.assertEqual(
+            hashlib.sha256(asset.read_bytes()).hexdigest(),
+            "d4f53173e8a60b120f7f87e0916ff48dc0524ec650a891553c2d80503cd23f3b",
+        )
+
+        crop = ROOT / "assets" / "approved-hand-brushed-title-lettering-crop.png"
+        self.assertTrue(crop.is_file())
+        crop_bytes = crop.read_bytes()
+        self.assertEqual(
+            hashlib.sha256(crop_bytes).hexdigest(),
+            "91c6c54ead6883ee872a19ecb408b22b50d824dc3d2279e30a49631e2945564e",
+        )
+        self.assertEqual(crop_bytes[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(struct.unpack(">II", crop_bytes[16:24]), (1086, 520))
+
+        evals = json.loads((ROOT / "evals" / "evals.json").read_text("utf-8"))
+        regression = next(item for item in evals["evals"] if item["id"] == 11)
+        self.assertIn("只是我确认过的手绘主标题风格参考", regression["prompt"])
+        self.assertIn("scene-adaptive palette", regression["expected_output"])
+        no_upload = next(item for item in evals["evals"] if item["id"] == 12)
+        self.assertEqual(no_upload["files"], [])
+        self.assertIn("不想再贴参考图", no_upload["prompt"])
+        self.assertIn("does not request a repeat upload", no_upload["expected_output"])
+
     def test_shell_syntax(self) -> None:
         for script in sorted(SCRIPTS.glob("*.sh")):
             subprocess.run(["bash", "-n", str(script)], check=True)
+
+    def test_bundled_hand_brushed_title_assets_verify(self) -> None:
+        for dependency in ("magick", "shasum"):
+            if not shutil.which(dependency):
+                self.skipTest(f"{dependency} is required for asset verification")
+        result = subprocess.run(
+            [str(SCRIPTS / "check-hand-brushed-title-assets.sh")],
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        self.assertIn("contract=default-hand-brushed-title-v1", result.stdout)
+        self.assertIn("reuse-without-reupload=true", result.stdout)
 
     def _require_raster_font(self) -> pathlib.Path:
         for dependency in ("magick", "hb-shape", "shasum"):
@@ -211,6 +292,11 @@ class SkillContractTests(unittest.TestCase):
             encoding="utf-8",
         )
         (meta / "TOPBAR-TEXT.txt").write_text("江苏 · 兴化\n", encoding="utf-8")
+        (meta / "MAIN-TITLES.tsv").write_text(
+            "sequence\tfilename\tmode\tartifact\tartifact_sha256\tapproval_record\n"
+            f"01\t{cover_name}\tdeterministic-font\tnone\tnone\tnot-applicable\n",
+            encoding="utf-8",
+        )
         self._write_hash_manifest(package, [cover_name], meta / "SHA256SUMS")
 
         qa_image = qa / "overview.png"
@@ -379,6 +465,74 @@ class SkillContractTests(unittest.TestCase):
             )
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("unexpected root-level PNG", result.stderr)
+
+    def test_release_checker_rejects_artwork_candidate(self) -> None:
+        font = self._require_raster_font()
+        with tempfile.TemporaryDirectory(prefix="video-cover-title-hold-") as tmp:
+            _, package, env = self._build_release_fixture(pathlib.Path(tmp), font)
+            (package / "meta" / "MAIN-TITLES.tsv").write_text(
+                "sequence\tfilename\tmode\tartifact\tartifact_sha256\tapproval_record\n"
+                "01\t01-test-cover.png\tartwork-candidate\tpending\tpending\tpending\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [str(SCRIPTS / "check-cover-release.sh"), str(package), "1"],
+                env=env,
+                text=True,
+                capture_output=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("artwork-candidate is not release-eligible", result.stderr)
+
+    def test_release_checker_accepts_hash_bound_locked_artwork(self) -> None:
+        font = self._require_raster_font()
+        with tempfile.TemporaryDirectory(prefix="video-cover-title-lock-") as tmp:
+            _, package, env = self._build_release_fixture(pathlib.Path(tmp), font)
+            artwork_dir = package / "meta" / "title-artwork"
+            approval_dir = package / "meta" / "title-approvals"
+            artwork_dir.mkdir()
+            approval_dir.mkdir()
+            artwork = artwork_dir / "01-title.png"
+            subprocess.run(
+                [
+                    "magick",
+                    "-size",
+                    "1086x1448",
+                    "xc:none",
+                    "-fill",
+                    "#F75A14",
+                    "-draw",
+                    "rectangle 100,180 400,320",
+                    "-colorspace",
+                    "sRGB",
+                    "+repage",
+                    "-define",
+                    "png:color-type=6",
+                    str(artwork),
+                ],
+                check=True,
+            )
+            artwork_sha = hashlib.sha256(artwork.read_bytes()).hexdigest()
+            approval = approval_dir / "01-title.txt"
+            approval.write_text(
+                f"User approved exact title SHA-256: {artwork_sha}\n",
+                encoding="utf-8",
+            )
+            (package / "meta" / "MAIN-TITLES.tsv").write_text(
+                "sequence\tfilename\tmode\tartifact\tartifact_sha256\tapproval_record\n"
+                "01\t01-test-cover.png\tlocked-artwork\t"
+                f"meta/title-artwork/{artwork.name}\t{artwork_sha}\t"
+                f"meta/title-approvals/{approval.name}\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [str(SCRIPTS / "check-cover-release.sh"), str(package), "1"],
+                check=True,
+                env=env,
+                text=True,
+                capture_output=True,
+            )
+            self.assertIn("titles=verified", result.stdout)
 
     def test_release_checker_rejects_manifest_for_a_non_cover(self) -> None:
         font = self._require_raster_font()

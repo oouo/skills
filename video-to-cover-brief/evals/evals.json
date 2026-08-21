@@ -60,6 +60,20 @@
       "prompt": "旧作品顶栏还是48px，已经发布并可能接近5次修改限制；新作品准备改用72px。为了主页统一，把旧作品也都改了吗？",
       "expected_output": "Keeps published legacy covers at their measured 48px by default, preserves scarce live edit capacity, and starts new covers at 72px with unchanged card and component geometry; it requires exact authorization before any published-cover edit.",
       "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "这张旧封面只是我确认过的手绘主标题风格参考，图里的江苏、兴化、花海都不是新视频内容。新视频标题定为‘坐上乌篷船\\n摇进江南’，颜色要根据新画面自己调整。先给我看标题候选，不能擅自改成系统字体，也不能把模型第一次画的中文直接当最终版。",
+      "expected_output": "Treats the attached cover as style-only evidence, not factual or copy instructions; records the reference path and SHA, exact new copy and line break, brush grammar, and a scene-adaptive palette with exact candidate colors; creates at most three isolated canonical artwork-candidate layers, keeps HOLD for glyph and profile review, and promotes only the explicitly approved exact layer to locked-artwork without later scaling or regeneration.",
+      "files": [
+        "assets/approved-hand-brushed-title-reference.png"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "继续用我们已经定下来的两行手绘大标题设计做这条新视频，标题颜色还是跟着新画面换。我这次没有附旧封面，也不想再贴参考图；先给我看三个以内的标题候选。",
+      "expected_output": "Automatically resolves the bundled default-hand-brushed-title-v1 contract, verifies the provenance and lettering-crop hashes, uses the bundled lettering crop as the generation reference, and does not request a repeat upload. It derives a scene-adaptive palette from the new frame, produces at most three isolated canonical artwork-candidate layers, and remains HOLD for exact glyph, placement, and profile-cell approval.",
+      "files": []
     }
   ]
 }

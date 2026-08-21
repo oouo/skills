@@ -7,9 +7,10 @@ usage() {
 Usage: PROJECT_ROOT=/project TOP_FONT=/font.ttf TOP_FONT_SHA256=<digest> \
   check-cover-release.sh PACKAGE_DIR [EXPECTED_COUNT]
 
-Verify the portable file, hash, provenance, QA, and top-bar font contract of a
-canonical cover package. Project-specific geometry, pixel-lock, and known-defect
-checks remain mandatory in addition to this generic checker.
+Verify the portable file, hash, provenance, QA, top-bar font, and main-title
+release-state contract of a canonical cover package. Project-specific geometry,
+pixel-lock, and known-defect checks remain mandatory in addition to this generic
+checker.
 
 Optional environment variables:
   CANVAS_W/H  expected dimensions; default 1086 / 1448
@@ -40,6 +41,7 @@ top_font_sha=${TOP_FONT_SHA256:-}
 cover_manifest="$package/meta/SHA256SUMS"
 source_manifest="$package/meta/SOURCES.tsv"
 topbar_text="$package/meta/TOPBAR-TEXT.txt"
+title_manifest="$package/meta/MAIN-TITLES.tsv"
 
 [[ -d "$package" ]] || fail "Package not found: $package"
 if [[ ! "$expected_count" =~ ^[1-9][0-9]*$ ]] || (( expected_count > 99 )); then
@@ -53,7 +55,8 @@ done
 [[ -f "$top_font" ]] || fail "Set TOP_FONT to the approved local font file."
 [[ "$top_font_sha" =~ ^[0-9a-fA-F]{64}$ ]] || \
   fail "Set TOP_FONT_SHA256 to the approved font digest."
-for required in "$cover_manifest" "$source_manifest" "$topbar_text"; do
+for required in "$cover_manifest" "$source_manifest" "$topbar_text" \
+  "$title_manifest"; do
   [[ -f "$required" ]] || fail "Missing required package file: $required"
 done
 [[ -d "$package/qa" ]] || fail "Missing required package directory: qa"
@@ -173,6 +176,95 @@ for cover in "${covers[@]}"; do
   (( matches == 1 )) || fail "meta/SOURCES.tsv must name $name exactly once."
 done
 
+title_files=()
+title_rows=0
+title_header_seen=0
+while IFS=$'\t' read -r sequence filename mode artifact artifact_sha \
+  approval_record extra; do
+  if [[ "$sequence" == "序号" || "$sequence" == "sequence" ]]; then
+    [[ "$filename" == "filename" && "$mode" == "mode" ]] || \
+      fail "meta/MAIN-TITLES.tsv has an invalid header."
+    title_header_seen=1
+    continue
+  fi
+  [[ -z "$extra" ]] || \
+    fail "meta/MAIN-TITLES.tsv row has too many fields: ${sequence:-unknown}"
+  [[ -n "$sequence" && -n "$filename" && -n "$mode" && \
+     -n "$artifact" && -n "$artifact_sha" && -n "$approval_record" ]] || \
+    fail "Incomplete meta/MAIN-TITLES.tsv row for sequence: ${sequence:-unknown}"
+  [[ "$filename" != */* && "$filename" == "$sequence-"* ]] || \
+    fail "Main-title row filename does not match sequence $sequence: $filename"
+  [[ -f "$package/$filename" ]] || \
+    fail "Main-title manifest names a non-cover file: $filename"
+
+  case "$mode" in
+    locked-artwork)
+      [[ "$artifact" == meta/title-artwork/*.png ]] || \
+        fail "Locked title artifact must be a package-local meta/title-artwork PNG: $artifact"
+      [[ "$approval_record" == meta/title-approvals/*.txt ]] || \
+        fail "Locked title approval must be a package-local meta/title-approvals TXT: $approval_record"
+      for relative in "$artifact" "$approval_record"; do
+        if [[ "$relative" == /* || "$relative" == ".." || \
+              "$relative" == ../* || "$relative" == */../* || \
+              "$relative" == */.. ]]; then
+          fail "Main-title package path escapes the package: $relative"
+        fi
+      done
+      [[ "$artifact_sha" =~ ^[0-9a-fA-F]{64}$ ]] || \
+        fail "Locked title artifact needs a SHA-256 digest: $artifact_sha"
+      [[ -f "$package/$artifact" ]] || \
+        fail "Missing locked title artifact: $artifact"
+      actual_title_sha=$(shasum -a 256 "$package/$artifact" | awk '{print $1}')
+      [[ "$actual_title_sha" == "$artifact_sha" ]] || \
+        fail "Locked title SHA-256 mismatch for $artifact: $actual_title_sha"
+      title_contract=$(magick identify \
+        -format '%wx%h|%[colorspace]|%[channels]|%[page]' "$package/$artifact")
+      title_dimensions=${title_contract%%|*}
+      title_rest=${title_contract#*|}
+      title_colorspace=${title_rest%%|*}
+      title_rest=${title_rest#*|}
+      title_channels=${title_rest%%|*}
+      title_page=${title_rest#*|}
+      if [[ "$title_dimensions" != "${canvas_w}x${canvas_h}" || \
+            "$title_colorspace" != sRGB || "$title_channels" != *a* || \
+            "$title_page" != "${canvas_w}x${canvas_h}" ]]; then
+        fail "Locked title layer contract failed for $artifact: $title_contract"
+      fi
+      [[ -s "$package/$approval_record" ]] || \
+        fail "Missing or empty locked-title approval record: $approval_record"
+      grep -Fqi -- "$artifact_sha" "$package/$approval_record" || \
+        fail "Approval record does not name the exact locked-title SHA: $approval_record"
+      ;;
+    deterministic-font)
+      [[ "$artifact" == none && "$artifact_sha" == none && \
+         "$approval_record" == not-applicable ]] || \
+        fail "Deterministic title rows must use none, none, not-applicable."
+      ;;
+    artwork-candidate)
+      fail "artwork-candidate is not release-eligible: $filename"
+      ;;
+    *)
+      fail "Unknown main-title mode for $filename: $mode"
+      ;;
+  esac
+
+  title_files+=("$filename")
+  title_rows=$((title_rows + 1))
+done < "$title_manifest"
+(( title_header_seen == 1 )) || \
+  fail "meta/MAIN-TITLES.tsv is missing its header."
+(( title_rows == expected_count )) || \
+  fail "meta/MAIN-TITLES.tsv does not contain ${expected_count} title rows."
+for cover in "${covers[@]}"; do
+  name=$(basename "$cover")
+  matches=0
+  for filename in "${title_files[@]}"; do
+    [[ "$filename" == "$name" ]] && matches=$((matches + 1))
+  done
+  (( matches == 1 )) || \
+    fail "meta/MAIN-TITLES.tsv must name $name exactly once."
+done
+
 font_sha=$(shasum -a 256 "$top_font" | awk '{print $1}')
 [[ "$font_sha" == "$top_font_sha" ]] || \
   fail "TOP_FONT SHA-256 mismatch: $font_sha"
@@ -204,4 +296,5 @@ done
 
 printf 'PASS package=%s covers=%s canvas=%sx%s ' \
   "$package" "$expected_count" "$canvas_w" "$canvas_h"
-printf '%s\n' 'hashes=verified provenance=verified qa=verified font=verified'
+printf '%s\n' \
+  'hashes=verified provenance=verified qa=verified font=verified titles=verified'

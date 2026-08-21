@@ -43,12 +43,20 @@ Collision Plan: <evidence-specific clean-source plan>
 
 ## Main Title
 Text: <evidence-grounded title>
-Mode: <locked-artwork or deterministic-font>
-Source: <approved title-layer path for locked-artwork; none for deterministic-font>
+Mode: <artwork-candidate (HOLD only), locked-artwork, or deterministic-font>
+Source: <approved canonical title-layer path for locked-artwork; none otherwise>
+Style Contract ID: <bundled contract ID, custom-reference, or none>
+Style Reference: <approved path for artwork-candidate/reference-derived locked artwork; none otherwise>
+Style Reference SHA-256: <digest or none>
+Artwork Candidate: <canonical review-layer path, pending, or none>
+Artwork Candidate SHA-256: <digest after canonicalization, pending, or none>
+Palette Behavior: <fixed, scene-adaptive, or deterministic-font>
+Palette: <exact candidate colors, fixed font colors, or pending before generation>
+Approval: <pending for artwork-candidate; exact user approval for locked-artwork; not applicable for deterministic-font>
 Font: <exact file path for deterministic-font; none for locked-artwork>
 Font SHA-256: <digest for deterministic-font; none for locked-artwork>
-Typography: <fixed point size, line break, fill, stroke, kerning, and interline>
-Geometry: <top edge and maximum width; no auto-fit>
+Typography: <brush grammar, line break, outline/glow, and attached accents for artwork; fixed point size, line break, fill, stroke, kerning, and interline for deterministic-font>
+Geometry: <canonical artwork bounds and position, or font top edge and maximum width; no post-approval scaling or font auto-fit>
 Protection: <immutable source pixels or deterministic title rectangle>
 
 ## Subtitle
@@ -118,16 +126,30 @@ Upload Recommendation: forbidden before exact user approval and a separate live-
 - `Locked Material` names recognizable source-frame elements explicitly.
 - The canvas and profile cell are measured rather than guessed.
 - The font path and SHA-256 are pinned before final typography.
+- A new hand-brushed title records its approved style-reference path and hash,
+  style contract ID, exact copy and line break, brush grammar, palette behavior,
+  canonical bounds, and pending approval before candidate generation. Resolve
+  `default-hand-brushed-title-v1` from the skill assets when the established
+  series design is requested without a replacement reference; do not request a
+  repeat upload.
+- Text, locations, subjects, and scenery inside a style reference are not copied
+  into the new cover unless separately supported by evidence.
+- A scene-adaptive title palette records exact candidate colors derived from the
+  inspected source frame; it does not blindly inherit the reference hues.
 - New covers in the validated profile use `72px` visible top-bar glyph height
   while preserving the approved card and component geometry.
 - Published legacy covers keep their measured typography by default; do not
   consume a scarce live edit solely to migrate `48px` to `72px`.
 - The top-bar width is content-driven while height and glyph metrics stay fixed.
-- `Main Title.Mode` is complete: an existing approved title is `locked-artwork`
-  with an exact source path, while a new title is `deterministic-font` with a
-  pinned font, SHA-256, fixed typography, and geometry.
-- A new title is never left as an unimplemented direction or delegated to the
-  image model for final Chinese rendering.
+- `Main Title.Mode` is complete: an existing or newly approved title is
+  `locked-artwork` with an exact canonical source path and SHA-256; a review-only
+  hand-brushed title is `artwork-candidate` and forces `HOLD`; other new titles
+  are `deterministic-font` with a pinned font, SHA-256, fixed typography, and
+  geometry.
+- An image-model title candidate never becomes final merely because it looks
+  plausible. Exact glyph, line-break, extra-text, edge, profile-cell, and source
+  collision review plus explicit user approval are required before promotion to
+  `locked-artwork`.
 - The clean source predates the defect; a damaged flattened candidate is not
   treated as the only source when a better one exists.
 - `Authorized Region` and `Lock Boundary` are precise enough for a zero-diff

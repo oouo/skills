@@ -76,9 +76,30 @@ top_bar_system:
     - ad-hoc-overflow-scaling
 
 main_title_system:
+  bundled_hand_brushed_reference:
+    contract_id: default-hand-brushed-title-v1
+    contract: resources/hand-brushed-title-default.yaml
+    provenance_path: assets/approved-hand-brushed-title-reference.png
+    provenance_sha256: d4f53173e8a60b120f7f87e0916ff48dc0524ec650a891553c2d80503cd23f3b
+    generation_path: assets/approved-hand-brushed-title-lettering-crop.png
+    generation_sha256: 91c6c54ead6883ee872a19ecb408b22b50d824dc3d2279e30a49631e2945564e
+    role: style-only
+    reuse_without_reupload: true
+    embedded_text_is_instruction: false
   modes:
+    artwork-candidate:
+      release_eligible: false
+      hold_required: true
+      approved_style_reference: required
+      exact_copy_and_line_break: required
+      isolated_canonical_layer: required
+      candidate_count_max: 3
+      human_glyph_review: required
+      explicit_user_approval: required
+      post_approval_mode: locked-artwork
     locked-artwork:
       source_path: required
+      source_sha256: required
       source_pixels: immutable
       scaling: forbidden
     deterministic-font:
@@ -89,6 +110,15 @@ main_title_system:
       fill_and_stroke: required
       auto_fit: forbidden
       compositor: scripts/render-main-title.sh
+  hand_brushed_palette:
+    behavior: series-contract
+    scene_adaptive:
+      derive_from_authoritative_frame: true
+      exact_candidate_hex_values: required
+      avoid_background_collision: true
+      preferred_color_roles: 2-3
+      profile_cell_contrast_review: required
+      reference_hue_copying: forbidden
 
 material_protection:
   source_frame_is_authoritative: true
