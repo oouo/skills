@@ -99,6 +99,64 @@ class SkillContractTests(unittest.TestCase):
             self.assertIn("expected_output", item)
             self.assertIn("files", item)
 
+    def test_original_illustration_fallback_is_explicit_and_auditable(self) -> None:
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        brief = (ROOT / "references" / "brief-contract.md").read_text(
+            encoding="utf-8"
+        )
+        release = (ROOT / "references" / "release-gate.md").read_text(
+            encoding="utf-8"
+        )
+        fallback = (
+            ROOT / "references" / "original-illustration-fallback.md"
+        ).read_text(encoding="utf-8")
+        combined = "\n".join((skill, brief, release, fallback))
+        for marker in (
+            "original-illustration",
+            "Source-Frame Attempt",
+            "User Feedback Trigger",
+            "Failed-Frame Audit",
+            "Truth Claim",
+            "Visible-Text Allowlist",
+            "Prompt Manifest",
+            "original illustration; not a video frame",
+            "Never remove or disguise a third-party watermark",
+            "Use case: illustration-story",
+        ):
+            self.assertIn(marker, combined)
+        self.assertIn("source-frame direction first", skill)
+        self.assertIn(
+            "weak frames or narrow repair notes alone never activate", brief
+        )
+        self.assertIn(
+            "refined Chinese travel-poster illustration, hand-painted gouache",
+            combined,
+        )
+        self.assertIn("cinematic rather than childish", combined)
+        self.assertRegex(skill.lower(), r"do not\s+attach")
+        self.assertNotIn("licensed-photo", brief)
+        self.assertIn(
+            "Visual Source Mode: <source-frame or original-illustration>", brief
+        )
+
+        evals = json.loads((ROOT / "evals" / "evals.json").read_text("utf-8"))
+        approved = next(item for item in evals["evals"] if item["id"] == 13)
+        self.assertIn("实拍帧封面我不太满意", approved["prompt"])
+        self.assertIn("watermarked image", approved["expected_output"])
+        denied = next(item for item in evals["evals"] if item["id"] == 14)
+        self.assertIn("先按实拍帧做封面", denied["prompt"])
+        self.assertIn(
+            "Starts and stays on source-frame mode", denied["expected_output"]
+        )
+        dissatisfied = next(item for item in evals["evals"] if item["id"] == 15)
+        self.assertIn("实拍封面我不太满意", dissatisfied["prompt"])
+        self.assertIn("routing trigger", dissatisfied["expected_output"])
+        narrow_repair = next(item for item in evals["evals"] if item["id"] == 16)
+        self.assertIn("大标题位置有点高", narrow_repair["prompt"])
+        self.assertIn(
+            "narrow title-placement repair", narrow_repair["expected_output"]
+        )
+
     def test_hand_brushed_title_candidate_requires_approval(self) -> None:
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         reference = (

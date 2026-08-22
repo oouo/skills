@@ -33,6 +33,9 @@ new artifact to `HOLD` until the full gate is rerun.
 11. For reference-guided hand-brushed titles, the approved canonical RGBA title
     layer, its SHA-256, style contract ID, style-reference provenance, and exact
     user approval.
+12. For `original-illustration`, the source-frame attempt and review, exact user
+    feedback trigger, approval, truth claim, visible-text allowlist, exact
+    prompt/tool manifest, approved generated plate, and plate SHA-256.
 
 ## Mechanical gates
 
@@ -67,6 +70,19 @@ new artifact to `HOLD` until the full gate is rerun.
 - every `SOURCES.tsv` filename maps exactly once to the packaged cover set
 - each video ID has one original video, one evidence contact sheet, one brief,
   and one source record
+- `original-illustration` records the original video evidence, first source-frame
+  attempt, its review status, and exact user-feedback trigger while mapping the
+  final cover to the approved generated plate; weak frames without user feedback
+  never activate this mode, and neither the manifest nor user-facing copy calls
+  the plate a frame or documentary photo
+- the prompt manifest contains the fixed Chinese travel-poster, hand-painted
+  gouache, light ink-wash, cinematic-not-childish rendering contract and the
+  generated plate preserves evidence-backed content from the inspected frame
+- the generated plate's exact expanded prompt, tool, dimensions, output path,
+  SHA-256, truth claim, approval, and visible-text allowlist agree across the
+  brief, prompt manifest, and source record
+- an uncertain or watermarked third-party image is absent from edit inputs and
+  packaged sources; only generic written ideas may be recorded as inspiration
 - each reference-guided title records the style-reference path and SHA-256 while
   keeping the reference's embedded text and scene out of the new cover's factual
   evidence
@@ -105,6 +121,11 @@ Inspect all of the following; no single montage replaces another:
 - bottom and outer edges for crops, patches, and residue
 - exact profile cells and the real/app-shell three-column layout
 - each cover beside its video contact sheet
+- for `original-illustration`, the source-frame attempt, exact feedback trigger,
+  and prompt manifest beside the generated plate, checking fixed-style adherence,
+  source-frame content continuity, factual consistency, material composition
+  difference from uncertain third-party references, allowlisted text, and
+  absence of invented identities or watermarks
 
 Pay special attention to defects automation commonly misses: clipped title
 strokes, similarly colored rectangular bands, isolated alpha residue, subtle
@@ -121,6 +142,9 @@ obvious in the profile grid.
 | Hand-brushed candidate unapproved or misspelled | Keep `HOLD`; reject or regenerate an isolated candidate and request exact user approval. |
 | Background changes outside title | Replace a color mask with a source-difference/geometric mask. |
 | Recognizable subject changed | Reject; restart from the video-frame material and lock the subject. |
+| Illustration lacks prior overall dissatisfaction | Reject; restore `source-frame` and await feedback. |
+| Illustration presented as a video frame | Reject; restore the explicit truth claim and generated-plate provenance. |
+| Illustration copies an uncertain reference or contains extra text/logo | Reject; regenerate from written evidence with a materially different composition and exact allowlist. |
 | Profile grid exposes imbalance | Recompose the clean visual; do not silently alter shared typography. |
 
 ## Final report template
@@ -132,6 +156,7 @@ Cover count: <actual/expected>
 Cover SHA-256: <pass/fail>
 QA SHA-256: <pass/fail>
 Source/video mapping: <pass/fail>
+Visual-source mode and generated-plate provenance: <pass/fail/not applicable>
 Typography contract: <pass/fail>
 Hand-brushed title approval and locked-layer hash: <pass/fail/not applicable>
 Locked-pixel checks: <pass/fail>

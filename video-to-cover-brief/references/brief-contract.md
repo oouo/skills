@@ -16,9 +16,19 @@ Typography Generation: <new-72px or legacy-published-measured>
 Video ID: <ID or slug>
 Original Video: <path>
 Contact Sheet: <path>
+Visual Source Mode: <source-frame or original-illustration>
 Authoritative Subject Source: <frame or cover path>
 Locked Material: <identity-bearing subjects/evidence-bearing regions/title pixels>
 Generation Authorization: <background-only, clean-top-only, full visual, or none>
+Source-Frame Attempt: <first candidate or brief direction presented to the user>
+Source-Frame Review: <strengths, limitations, and user-visible status>
+User Feedback Trigger: <exact dissatisfaction/cartoon request or not applicable>
+Failed-Frame Audit: <candidate paths/timestamps and limitations, or not applicable>
+Illustration Approval: <exact overall dissatisfaction/cartoon request or not applicable>
+Truth Claim: <video frame or original illustration; not a video frame>
+Memory Object: <one approved story cue or none>
+Visible-Text Allowlist: <exact generated-plate copy or empty>
+Prompt Manifest: <path with exact prompt/tool/output/hash, pending, or not applicable>
 
 ## Content Profile
 Primary Subject: <evidence-grounded subject phrase>
@@ -75,9 +85,12 @@ Routing Reason: <approved series rule, matched evidence signals, or general fall
 - Mood: <evidence-grounded mood>
 - Decorative Hints: <concise hints>
 - Subject Priority: <subject>
+- Representation Rule: <source frame or fixed-style illustration>
 
 ## Layout Rules
-- Preserve the authoritative video-frame subject and approved title pixels.
+- Preserve the authoritative video-frame subject and approved title pixels; for
+  `original-illustration`, preserve the exact user-approved generated plate
+  instead and never describe it as a frame.
 - Generate only the region named by Generation Authorization.
 - Keep the deterministic top bar as the stable series spine.
 - Add no unapproved visible copy, logo, watermark, or badge.
@@ -99,6 +112,9 @@ Known-Defect Regressions: <list or none yet>
 - bottom/edge crop
 - exact profile cell and three-column grid
 - side-by-side video contact sheet comparison
+- for `original-illustration`, source-frame attempt, exact feedback trigger,
+  fixed-style adherence, source-frame content continuity, prompt-manifest,
+  truth-claim, composition-difference, and visible-text-allowlist review
 
 ## Release Gate
 Status: HOLD
@@ -117,6 +133,20 @@ Upload Recommendation: forbidden before exact user approval and a separate live-
 
 - The video ID, original video, contact sheet, brief, and authoritative source
   all exist or are explicitly pending before generation.
+- `Visual Source Mode` starts as `source-frame`. `original-illustration` requires
+  a recorded source-frame attempt and exact overall negative feedback or cartoon
+  request. That feedback authorizes one local cartoon candidate, which remains
+  `HOLD`; weak frames or narrow repair notes alone never activate this mode.
+- The illustration prompt preserves the fixed rendering contract: refined
+  Chinese travel-poster illustration, hand-painted gouache and light ink-wash
+  texture, cinematic rather than childish. Apply it as style only; factual
+  content still comes from the inspected video evidence.
+- A watermarked or uncertain third-party image is not an edit target or attached
+  generation reference. Only user-approved generic ideas may enter the written
+  evidence bundle, and the generated composition must materially differ.
+- Generated-plate text is empty unless exact factual copy on a generic memory
+  object is recorded in `Visible-Text Allowlist`; logos and unsupported signs
+  remain forbidden.
 - Every title, top-bar field, location, subject, and story claim has evidence.
 - The content profile describes the evidence without forcing a closed genre.
 - An unmatched genre routes to `source-led-neutral` instead of being rejected.

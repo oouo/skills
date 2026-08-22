@@ -74,6 +74,30 @@
       "prompt": "继续用我们已经定下来的两行手绘大标题设计做这条新视频，标题颜色还是跟着新画面换。我这次没有附旧封面，也不想再贴参考图；先给我看三个以内的标题候选。",
       "expected_output": "Automatically resolves the bundled default-hand-brushed-title-v1 contract, verifies the provenance and lettering-crop hashes, uses the bundled lettering crop as the generation reference, and does not request a repeat upload. It derives a scene-adaptive palette from the new frame, produces at most three isolated canonical artwork-candidate layers, and remains HOLD for exact glyph, placement, and profile-cell approval.",
       "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "你刚给我的安昌实拍帧封面我不太满意，画面还是糊和过曝。换成卡通插画试试：保留乌篷船和写着‘安昌’的红色咖啡杯，但不要照抄我发来的公众号水印图，也别把插画说成视频截图。",
+      "expected_output": "Records the previously presented source-frame direction and the exact negative-feedback trigger, then switches to original-illustration because the user clearly asked to continue with cartoon artwork. It grounds Anchang, the black-awning boat, and the generic place-name cup in evidence/user statements; applies the fixed refined Chinese travel-poster, hand-painted gouache and light ink-wash, cinematic-not-childish style; uses the inspected video frame as content evidence without attaching or editing the watermarked image; allowlists only ‘安昌’; saves the exact prompt/tool/output/hash and truth claim; presents the clean base at HOLD; and keeps the main title on the separate approval path.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "prompt": "视频里有一帧人物和景点都清楚，只是背景稍微杂一点。先按实拍帧做封面给我看，不要直接改成插画。",
+      "expected_output": "Starts and stays on source-frame mode, protects the recognizable person, pose, and scenery, and presents the evidence-grounded source-frame direction first. It may propose a narrow background repair but does not activate original-illustration without later negative feedback or a cartoon revision request.",
+      "files": []
+    },
+    {
+      "id": 15,
+      "prompt": "刚才那版实拍封面我不太满意，主体虽然对，但整体不好看。可以换成卡通类的方案继续做。",
+      "expected_output": "Treats the explicit dissatisfaction plus request to continue with a cartoon direction as the routing trigger and approval for original-illustration. It records the source-frame attempt and exact feedback, uses the inspected frame as content evidence, applies the fixed refined Chinese travel-poster, hand-painted gouache and light ink-wash, cinematic-not-childish rendering contract, keeps unsupported facts and extra text out, and presents the clean cartoon base at HOLD before title assembly.",
+      "files": []
+    },
+    {
+      "id": 16,
+      "prompt": "实拍封面整体可以，就是大标题位置有点高，我对这个地方不太满意，往下挪一点。",
+      "expected_output": "Treats this as a narrow title-placement repair rather than overall dissatisfaction with the source-frame direction. It keeps source-frame mode, moves only an intact approved title layer when authorized or rerenders deterministic type from its contract, and does not activate the cartoon alternative.",
+      "files": []
     }
   ]
 }

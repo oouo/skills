@@ -5,8 +5,9 @@ description: >-
   Douyin cover brief, cover series, or published-cover replacement. Covers
   keyframe provenance, source-material preservation, reference-guided
   hand-brushed title approval, deterministic Simplified Chinese typography,
-  preset routing, staged generation, profile-grid QA, pixel-diff release gates,
-  and final version packaging.
+  preset routing, a source-frame-first cartoon alternative after negative user
+  feedback, staged generation, profile-grid QA, pixel-diff release gates, and
+  final version packaging.
 compatibility: >-
   Requires local video or keyframes. Deterministic rendering and QA use
   ffmpeg/ffprobe, ImageMagick 7, HarfBuzz, Bash, shasum, and user-approved
@@ -23,6 +24,12 @@ Start with evidence and a renderer-neutral brief. Preserve supplied video-frame
 material as immutable source pixels, use an image model only where generation is
 actually authorized, and finish Chinese typography as either deterministic type
 or explicitly approved, pixel-locked artwork.
+
+Always build and present the source-frame direction first. When the user says
+that direction is unsatisfactory or explicitly asks to continue with a cartoon
+or illustration treatment, the workflow may switch to an evidence-constrained
+original illustration. The illustration represents the documented story; it is
+never described or packaged as a frame from the video.
 
 The workflow can stop after the brief or continue through generation, local
 review, repair, and packaging. A candidate is never a release merely because it
@@ -43,6 +50,27 @@ workflow do.
   not loose visual references. Do not redraw recognizable people, animals,
   products, characters, interfaces, landmarks, props, poses, or scenery unless
   the user explicitly asks for it.
+- Use a source frame for the first cover direction even when the best candidate
+  has recorded limitations. Do not self-route to illustration merely because a
+  frame is weak, generation is easier, or an illustration may look more dramatic.
+- Open `original-illustration` only after the user reacts negatively to the
+  source-frame direction or explicitly requests a cartoon or illustration
+  revision. Record the exact feedback as the routing trigger. Explicit overall
+  dissatisfaction such as “not quite satisfied” authorizes one local cartoon
+  candidate; a narrow repair note about typography, color, or cropping does not.
+- Ground every illustrated location, action, subject, and memory object in the
+  inspected video or an explicit user statement. Use the fixed visual treatment:
+  refined Chinese travel-poster illustration, hand-painted gouache and light
+  ink-wash texture, cinematic rather than childish. Treat this as rendering
+  language only; do not invent travel facts or scenery unsupported by the video.
+- A third-party or watermarked image with uncertain provenance may inform only
+  high-level, non-exclusive ideas such as “red place-name cup beside a canal.”
+  Do not remove its watermark, trace it, feed it to an edit call, or copy its
+  camera angle, object placement, architecture, people, or distinctive styling.
+- Keep generated visual copy empty by default. A short factual place name on a
+  generic memory object is allowed only when the user requests it and it is
+  recorded in the visible-text allowlist; brands, logos, and unsupported signs
+  remain forbidden.
 - Treat an approved hand-brushed main title as locked artwork. Do not regenerate,
   retype, stretch, compress, or replace it. Move an intact title layer only when
   the user approves the layout change.
@@ -102,9 +130,14 @@ workflow do.
 | Title-style reference | Bundled default or user-approved replacement | Resolve the established design from the skill assets without asking for a repeat upload. |
 | Existing neighboring covers | Recommended for a series | Judge the three-column grid. |
 | Publication state/edit budget | Optional | Treat reported live edits as scarce; never guess. |
+| Source-frame feedback | Illustration only | Record dissatisfaction or a cartoon request. |
+| Memory object and visible copy | Optional | Preserve one user-selected story cue under an exact visible-text allowlist. |
 
-If the user provides no usable video or keyframe evidence, stop and request it.
-Do not substitute a verbal summary for visual identity or layout evidence.
+If the user provides no video or keyframe evidence, stop and request it. A weak
+frame set does not independently activate `original-illustration`: present the
+best evidence-grounded source-frame direction and let user feedback control the
+switch. Do not substitute a verbal summary for visual identity or layout
+evidence.
 
 ## Instructions
 
@@ -125,25 +158,37 @@ Do not substitute a verbal summary for visual identity or layout evidence.
 5. Add frames around cuts, readable text, or the intended cover moment.
 6. Build a contact sheet and inspect it. Record the subject, action, setting,
    readable source text, location clues, and uncertainty.
-7. Cite a frame path and timestamp or transcript line for every material claim.
+7. Score candidate frames for focus, exposure, resolution, subject legibility,
+   crop resilience, and title-safe-zone availability. Record rejection reasons
+   instead of recycling a visibly failed frame.
+8. Cite a frame path and timestamp or transcript line for every material claim.
 
-Finish only when beginning/middle/end evidence exists and at least one frame is
-suitable for the generation or compositing handoff.
+Finish when beginning/middle/end evidence exists, plausible cover moments have
+recorded strengths and limitations, and one best available frame is selected for
+the first source-frame direction. If every frame is weak, disclose that limitation
+instead of switching modes automatically.
 
 ### 2. Profile the content and write the brief
 
 1. Build a concise, evidence-grounded content profile: primary subject, story
    hook, factual context, and material that must remain recognizable.
-2. Read [references/preset-routing.md](references/preset-routing.md),
+2. Start with `Visual Source Mode: source-frame`. Record the exact first candidate
+   or brief direction presented to the user and its review status. Change the mode
+   to `original-illustration` only after qualifying user feedback; for that mode,
+   read
+   [references/original-illustration-fallback.md](references/original-illustration-fallback.md)
+   and record the source-frame attempt, exact feedback trigger, approval state,
+   truth claim, memory object, visible-text allowlist, and prompt-manifest path.
+3. Read [references/preset-routing.md](references/preset-routing.md),
    [resources/cover-presets.yaml](resources/cover-presets.yaml), and
    [references/top-bar-system.md](references/top-bar-system.md).
-3. Prefer a user- or series-approved preset, otherwise use a specialized preset
+4. Prefer a user- or series-approved preset, otherwise use a specialized preset
    when its evidence signals clearly match. Fall back to `source-led-neutral`
    for every other genre; never reject a video merely because no specialized
    preset exists.
-4. Resolve a factual top-bar label, palette or source-preservation rule,
+5. Resolve a factual top-bar label, palette or source-preservation rule,
    protected source regions, and an intentional collision plan.
-5. Propose a concrete Simplified Chinese main title and choose one current state:
+6. Propose a concrete Simplified Chinese main title and choose one current state:
    - `locked-artwork`: record the intact approved title source and pixel lock
    - `artwork-candidate`: for a new hand-brushed title, record the approved style
      contract ID, reference path and SHA-256, exact copy and line break, brush
@@ -151,7 +196,7 @@ suitable for the generation or compositing handoff.
      pending approval; this state forces `HOLD`
    - `deterministic-font`: pin the title font, SHA-256, point size, line break,
      fill, stroke, top edge, and maximum width; do not use auto-fit
-6. Read [references/brief-contract.md](references/brief-contract.md), write
+7. Read [references/brief-contract.md](references/brief-contract.md), write
    `briefs/<video-id>.md`, validate every field, report `HOLD`, and pause for the
    user's confirmation before image generation.
 
@@ -185,25 +230,31 @@ reference profile is a proven default, not authority over explicit user assets.
 
 After confirmation:
 
-1. For a series, select three covers that stress different conditions: a short
+1. If `Visual Source Mode` is `original-illustration`, generate a newly designed
+   base from the source-frame evidence bundle and fixed prompt template. Use the
+   best inspected video frame as the content reference, but do not attach an
+   uncertain third-party image. Save the exact feedback trigger, final prompt,
+   tool, dimensions, output path, SHA-256, truth claim, and visible-text
+   allowlist; present the clean base for approval before generating the main title.
+2. For a series, select three covers that stress different conditions: a short
    top-bar label, a long label, and a subject/title close to the top safe zone.
    For one cover, present up to three local candidates when useful.
-2. Use the inspected frame as an edit/composition reference, not permission to
+3. Use the inspected frame as an edit/composition reference, not permission to
    invent a new subject.
-3. When the main title is `artwork-candidate`, create the title review batch
+4. When the main title is `artwork-candidate`, create the title review batch
    before assembling a cover. Generate at most three isolated title candidates,
    normalize each onto the canonical transparent canvas before review, and show
    an enlarged title crop plus an exact profile-cell mockup. Keep the source
    frame unchanged. After the user explicitly approves one exact candidate,
    record its canonical path, dimensions, and SHA-256 and change the mode to
    `locked-artwork`; do not scale or regenerate it afterward.
-4. Ask the image model for a text-free clean visual or a clean repair plate. If
+5. Ask the image model for a text-free clean visual or a clean repair plate. If
    the existing subject and title are already approved, generate only the
    missing background region.
-5. Compose the deterministic top bar with `scripts/render-cover-type.sh`. It
+6. Compose the deterministic top bar with `scripts/render-cover-type.sh`. It
    requires `TOP_FONT`, accepts `INPUT OUTPUT LEFT [RIGHT]`, rejects unstable
    visible-height normalization, and changes only the top-card rectangle.
-6. Resolve the main title according to its release mode:
+7. Resolve the main title according to its release mode:
    - for `locked-artwork`, restore the exact approved title pixels from the
      authoritative source without retyping or scaling them
    - for `deterministic-font`, run `scripts/render-main-title.sh` with the pinned
@@ -216,9 +267,9 @@ After confirmation:
    ```
 
    Never pass approved hand-brushed title artwork to this compositor.
-7. Build full-size, top-bar, main-title, subject, edge, exact-cell, and
+8. Build full-size, top-bar, main-title, subject, edge, exact-cell, and
    three-column previews.
-8. Present the three as a batch and collect concrete feedback before generating
+9. Present the three as a batch and collect concrete feedback before generating
    the next three. Change the shared rule first when the problem is systemic.
 
 ### 5. Repair without collateral damage
@@ -251,6 +302,9 @@ Read [references/release-gate.md](references/release-gate.md). Require:
 - rejection of every remaining `artwork-candidate`; only the exact
   user-approved canonical title layer may appear as `locked-artwork`
 - source manifest and SHA-256 equality between packaged files and sources
+- for `original-illustration`, the source-frame attempt, exact user-feedback
+  trigger, prompt manifest, generated-plate hash, approval, and an internal truth
+  claim that it is not a frame
 - zero pixel difference outside every repair mask or locked boundary
 - regression checks for every previously observed defect
 - human review of the full cover, top bar, main title, subject, edges, and actual
@@ -289,6 +343,12 @@ Any failed or unverified gate returns the candidate to `HOLD`.
 When a raster image model or `baoyu-cover-image` is used:
 
 - provide the brief and at least one inspected reference frame
+- for `original-illustration`, follow
+  [references/original-illustration-fallback.md](references/original-illustration-fallback.md),
+  use the best inspected video frame as the content reference, pass any uncertain
+  third-party image only as written generic constraints, apply the fixed Chinese
+  travel-poster, gouache, light ink-wash, cinematic-not-childish treatment, and
+  save the exact expanded prompt
 - for visual/background generation, request `3:4`, Simplified Chinese context,
   and a text-free layer; remove all prompt requests for visible Chinese, tags,
   badges, logos, dates, captions, signs, and watermarks
