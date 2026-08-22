@@ -20,9 +20,12 @@
 skills/
 ├── <skill-name>/               ← Each skill is a top-level directory
 │   ├── SKILL.md                  (required)
+│   ├── agents/                   (optional client metadata)
 │   ├── scripts/                  (optional)
 │   ├── evals/                    (optional)
+│   ├── examples/                 (optional)
 │   ├── references/               (optional)
+│   ├── assets/                   (optional binary or visual assets)
 │   ├── resources/                (optional)
 │   └── tests/                    (optional)
 ├── AGENTS.md
@@ -42,7 +45,7 @@ skills/
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
-| [`video-to-cover-brief`](video-to-cover-brief/) | Build genre-agnostic Douyin covers with source-pixel locks, deterministic Chinese typography, and staged release QA. |
+| [`video-to-cover-brief`](video-to-cover-brief/) | Build source-frame-first Douyin covers with an approved original-illustration fallback, deterministic Chinese typography, and staged release QA. |
 
 ## Quick Start
 
@@ -82,11 +85,13 @@ Every skill is a directory containing at minimum a `SKILL.md`:
 ```
 my-skill/
 ├── SKILL.md          # Required: YAML frontmatter + instructions (< 500 lines)
+├── agents/           # Optional: client-specific metadata
 ├── scripts/          # Optional: Executable helpers (Python, Bash, etc.)
 ├── evals/            # Optional: Evaluation prompts and expected outcomes
 ├── examples/         # Optional: Reference implementations
 ├── references/       # Optional: Deep docs loaded on-demand (saves tokens)
-├── resources/        # Optional: Templates, configs, static assets
+├── assets/           # Optional: Binary or visual assets
+├── resources/        # Optional: Templates, configs, static data
 └── tests/            # Optional: Self-contained checks and fixtures
 ```
 

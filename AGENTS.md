@@ -31,11 +31,13 @@ point; do not duplicate the full rules across both files.
 
 ### File Organization
 
+- `agents/` — Client-specific metadata only (for example, `agents/openai.yaml`).
 - `scripts/` — Executable helpers only (Python, Bash, PowerShell).
 - `evals/` — Evaluation prompts, fixtures, and expected outcomes.
 - `examples/` — Reference implementations the agent can study.
 - `references/` — Deep documentation loaded on-demand (progressive disclosure).
-- `resources/` — Templates, configs, static assets.
+- `assets/` — Binary or visual assets used directly by the skill.
+- `resources/` — Templates, configs, and static data.
 - `tests/` — Self-contained skill checks and fixtures; avoid network access by default.
 - Do NOT add empty subdirectories. Only create them when you have content.
 
@@ -48,6 +50,13 @@ point; do not duplicate the full rules across both files.
 - Prefer bullet lists and tables over paragraphs.
 - Keep lines under 100 characters where practical.
 - Use imperative language in instructions ("Always do X", not "X is preferred").
+
+### Validation
+
+- Run every validator documented by the changed skill.
+- Run skill-local tests when present:
+  `python3 -m unittest discover -s "<skill-name>/tests" -p "test_*.py"`.
+- Run `git diff --check` before committing.
 
 ### Git
 
