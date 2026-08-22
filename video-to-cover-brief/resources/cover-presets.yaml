@@ -1,4 +1,4 @@
-version: 7
+version: 8
 
 output_system:
   validated_canvas_px:
@@ -22,6 +22,7 @@ output_system:
 top_bar_system:
   id: centered-adaptive-cream-card
   role: series-spine
+  font_contract: resources/top-bar-font-contract.json
   geometry:
     position: top-center
     validated_canvas_px:
@@ -40,7 +41,12 @@ top_bar_system:
       bundled_default_outer_padding_total_px: 320
   typography:
     language: zh-CN
-    family: user-approved-local-font
+    contract_id: lxgw-wenkai-optical-semibold-v1
+    family: LXGW WenKai
+    style: Medium
+    bundled_font: assets/fonts/LXGWWenKai-Medium.ttf
+    bundled_font_sha256: d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6
+    override: explicit-user-approval-only
     source_point_size: 120
     source_kerning_px: 2
     source_stroke_px: 4
@@ -67,6 +73,9 @@ top_bar_system:
     - Restore locked title and subject pixels from the authoritative source.
     - Pause instead of changing shared typography.
   forbidden_fallbacks:
+    - system-font
+    - fontconfig-first-match
+    - silent-font-substitution
     - corner-tag
     - split-pill
     - stacked-badge

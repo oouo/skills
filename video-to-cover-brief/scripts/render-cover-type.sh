@@ -4,13 +4,17 @@ set -euo pipefail
 
 usage() {
   cat >&2 <<'USAGE'
-Usage: TOP_FONT=/path/to/font.ttf render-cover-type.sh INPUT OUTPUT LEFT [RIGHT]
+Usage: render-cover-type.sh INPUT OUTPUT LEFT [RIGHT]
 
 Render one deterministic top bar onto an already approved, text-free top plate.
 The script never renders or moves the main title and never calls an image model.
 
 Optional environment variables:
-  TOP_FONT_SHA256       expected font digest; verified when set
+  TOP_FONT              explicit user-approved override; bundled default otherwise
+  TOP_FONT_SHA256       required digest for an override
+  TOP_FONT_CONTRACT_ID  required contract ID for an override
+  TOP_FONT_APPROVAL_RECORD
+                        required approval record for an override
   CANVAS_W/H            default 1086 / 1448
   CARD_TOP              default 38
   CARD_H                opaque card height; default 96
@@ -32,7 +36,7 @@ if [[ $# -lt 3 || $# -gt 4 ]]; then
   exit 2
 fi
 
-for dependency in magick hb-shape shasum; do
+for dependency in magick hb-shape shasum python3; do
   if ! command -v "$dependency" >/dev/null 2>&1; then
     echo "Missing dependency: $dependency" >&2
     exit 3
@@ -43,16 +47,18 @@ input=$1
 output=$2
 left_text=$3
 right_text=${4:-}
-font=${TOP_FONT:-}
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 
 if [[ ! -f "$input" ]]; then
   echo "Input not found: $input" >&2
   exit 4
 fi
-if [[ -z "$font" || ! -f "$font" ]]; then
-  echo "Set TOP_FONT to the approved local Simplified Chinese font file." >&2
+if ! resolution=$(python3 "$script_dir/resolve-top-bar-font.py" --format tsv); then
+  echo "Top-bar font contract could not be resolved." >&2
   exit 5
 fi
+IFS=$'\t' read -r font font_sha font_contract_id font_source \
+  font_approval_provenance font_approval_record_sha <<< "$resolution"
 if [[ "$input" == "$output" ]] || { [[ -e "$output" ]] && [[ "$input" -ef "$output" ]]; }; then
   echo "OUTPUT must not overwrite INPUT." >&2
   exit 6
@@ -130,12 +136,10 @@ if [[ "$input_dimensions" != "${canvas_w}x${canvas_h}" || \
   exit 9
 fi
 
-if [[ -n "${TOP_FONT_SHA256:-}" ]]; then
-  font_sha=$(shasum -a 256 "$font" | awk '{print $1}')
-  if [[ "$font_sha" != "$TOP_FONT_SHA256" ]]; then
-    echo "TOP_FONT SHA-256 mismatch: $font_sha" >&2
-    exit 10
-  fi
+actual_font_sha=$(shasum -a 256 "$font" | awk '{print $1}')
+if [[ "$actual_font_sha" != "$font_sha" ]]; then
+  echo "Resolved top-bar font SHA-256 changed: $actual_font_sha" >&2
+  exit 10
 fi
 
 shape_text=$left_text
@@ -269,6 +273,7 @@ if [[ "$outside_max" != 0 && "$outside_max" != 0.0 ]]; then
   exit 16
 fi
 
-printf 'PASS %s | card=%sx%s+%s+%s | visible-text=%spx | outside-max=%s\n' \
-  "$output" "$card_w" "$component_h" "$card_x" "$card_top" \
+printf 'PASS %s | font-contract=%s | font-source=%s | card=%sx%s+%s+%s | visible-text=%spx | outside-max=%s\n' \
+  "$output" "$font_contract_id" "$font_source" \
+  "$card_w" "$component_h" "$card_x" "$card_top" \
   "$visible_text_h" "$outside_max"

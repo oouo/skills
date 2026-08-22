@@ -15,6 +15,23 @@ cover looks acceptable alone.
 Generate the visual layer without the final bar. Compose the bar with a real
 font file after generation and verify its pixels mechanically.
 
+## Locked default font
+
+Resolve the top-bar font through
+`scripts/resolve-top-bar-font.py` and
+`resources/top-bar-font-contract.json`. The bundled default is the proportional
+`assets/fonts/LXGWWenKai-Medium.ttf` file with SHA-256
+`d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6`.
+Its approved visual treatment is called
+`lxgw-wenkai-optical-semibold-v1`: Medium plus a `4px` same-color stroke. The
+name does not describe a separate Semibold font file.
+
+An absent, changed, or unreadable bundled font returns `HOLD`; never search the
+host system for a replacement. A different font is an explicit override and
+must supply `TOP_FONT`, `TOP_FONT_SHA256`, `TOP_FONT_CONTRACT_ID`, and a
+`TOP_FONT_APPROVAL_RECORD` that names the exact contract ID and digest. Do not
+bundle an alternative whose redistribution license has not been confirmed.
+
 ## Validated 1086×1448 profile
 
 The reference implementation uses:
@@ -33,8 +50,10 @@ The reference implementation uses:
   text edge to the dot
 - shadow, glow, outline, bottom strip, and external ornament: none
 
-The font is a project dependency. Pin its path and SHA-256. Check every label
-with HarfBuzz before rendering; `.notdef` or `gid0` is a release failure.
+The locked default font is a skill dependency. Record its contract ID, bundled
+path, SHA-256, source, and approval provenance in every new brief and package.
+Check every label with HarfBuzz before rendering; `.notdef` or `gid0` is a
+release failure.
 
 The 120pt-to-72px step is the validated system's one allowed
 `uniform-visible-height` normalization. It preserves the label's aspect ratio

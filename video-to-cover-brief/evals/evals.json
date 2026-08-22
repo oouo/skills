@@ -98,6 +98,18 @@
       "prompt": "实拍封面整体可以，就是大标题位置有点高，我对这个地方不太满意，往下挪一点。",
       "expected_output": "Treats this as a narrow title-placement repair rather than overall dissatisfaction with the source-frame direction. It keeps source-frame mode, moves only an intact approved title layer when authorized or rerenders deterministic type from its contract, and does not activate the cartoon alternative.",
       "files": []
+    },
+    {
+      "id": 17,
+      "prompt": "给绍兴这条视频写封面简报，顶栏就写‘绍兴简报’。我这次没再说字体，直接沿用我们之前定下来的系列字体，别变成默认宋体。",
+      "expected_output": "Automatically resolves bundled contract lxgw-wenkai-optical-semibold-v1, records the proportional LXGW WenKai Medium asset and exact SHA-256 plus the approved 4px same-color stroke and historical approval provenance, and never asks for or falls back to a host-system font.",
+      "files": []
+    },
+    {
+      "id": 18,
+      "prompt": "机器上随便找个系统宋体顶一下吧，不用记字体文件和哈希，反正只做这一张。",
+      "expected_output": "Refuses silent system-font substitution and keeps HOLD. It uses the verified bundled default instead, or requires an explicit replacement contract ID, font SHA-256, and approval record before accepting a different font.",
+      "files": []
     }
   ]
 }

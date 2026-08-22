@@ -18,6 +18,15 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
+FONT_CONTRACT = ROOT / "resources" / "top-bar-font-contract.json"
+FONT_RESOLVER = SCRIPTS / "resolve-top-bar-font.py"
+BUNDLED_TOP_FONT = ROOT / "assets" / "fonts" / "LXGWWenKai-Medium.ttf"
+TOP_FONT_ENV_KEYS = (
+    "TOP_FONT",
+    "TOP_FONT_SHA256",
+    "TOP_FONT_CONTRACT_ID",
+    "TOP_FONT_APPROVAL_RECORD",
+)
 
 
 class SkillContractTests(unittest.TestCase):
@@ -68,10 +77,51 @@ class SkillContractTests(unittest.TestCase):
             skill,
         )
         self.assertIn("visible_glyph_height_px: 72", presets)
+        self.assertIn("lxgw-wenkai-optical-semibold-v1", combined)
+        self.assertIn("assets/fonts/LXGWWenKai-Medium.ttf", combined)
+        self.assertIn("system-font", presets)
         renderer = (SCRIPTS / "render-cover-type.sh").read_text()
         self.assertIn("VISIBLE_TEXT_H:-72", renderer)
+        self.assertIn("resolve-top-bar-font.py", renderer)
         self.assertIn("Legacy published covers", topbar)
         self.assertRegex(skill, r"48px.*legacy published-cover value")
+
+    def test_bundled_top_bar_font_contract_verifies(self) -> None:
+        contract = json.loads(FONT_CONTRACT.read_text(encoding="utf-8"))
+        self.assertEqual(
+            contract["contract_id"], "lxgw-wenkai-optical-semibold-v1"
+        )
+        self.assertEqual(contract["font"]["path"], "assets/fonts/LXGWWenKai-Medium.ttf")
+        self.assertTrue(contract["font"]["proportional"])
+        self.assertEqual(contract["rendering"]["source_stroke_px"], 4)
+        self.assertTrue(BUNDLED_TOP_FONT.is_file())
+        self.assertTrue((ROOT / "assets" / "fonts" / "OFL.txt").is_file())
+        self.assertEqual(
+            hashlib.sha256(BUNDLED_TOP_FONT.read_bytes()).hexdigest(),
+            "d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6",
+        )
+
+        result = subprocess.run(
+            [str(SCRIPTS / "check-top-bar-font-assets.sh")],
+            check=True,
+            env=self._clean_top_font_env(),
+            text=True,
+            capture_output=True,
+        )
+        self.assertIn("contract=lxgw-wenkai-optical-semibold-v1", result.stdout)
+        self.assertIn("source=bundled", result.stdout)
+
+    def test_unapproved_top_bar_font_override_is_rejected(self) -> None:
+        env = self._clean_top_font_env()
+        env["TOP_FONT"] = str(BUNDLED_TOP_FONT)
+        result = subprocess.run(
+            [str(FONT_RESOLVER), "--format", "json"],
+            env=env,
+            text=True,
+            capture_output=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("explicit approval fields", result.stderr)
 
     def test_genre_is_a_routing_signal_not_an_eligibility_gate(self) -> None:
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
@@ -245,10 +295,15 @@ class SkillContractTests(unittest.TestCase):
         for dependency in ("magick", "hb-shape", "shasum"):
             if not shutil.which(dependency):
                 self.skipTest(f"{dependency} is required for raster QA")
-        font = os.environ.get("VIDEO_COVER_TEST_FONT")
-        if not font or not pathlib.Path(font).is_file():
-            self.skipTest("Set VIDEO_COVER_TEST_FONT to a Chinese font for raster QA")
-        return pathlib.Path(font)
+        self.assertTrue(BUNDLED_TOP_FONT.is_file())
+        return BUNDLED_TOP_FONT
+
+    def _clean_top_font_env(self) -> dict[str, str]:
+        return {
+            key: value
+            for key, value in os.environ.items()
+            if key not in TOP_FONT_ENV_KEYS
+        }
 
     def _make_source(self, path: pathlib.Path) -> None:
         subprocess.run(
@@ -350,6 +405,12 @@ class SkillContractTests(unittest.TestCase):
             encoding="utf-8",
         )
         (meta / "TOPBAR-TEXT.txt").write_text("江苏 · 兴化\n", encoding="utf-8")
+        font_manifest = subprocess.check_output(
+            [str(FONT_RESOLVER), "--format", "manifest"],
+            env=self._clean_top_font_env(),
+            text=True,
+        )
+        (meta / "TOPBAR-FONT.json").write_text(font_manifest, encoding="utf-8")
         (meta / "MAIN-TITLES.tsv").write_text(
             "sequence\tfilename\tmode\tartifact\tartifact_sha256\tapproval_record\n"
             f"01\t{cover_name}\tdeterministic-font\tnone\tnone\tnot-applicable\n",
@@ -361,12 +422,7 @@ class SkillContractTests(unittest.TestCase):
         shutil.copyfile(source, qa_image)
         self._write_hash_manifest(qa, [qa_image.name], qa / "QA-SHA256SUMS")
 
-        env = dict(
-            os.environ,
-            PROJECT_ROOT=str(project),
-            TOP_FONT=str(font),
-            TOP_FONT_SHA256=hashlib.sha256(font.read_bytes()).hexdigest(),
-        )
+        env = dict(self._clean_top_font_env(), PROJECT_ROOT=str(project))
         return project, package, env
 
     def test_renderer_preserves_everything_outside_topbar(self) -> None:
@@ -376,7 +432,7 @@ class SkillContractTests(unittest.TestCase):
             source = tmp_path / "source.png"
             output = tmp_path / "output.png"
             self._make_source(source)
-            env = dict(os.environ, TOP_FONT=str(font), CARD_WIDTH="700")
+            env = dict(self._clean_top_font_env(), CARD_WIDTH="700")
             result = subprocess.run(
                 [
                     str(SCRIPTS / "render-cover-type.sh"),
@@ -404,7 +460,7 @@ class SkillContractTests(unittest.TestCase):
             source = tmp_path / "source.png"
             output = tmp_path / "output.png"
             self._make_source(source)
-            env = dict(os.environ, TOP_FONT=str(font), CARD_TOP="1448")
+            env = dict(self._clean_top_font_env(), CARD_TOP="1448")
             result = subprocess.run(
                 [
                     str(SCRIPTS / "render-cover-type.sh"),
@@ -427,7 +483,7 @@ class SkillContractTests(unittest.TestCase):
             source = tmp_path / "source.png"
             output = tmp_path / "output.png"
             self._make_source(source)
-            env = dict(os.environ, TOP_FONT=str(font))
+            env = self._clean_top_font_env()
             result = subprocess.run(
                 [
                     str(SCRIPTS / "render-cover-type.sh"),
@@ -451,7 +507,7 @@ class SkillContractTests(unittest.TestCase):
             repeated_output = tmp_path / "output-repeated.png"
             self._make_source(source)
             env = dict(
-                os.environ,
+                self._clean_top_font_env(),
                 TITLE_FONT=str(font),
                 TITLE_FONT_SHA256=hashlib.sha256(font.read_bytes()).hexdigest(),
                 TITLE_POINT_SIZE="116",
@@ -505,6 +561,29 @@ class SkillContractTests(unittest.TestCase):
                 capture_output=True,
             )
             self.assertIn("provenance=verified", result.stdout)
+            self.assertIn(
+                "font-contract=lxgw-wenkai-optical-semibold-v1", result.stdout
+            )
+
+    def test_release_checker_rejects_font_manifest_mismatch(self) -> None:
+        font = self._require_raster_font()
+        with tempfile.TemporaryDirectory(prefix="video-cover-font-manifest-") as tmp:
+            _, package, env = self._build_release_fixture(pathlib.Path(tmp), font)
+            manifest_path = package / "meta" / "TOPBAR-FONT.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["font_sha256"] = "0" * 64
+            manifest_path.write_text(
+                json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [str(SCRIPTS / "check-cover-release.sh"), str(package), "1"],
+                env=env,
+                text=True,
+                capture_output=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("manifest does not match", result.stderr)
 
     def test_release_checker_rejects_extra_png_and_wrong_manifest(self) -> None:
         font = self._require_raster_font()

@@ -10,8 +10,8 @@ description: >-
   final version packaging.
 compatibility: >-
   Requires local video or keyframes. Deterministic rendering and QA use
-  ffmpeg/ffprobe, ImageMagick 7, HarfBuzz, Bash, shasum, and user-approved
-  Chinese fonts. New hand-brushed title candidates use the bundled approved
+  ffmpeg/ffprobe, ImageMagick 7, HarfBuzz, Bash, Python 3, shasum, and the
+  bundled locked top-bar font or an explicitly approved override. New hand-brushed title candidates use the bundled approved
   default reference or a user-approved alternative plus raster image generation.
 ---
 
@@ -115,6 +115,11 @@ workflow do.
   remaining edit budget unless the user explicitly authorizes the exact edit;
   reserve scarce live edits for factual errors, wrong-cover pairing, severe
   clipping, or similarly material defects.
+- Resolve every new top bar from bundled contract
+  `lxgw-wenkai-optical-semibold-v1`: proportional LXGW WenKai Medium with the
+  locked SHA-256 and `4px` same-color stroke. Missing or changed font bytes force
+  `HOLD`; never fall back to a host-system Song, Hei, or first-match font. A
+  replacement needs an exact user-approved override record.
 - Keep only one canonical final package. Preserve rejected and superseded work
   as history, but do not expose multiple folders as competing final versions.
 
@@ -125,7 +130,7 @@ workflow do.
 | Local video or evidence frames | Yes | Establish the real subject, action, and scene. |
 | Canvas/profile screenshot | Recommended | Lock canvas and measure the profile cell. |
 | Existing cover or clean source plate | Optional | Preserve pixels; repair only named regions. |
-| Approved top-bar font | Required before final type | Make Chinese deterministic and auditable. |
+| Top-bar font override | Optional | The bundled locked default is automatic; a replacement needs exact user approval. |
 | Title artwork or font | Required before final type | Lock artwork or render deterministic type. |
 | Title-style reference | Bundled default or user-approved replacement | Resolve the established design from the skill assets without asking for a repeat upload. |
 | Existing neighboring covers | Recommended for a series | Judge the three-column grid. |
@@ -181,7 +186,8 @@ instead of switching modes automatically.
    truth claim, memory object, visible-text allowlist, and prompt-manifest path.
 3. Read [references/preset-routing.md](references/preset-routing.md),
    [resources/cover-presets.yaml](resources/cover-presets.yaml), and
-   [references/top-bar-system.md](references/top-bar-system.md).
+   [references/top-bar-system.md](references/top-bar-system.md). Run
+   `scripts/check-top-bar-font-assets.sh`; a failure keeps the brief at `HOLD`.
 4. Prefer a user- or series-approved preset, otherwise use a specialized preset
    when its evidence signals clearly match. Fall back to `source-led-neutral`
    for every other genre; never reject a video merely because no specialized
@@ -208,7 +214,8 @@ user request:
 
 - canonical canvas and color space; use `1086×1448` sRGB PNG when matching the
   validated reference implementation, otherwise use the user's measured canvas
-- exact top-bar font file and SHA-256
+- exact top-bar font contract ID, source, file, SHA-256, and approval provenance;
+  use the bundled locked default unless an explicit approved override is complete
 - top-bar top edge, card height, component height, visible glyph height, color,
   stroke, padding, corner radius, and separator geometry
 - for the validated profile, `72px` visible glyph height on new covers without
@@ -252,8 +259,9 @@ After confirmation:
    the existing subject and title are already approved, generate only the
    missing background region.
 6. Compose the deterministic top bar with `scripts/render-cover-type.sh`. It
-   requires `TOP_FONT`, accepts `INPUT OUTPUT LEFT [RIGHT]`, rejects unstable
-   visible-height normalization, and changes only the top-card rectangle.
+   resolves the bundled locked font automatically, accepts `INPUT OUTPUT LEFT
+   [RIGHT]`, rejects unapproved overrides and unstable visible-height
+   normalization, and changes only the top-card rectangle.
 7. Resolve the main title according to its release mode:
    - for `locked-artwork`, restore the exact approved title pixels from the
      authoritative source without retyping or scaling them
@@ -297,7 +305,8 @@ Read [references/release-gate.md](references/release-gate.md). Require:
 
 - exact dimensions, color space, channel contract, and normalized virtual canvas
 - expected top-bar geometry and visible glyph height
-- approved top-bar and deterministic-title font SHA plus HarfBuzz glyph coverage
+- a verified top-bar font contract and deterministic-title font SHA plus
+  HarfBuzz glyph coverage
 - a complete `locked-artwork` or `deterministic-font` main-title contract
 - rejection of every remaining `artwork-candidate`; only the exact
   user-approved canonical title layer may appear as `locked-artwork`
@@ -317,15 +326,18 @@ Any failed or unverified gate returns the candidate to `HOLD`.
 ### 7. Package and close
 
 1. Collect the exact user-approved files into one numbered package.
-2. Write `meta/SOURCES.tsv`, `meta/SHA256SUMS`, `meta/TOPBAR-TEXT.txt`, hashed QA
+2. Write `meta/SOURCES.tsv`, `meta/SHA256SUMS`, `meta/TOPBAR-TEXT.txt`,
+   `meta/TOPBAR-FONT.json`, hashed QA
    artifacts, and a package-local review record. Write `meta/MAIN-TITLES.tsv`
    with one row per cover; include the canonical title layer and a hash-bound
    approval record for `locked-artwork`, or explicit `none` fields for
    `deterministic-font`. Never package `artwork-candidate`.
-3. Run the generic gate with explicit provenance and font inputs:
+3. Generate the package font manifest and run the generic gate:
 
    ```bash
-   PROJECT_ROOT='<project>' TOP_FONT='<font>' TOP_FONT_SHA256='<digest>' \
+   scripts/resolve-top-bar-font.py --format manifest \
+     > '<package>/meta/TOPBAR-FONT.json'
+   PROJECT_ROOT='<project>' \
      scripts/check-cover-release.sh '<package>' '<expected-count>'
    ```
 
@@ -383,4 +395,7 @@ owns the transition from candidate lettering to locked final typography.
    `resources/hand-brushed-title-default.yaml`; update its asset hashes and tests
    whenever an approved style asset changes.
 6. Add repeatable mechanical work to `scripts/`; do not duplicate it in prose.
-7. Add an eval whenever a real failure reveals a reusable boundary.
+7. Change the bundled top-bar font only by issuing a new contract ID, asset
+   SHA-256, approval record, and regression tests; never mutate the current
+   contract in place or introduce a system fallback.
+8. Add an eval whenever a real failure reveals a reusable boundary.

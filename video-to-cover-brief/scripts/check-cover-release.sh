@@ -4,8 +4,7 @@ set -euo pipefail
 
 usage() {
   cat >&2 <<'USAGE'
-Usage: PROJECT_ROOT=/project TOP_FONT=/font.ttf TOP_FONT_SHA256=<digest> \
-  check-cover-release.sh PACKAGE_DIR [EXPECTED_COUNT]
+Usage: PROJECT_ROOT=/project check-cover-release.sh PACKAGE_DIR [EXPECTED_COUNT]
 
 Verify the portable file, hash, provenance, QA, top-bar font, and main-title
 release-state contract of a canonical cover package. Project-specific geometry,
@@ -14,6 +13,8 @@ checker.
 
 Optional environment variables:
   CANVAS_W/H  expected dimensions; default 1086 / 1448
+  TOP_FONT, TOP_FONT_SHA256, TOP_FONT_CONTRACT_ID, TOP_FONT_APPROVAL_RECORD
+                explicit approved override; bundled default otherwise
 USAGE
 }
 
@@ -26,21 +27,21 @@ if [[ $# -lt 1 || $# -gt 2 ]]; then
   usage
   exit 2
 fi
-for dependency in magick shasum hb-shape; do
+for dependency in magick shasum hb-shape python3; do
   command -v "$dependency" >/dev/null 2>&1 || \
     fail "Missing dependency: $dependency"
 done
 
 package=$1
 expected_count=${2:-12}
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 canvas_w=${CANVAS_W:-1086}
 canvas_h=${CANVAS_H:-1448}
 project_root=${PROJECT_ROOT:-}
-top_font=${TOP_FONT:-}
-top_font_sha=${TOP_FONT_SHA256:-}
 cover_manifest="$package/meta/SHA256SUMS"
 source_manifest="$package/meta/SOURCES.tsv"
 topbar_text="$package/meta/TOPBAR-TEXT.txt"
+topbar_font_manifest="$package/meta/TOPBAR-FONT.json"
 title_manifest="$package/meta/MAIN-TITLES.tsv"
 
 [[ -d "$package" ]] || fail "Package not found: $package"
@@ -52,14 +53,18 @@ for number in "$canvas_w" "$canvas_h"; do
     fail "CANVAS_W/H must be positive integers."
 done
 [[ -d "$project_root" ]] || fail "Set PROJECT_ROOT to the source project directory."
-[[ -f "$top_font" ]] || fail "Set TOP_FONT to the approved local font file."
-[[ "$top_font_sha" =~ ^[0-9a-fA-F]{64}$ ]] || \
-  fail "Set TOP_FONT_SHA256 to the approved font digest."
 for required in "$cover_manifest" "$source_manifest" "$topbar_text" \
-  "$title_manifest"; do
+  "$topbar_font_manifest" "$title_manifest"; do
   [[ -f "$required" ]] || fail "Missing required package file: $required"
 done
 [[ -d "$package/qa" ]] || fail "Missing required package directory: qa"
+
+if ! resolution=$(python3 "$script_dir/resolve-top-bar-font.py" --format tsv \
+  --verify-manifest "$topbar_font_manifest"); then
+  fail "Top-bar font contract or package manifest could not be verified."
+fi
+IFS=$'\t' read -r top_font top_font_sha top_font_contract_id top_font_source \
+  top_font_approval top_font_approval_sha <<< "$resolution"
 
 covers=()
 for candidate in "$package"/[0-9][0-9]-*.png; do
@@ -296,5 +301,6 @@ done
 
 printf 'PASS package=%s covers=%s canvas=%sx%s ' \
   "$package" "$expected_count" "$canvas_w" "$canvas_h"
-printf '%s\n' \
+printf 'font-contract=%s font-source=%s %s\n' \
+  "$top_font_contract_id" "$top_font_source" \
   'hashes=verified provenance=verified qa=verified font=verified titles=verified'

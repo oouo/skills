@@ -44,8 +44,11 @@ Platform Overlay: protect the measured bottom-left play-count zone
 
 ## Top Bar
 Text: <single factual label or left · right pair>
-Font: <exact file path>
-Font SHA-256: <digest>
+Font Contract ID: <bundled lxgw-wenkai-optical-semibold-v1 or explicit approved override ID>
+Font Source: <bundled or explicit-user-approved-override>
+Font: <exact bundled asset path or approved override path>
+Font SHA-256: <exact digest>
+Approval Provenance: <historical-user-approved-series-top-bar or exact override record>
 Card: <top, card height, component height, fill, corner radius>
 Typography: <visible glyph height, fill, stroke, kerning; no auto-fit>
 Width Rule: content-driven from measured text plus fixed padding
@@ -155,7 +158,10 @@ Upload Recommendation: forbidden before exact user approval and a separate live-
 - `Generation Authorization` is narrower than or equal to the user's request.
 - `Locked Material` names recognizable source-frame elements explicitly.
 - The canvas and profile cell are measured rather than guessed.
-- The font path and SHA-256 are pinned before final typography.
+- The top-bar font contract ID, source, path, SHA-256, and approval provenance
+  are pinned before final typography. New briefs use the bundled
+  `lxgw-wenkai-optical-semibold-v1` contract unless the user explicitly approves
+  a fully recorded override; system-font fallback is forbidden.
 - A new hand-brushed title records its approved style-reference path and hash,
   style contract ID, exact copy and line break, brush grammar, palette behavior,
   canonical bounds, and pending approval before candidate generation. Resolve

@@ -1,0 +1,44 @@
+{
+  "contract_id": "lxgw-wenkai-optical-semibold-v1",
+  "status": "locked-default",
+  "font": {
+    "path": "assets/fonts/LXGWWenKai-Medium.ttf",
+    "sha256": "d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6",
+    "family": "LXGW WenKai",
+    "style": "Medium",
+    "format": "TrueType",
+    "face_index": 0,
+    "proportional": true,
+    "license_path": "assets/fonts/OFL.txt",
+    "license": "SIL Open Font License 1.1",
+    "source": "https://github.com/lxgw/LxgwWenKai/releases/tag/v1.522"
+  },
+  "rendering": {
+    "visual_weight_name": "optical-semibold",
+    "source_point_size": 120,
+    "source_kerning_px": 2,
+    "source_stroke_px": 4,
+    "visible_glyph_height_px": 72,
+    "fill": "#1654A8",
+    "stroke": "#1654A8"
+  },
+  "approval": {
+    "provenance": "historical-user-approved-series-top-bar",
+    "decision": "LXGW WenKai Medium with 4px same-color stroke",
+    "alternative_status": "Hanyi Shanhaijing 95U remains an unbundled alternative"
+  },
+  "override_policy": {
+    "mode": "explicit-user-approval-only",
+    "required_environment": [
+      "TOP_FONT",
+      "TOP_FONT_SHA256",
+      "TOP_FONT_CONTRACT_ID",
+      "TOP_FONT_APPROVAL_RECORD"
+    ],
+    "forbidden_fallbacks": [
+      "system-font",
+      "fontconfig-first-match",
+      "silent-substitution"
+    ]
+  }
+}
