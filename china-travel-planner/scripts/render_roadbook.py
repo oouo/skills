@@ -284,9 +284,16 @@ CSS = r"""
   --shadow: 0 18px 50px rgba(16, 42, 38, .10);
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(72px + env(safe-area-inset-top));
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 body {
   margin: 0;
+  min-width: 0;
+  padding-bottom: env(safe-area-inset-bottom);
   background:
     radial-gradient(circle at 8% 0%, rgba(228, 179, 60, .15), transparent 28rem),
     linear-gradient(180deg, #edf1e9 0, var(--mist-50) 30rem);
@@ -294,6 +301,7 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   line-height: 1.62;
+  overflow-wrap: anywhere;
 }
 a { color: var(--river); text-underline-offset: .18em; }
 .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 64px; }
@@ -320,13 +328,68 @@ a { color: var(--river); text-underline-offset: .18em; }
 h1, h2, h3, p { margin-top: 0; }
 h1 { max-width: 780px; margin-bottom: 8px; font-size: clamp(2rem, 7vw, 4.6rem); line-height: 1.08; }
 .subtitle { max-width: 720px; margin-bottom: 22px; color: #dfe8e2; font-size: 1.05rem; }
-.hero-meta, .route-strip, .badge-row { display: flex; flex-wrap: wrap; gap: 9px; }
-.hero-meta span, .route-strip span {
+.hero-meta, .badge-row { display: flex; flex-wrap: wrap; gap: 9px; }
+.hero-meta span {
   padding: 7px 11px;
   border: 1px solid rgba(255,255,255,.24);
   border-radius: 999px;
   background: rgba(255,255,255,.08);
 }
+.review-spine {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-auto-columns: minmax(210px, 1fr);
+  grid-auto-flow: column;
+  gap: 10px;
+  margin-top: 24px;
+  padding-bottom: 5px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+}
+.review-step {
+  min-height: 92px;
+  padding: 13px 14px;
+  border-top: 3px solid var(--road);
+  border-radius: 4px 4px 14px 14px;
+  background: rgba(255,255,255,.10);
+  scroll-snap-align: start;
+}
+.review-step strong, .review-step span { display: block; }
+.review-step span { margin-top: 3px; color: #dfe8e2; font-size: .88rem; }
+.review-nav {
+  position: sticky;
+  z-index: 20;
+  top: env(safe-area-inset-top);
+  display: flex;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 9px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline proximity;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid rgba(16,42,38,.10);
+  border-radius: 16px;
+  background: rgba(246,247,242,.92);
+  box-shadow: 0 10px 28px rgba(16,42,38,.08);
+  backdrop-filter: blur(14px);
+}
+.review-nav a {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  color: var(--pine-800);
+  font-size: .88rem;
+  font-weight: 750;
+  text-decoration: none;
+  scroll-snap-align: start;
+}
+.review-nav a:hover, .review-nav a:focus-visible { background: var(--mist-100); }
 .fixture-banner, .privacy-note {
   margin: 16px 0 0;
   padding: 12px 14px;
@@ -336,6 +399,7 @@ h1 { max-width: 780px; margin-bottom: 8px; font-size: clamp(2rem, 7vw, 4.6rem); 
   font-weight: 700;
 }
 main { display: grid; gap: 22px; margin-top: 22px; }
+.panel { scroll-margin-top: calc(78px + env(safe-area-inset-top)); }
 .panel {
   padding: clamp(20px, 4vw, 34px);
   border: 1px solid rgba(16,42,38,.08);
@@ -410,19 +474,46 @@ main { display: grid; gap: 22px; margin-top: 22px; }
 .source-list { display: grid; gap: 9px; }
 .source-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 11px 0; border-bottom: 1px solid var(--line); }
 .source-row:last-child { border-bottom: 0; }
+.evidence-details > summary {
+  cursor: pointer;
+  color: var(--pine-800);
+  font-weight: 800;
+}
+.evidence-details > summary::marker { color: var(--road); }
+.evidence-details[open] > summary { margin-bottom: 18px; }
+.evidence-details .source-list { margin-top: 10px; }
 footer { padding: 24px 6px 0; color: var(--muted); font-size: .86rem; }
 .empty { margin-bottom: 0; color: var(--muted); }
 @media (max-width: 720px) {
+  body { font-size: 16px; line-height: 1.72; }
   .shell { width: min(100% - 20px, 1120px); padding-top: 10px; }
-  .hero { border-radius: 20px; }
+  .hero { padding: 26px 22px; border-radius: 20px; }
+  .review-spine { grid-auto-columns: minmax(185px, 78vw); }
+  .review-nav {
+    margin-left: -2px;
+    margin-right: -2px;
+    padding-left: calc(8px + env(safe-area-inset-left));
+    padding-right: calc(8px + env(safe-area-inset-right));
+    scrollbar-width: none;
+  }
+  .review-nav::-webkit-scrollbar { display: none; }
   .panel { border-radius: 18px; }
   .grid { grid-template-columns: 1fr; }
   .section-head { align-items: flex-start; flex-direction: column; gap: 0; }
+}
+@media (max-width: 430px) {
+  .shell { width: calc(100% - 16px); }
+  h1 { font-size: clamp(2rem, 11vw, 3rem); }
+  .subtitle { font-size: 1rem; }
+  .panel { padding: 20px 17px; }
+  .segment { padding: 15px 14px 14px; }
+  .facts { font-size: .875rem; }
 }
 @media print {
   body { background: white; }
   .shell { width: 100%; padding: 0; }
   .hero, .panel { box-shadow: none; break-inside: avoid; }
+  .review-nav { display: none; }
   .panel { border-color: #bbb; }
   .day { break-before: page; }
   a { color: inherit; text-decoration: none; }
@@ -695,6 +786,7 @@ class RoadbookRenderer:
         body = "".join(
             [
                 self._render_hero(),
+                self._render_review_nav(),
                 '<main id="content">',
                 self._render_overview(),
                 self._render_days(),
@@ -706,10 +798,19 @@ class RoadbookRenderer:
             ]
         )
         title = _escape(self.trip.get("title") or "旅行路书")
+        description = _escape(
+            self.trip.get("subtitle") or self.overview.get("summary") or "完整旅行路书"
+        )
         return (
             "<!doctype html>\n"
             '<html lang="zh-CN"><head><meta charset="utf-8">'
-            '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'
+            '<meta name="robots" content="noindex,nofollow,noarchive">'
+            '<meta name="theme-color" content="#102a26">'
+            '<meta property="og:type" content="website">'
+            f'<meta property="og:title" content="{title}">'
+            f'<meta property="og:description" content="{description}">'
+            f'<meta name="description" content="{description}">'
             f"<title>{title}</title><style>{CSS}</style></head><body>"
             f'<div class="shell">{body}</div>'
             f'<script id="trip-data" type="application/json">'
@@ -717,33 +818,16 @@ class RoadbookRenderer:
             "</body></html>\n"
         )
 
-    def _route_names(self) -> list[str]:
-        result: list[str] = []
-        origin_id = self.brief.get("origin_place_id")
-        if origin_id:
-            result.append(_place_name(self.places.get(str(origin_id))))
-        for day in _as_list(self.trip.get("days")):
-            if not isinstance(day, dict):
-                continue
-            for segment in _as_list(day.get("segments")):
-                if not isinstance(segment, dict) or segment.get("type") != "travel":
-                    continue
-                place_id = segment.get("to_place_id")
-                name = _place_name(self.places.get(str(place_id)))
-                if not result or result[-1] != name:
-                    result.append(name)
-        if len(result) < 2:
-            for place_id in _as_list(self.brief.get("destination_place_ids")):
-                name = _place_name(self.places.get(str(place_id)))
-                if not result or result[-1] != name:
-                    result.append(name)
-        return result
-
     def _render_hero(self) -> str:
         status = str(self.trip.get("status", "draft"))
         subtitle = self.trip.get("subtitle") or self.overview.get("summary") or ""
-        route = self._route_names()
-        route_html = "".join(f"<span>{_escape(name)}</span>" for name in route)
+        day_spine = "".join(
+            '<article class="review-step">'
+            f'<strong>D{_escape(day.get("day"))} · {_escape(_format_date(day.get("date")))}</strong>'
+            f'<span>{_escape(day.get("title") or "当日行程")}</span></article>'
+            for day in _as_list(self.trip.get("days"))
+            if isinstance(day, dict)
+        )
         fixture = (
             '<p class="fixture-banner">测试数据 · 非真实行程，请勿据此出发或预订</p>'
             if self.trip.get("fixture") is True
@@ -760,11 +844,30 @@ class RoadbookRenderer:
             f"<span>{_escape(_party_text(self.brief))}</span>"
             f"<span>{_escape(_transport_label(self.brief.get('transport')))}</span>"
             "</div>"
-            f'<div class="route-strip" aria-label="路线">{route_html}</div>'
+            f'<div class="review-spine" aria-label="每日行程概览">{day_spine}</div>'
             f"{fixture}"
             '<p class="privacy-note">分享版不展示联系方式、证件号、订单号或私人地址；'
             "出发前请按清单复核动态信息。</p>"
             "</header>"
+        )
+
+    def _render_review_nav(self) -> str:
+        day_links = "".join(
+            f'<a href="#day-{_escape(day.get("day"))}">D{_escape(day.get("day"))}</a>'
+            for day in _as_list(self.trip.get("days"))
+            if isinstance(day, dict)
+        )
+        food_link = '<a href="#food-stay">吃住</a>' if any(
+            place.get("kind") in {"restaurant", "stay"}
+            for place in self.places.values()
+        ) else ""
+        return (
+            '<nav class="review-nav" aria-label="行程目录">'
+            '<a href="#overview">总览</a>'
+            f"{day_links}{food_link}"
+            '<a href="#checklist">清单</a>'
+            '<a href="#evidence">核验</a>'
+            "</nav>"
         )
 
     def _render_overview(self) -> str:
@@ -995,8 +1098,11 @@ class RoadbookRenderer:
         return (
             '<section class="panel" id="evidence"><div class="section-head"><div>'
             '<p class="section-kicker">结论有出处，未知也可见</p><h2>核验与来源</h2></div></div>'
+            '<p class="muted">完整证据仍随路书交付，默认收起以便群内先审阅行程。</p>'
+            '<details class="evidence-details"><summary>展开核验账本'
+            f'（{len(evidence_cards)} 条事实，{len(source_rows)} 个来源）</summary>'
             f'<div class="grid">{evidence_content}</div><h3>来源新鲜度</h3>'
-            f'<div class="source-list">{sources_content}</div></section>'
+            f'<div class="source-list">{sources_content}</div></details></section>'
         )
 
     def _render_footer(self) -> str:

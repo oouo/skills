@@ -93,6 +93,46 @@
         "Does not block progress on an unspecified optional hotel budget; any budget assumption is explicit and reversible."
       ],
       "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "这份七天行程要一次发微信群给家人完整审阅，图片已经拆成18张了。请改成一个H5链接，大家看完后在群里提修改意见。",
+      "expected_output": "Validates the unchanged trip.json, renders one self-contained mobile H5 review roadbook with the complete itinerary and open decisions, keeps the evidence ledger collapsed but present, and hands off local files with a separate manual-upload reminder.",
+      "expectations": [
+        "Keeps the complete itinerary expanded in one responsive H5 page instead of splitting delivery by day.",
+        "Places open decisions before the daily timeline and provides working in-page day navigation.",
+        "Keeps the complete share-safe evidence ledger present but collapsed by default.",
+        "Adds noindex metadata and embeds the sanitized trip.json without executable JavaScript.",
+        "Does not upload, publish, change DNS, or add WeChat OAuth or JS-SDK; it tells the user to upload the static artifact themselves."
+      ],
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "以后旅行攻略默认把微信群卡片和适合微信浏览的静态H5都给我。H5我自己传EdgeOne，不要每次按目的地新建项目，直接覆盖现有资源。",
+      "expected_output": "Makes cards plus static H5 the default delivery, generates a provider-neutral manual publishing guide outside the public H5, and follows EdgeOne-specific deployment terms only because the user selected that host.",
+      "expectations": [
+        "Renders both the numbered WeChat card pack and the complete static H5 unless the user explicitly limits the channel.",
+        "Optimizes H5 for 360-430 pixel WeChat viewports, safe areas, 16-pixel body text, and 44-pixel tap targets without required JavaScript.",
+        "Places manual publishing instructions beside but outside the public h5 directory and explicitly tells the user to publish h5 themselves.",
+        "Reuses one site or project with a neutral identifier such as travel-roadbook instead of creating one project per destination.",
+        "Uses EdgeOne as the user's selected provider without making it a skill dependency or a universal requirement.",
+        "Explains the selected platform's verified update behavior and does not upload, rename, or change DNS itself."
+      ],
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "卡片和H5都生成，但我不用EdgeOne。请把H5做成能放到任意静态网站托管平台的文件，我自己决定用Cloudflare还是GitHub Pages。",
+      "expected_output": "Renders the same provider-neutral static H5 artifact, gives a generic handoff based on static-hosting capabilities, and explains direct-upload versus Git publishing without steering the user back to EdgeOne.",
+      "expectations": [
+        "Produces a self-contained h5/index.html that has no hosting-vendor runtime dependency.",
+        "Keeps the publishing guide outside h5 and tells the user to publish only the h5 directory.",
+        "Describes direct-upload and Git-based hosting as alternatives instead of assuming one provider's console terminology.",
+        "Does not require, prefer, or redirect the user to EdgeOne after the user rejected it.",
+        "Verifies current provider documentation before giving platform-specific account, domain, or deployment steps."
+      ],
+      "files": []
     }
   ]
 }

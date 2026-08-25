@@ -15,9 +15,11 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = SKILL_ROOT / "tests" / "fixtures" / "wan-nan-roadtrip.json"
 SCRIPT = SKILL_ROOT / "scripts" / "render_roadbook.py"
 WECHAT_SCRIPT = SKILL_ROOT / "scripts" / "render_wechat.py"
+BUNDLE_SCRIPT = SKILL_ROOT / "scripts" / "render_review_bundle.py"
 sys.path.insert(0, str(SKILL_ROOT / "scripts"))
 
 from render_roadbook import make_share_safe_trip, render_html  # noqa: E402
+import render_review_bundle  # noqa: E402
 import render_wechat  # noqa: E402
 
 
@@ -79,7 +81,43 @@ class RoadbookRendererTests(unittest.TestCase):
         self.assertNotIn("出行方式待定", document)
         self.assertIn('name="viewport"', document)
         self.assertIn("@media (max-width: 720px)", document)
+        self.assertIn("@media (max-width: 430px)", document)
         self.assertIn("@media print", document)
+
+    def test_h5_has_wechat_mobile_reading_guards(self) -> None:
+        document = render_html(load_fixture())
+
+        self.assertIn("viewport-fit=cover", document)
+        self.assertIn("env(safe-area-inset-top)", document)
+        self.assertIn("env(safe-area-inset-bottom)", document)
+        self.assertIn("-webkit-text-size-adjust: 100%", document)
+        self.assertIn("body { font-size: 16px; line-height: 1.72; }", document)
+        self.assertIn("min-height: 44px", document)
+        self.assertIn("-webkit-overflow-scrolling: touch", document)
+
+    def test_h5_review_has_share_metadata_and_day_navigation(self) -> None:
+        document = render_html(load_fixture())
+
+        self.assertIn('name="robots" content="noindex,nofollow,noarchive"', document)
+        self.assertIn('property="og:type" content="website"', document)
+        self.assertIn('property="og:title"', document)
+        self.assertIn('property="og:description"', document)
+        self.assertIn('aria-label="行程目录"', document)
+        self.assertIn('href="#overview"', document)
+        self.assertIn('href="#day-1"', document)
+        self.assertIn('href="#day-2"', document)
+        self.assertIn('href="#checklist"', document)
+        self.assertIn('href="#evidence"', document)
+        self.assertIn('class="review-spine"', document)
+        self.assertIn('D1', document)
+        self.assertIn('D2', document)
+
+    def test_evidence_ledger_is_collapsed_without_removing_content(self) -> None:
+        document = render_html(load_fixture())
+
+        self.assertIn('<details class="evidence-details">', document)
+        self.assertIn('<summary>展开核验账本', document)
+        self.assertIn("来源新鲜度", document)
 
     def test_share_safe_trip_json_is_embedded_without_mutating_input(self) -> None:
         trip = load_fixture()
@@ -271,6 +309,68 @@ class RoadbookRendererTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("must not overwrite", result.stderr)
             self.assertEqual(input_path.read_bytes(), before)
+
+
+class ReviewBundleTests(unittest.TestCase):
+    def test_default_bundle_keeps_upload_guide_outside_public_h5(self) -> None:
+        def fake_cards(_data: dict, directory: Path) -> dict:
+            (directory / "cards").mkdir(parents=True)
+            (directory / "summary.txt").write_text("摘要\n", encoding="utf-8")
+            (directory / "manifest.json").write_text("{}\n", encoding="utf-8")
+            return {"card_count": 1}
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "review-bundle"
+            with mock.patch.object(
+                render_review_bundle.render_wechat,
+                "render_pack",
+                side_effect=fake_cards,
+            ):
+                manifest = render_review_bundle.render_bundle(load_fixture(), output)
+
+            self.assertEqual(manifest["card_count"], 1)
+            self.assertTrue((output / "wechat" / "summary.txt").is_file())
+            self.assertTrue((output / "h5" / "index.html").is_file())
+            self.assertTrue((output / "UPLOAD.md").is_file())
+            self.assertFalse((output / "h5" / "UPLOAD.md").exists())
+
+            upload_guide = (output / "UPLOAD.md").read_text(encoding="utf-8")
+            public_h5 = (output / "h5" / "index.html").read_text(encoding="utf-8")
+            self.assertIn("请你自己完成发布", upload_guide)
+            self.assertIn("静态网站托管平台", upload_guide)
+            self.assertIn("Direct Upload", upload_guide)
+            self.assertIn("复用", upload_guide)
+            self.assertIn("travel-roadbook", upload_guide)
+            self.assertIn("EdgeOne Makers", upload_guide)
+            self.assertIn("Cloudflare Pages", upload_guide)
+            self.assertIn("GitHub Pages", upload_guide)
+            self.assertIn("这只是示例，不是限定", upload_guide)
+            self.assertNotIn("在 EdgeOne Makers 打开", upload_guide)
+            self.assertNotIn("手动发布说明", public_h5)
+            self.assertNotIn("EdgeOne Makers", public_h5)
+
+    def test_bundle_cli_reminds_user_to_upload_manually(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "trip.json"
+            input_path.write_bytes(FIXTURE.read_bytes())
+            output = root / "review-bundle"
+
+            with mock.patch.object(
+                render_review_bundle,
+                "render_bundle",
+                return_value={"card_count": 7},
+            ):
+                stdout = mock.patch("sys.stdout")
+                with stdout as stream:
+                    result = render_review_bundle.main(
+                        [str(input_path), "--out", str(output)]
+                    )
+
+            self.assertEqual(result, 0)
+            emitted = "".join(call.args[0] for call in stream.write.call_args_list)
+            self.assertIn("Upload manually", emitted)
+            self.assertIn("UPLOAD.md", emitted)
 
 
 class WeChatRendererTests(unittest.TestCase):

@@ -5,11 +5,33 @@ silently change facts inside a renderer.
 
 ## Contents
 
-1. [WeChat Sharing Pack](#wechat-sharing-pack)
-2. [Card System](#card-system)
-3. [HTML Roadbook](#html-roadbook)
-4. [PDF](#pdf)
-5. [Output QA](#output-qa)
+1. [Default Review Bundle](#default-review-bundle)
+2. [WeChat Sharing Pack](#wechat-sharing-pack)
+3. [Card System](#card-system)
+4. [H5 Review Roadbook](#h5-review-roadbook)
+5. [PDF](#pdf)
+6. [Output QA](#output-qa)
+
+## Default Review Bundle
+
+Unless the user explicitly requests a single channel, produce:
+
+```text
+review-bundle/
+├── wechat/
+│   ├── summary.txt
+│   ├── manifest.json
+│   └── cards/
+├── h5/
+│   └── index.html
+└── UPLOAD.md
+```
+
+Cards are the quick-scan and forwarding layer. H5 is the complete continuous
+review layer. Keep `UPLOAD.md` outside `h5/` so operational instructions do not
+become part of the public site. Tell the user to upload only `h5/` themselves.
+Keep the handoff valid for any static host. Mention a provider only as a
+non-exclusive example or when the user selected it.
 
 ## WeChat Sharing Pack
 
@@ -90,20 +112,38 @@ color. Keep the full trip title on the overview and summary; use a concise,
 complete series label in repeated card headers. Keep formal names, times,
 amounts, and warnings untruncated; split the card when they do not fit.
 
-## HTML Roadbook
+## H5 Review Roadbook
 
-Generate HTML only when requested or when the user needs a detailed road-use
-artifact. Keep it self-contained and responsive. Include:
+Use H5 as the primary WeChat review layer when the group must inspect the whole
+plan at once or the image series would be unwieldy. Render it locally before
+asking to publish. Keep it self-contained and responsive. Include:
 
 - overview, decisions, risks, and source freshness;
+- a mobile day spine and sticky in-page navigation;
 - daily timelines;
 - food and stay options;
 - checklist and evidence ledger;
 - a complete share-safe copy of the JSON in a non-executable
   `<script id="trip-data" type="application/json">` block.
 
+Keep the itinerary expanded because it is the review subject. Collapse the
+evidence ledger by default because it supports the plan rather than leading the
+discussion. Add `noindex`, `nofollow`, and `noarchive` metadata, plus ordinary
+Open Graph title and description metadata. Do not add executable JavaScript only
+to improve link presentation.
+
+Optimize the page for WeChat's narrow in-app browser:
+
+- use `viewport-fit=cover` and safe-area insets;
+- keep body copy at 16 CSS pixels or larger with at least 1.7 mobile line height;
+- keep navigation targets at least 44 CSS pixels tall;
+- test at 360, 390, and 430 CSS pixels without horizontal overflow;
+- use sticky horizontal day navigation with touch scrolling;
+- avoid external fonts, hover-only behavior, animation, and required JavaScript.
+
 Keep navigation or booking URLs as ordinary labeled links. Do not publish or
-host the file without explicit authorization.
+host the file. Put the manual handoff beside the bundle using
+[`h5-publishing.md`](h5-publishing.md).
 
 Omit personal names, phone numbers, identity numbers, booking codes, signed
 URLs, home addresses, and private coordinates from every shareable layer,
@@ -133,6 +173,11 @@ Before delivery, verify that:
 - exact route, time, price, and operating claims match `trip.json`;
 - candidate and unknown facts remain visibly labeled;
 - HTML embeds the same schema version and trip title;
+- H5 has no horizontal overflow at 360, 390, or 430 pixels;
+- H5 has safe-area support, 16-pixel mobile body copy, and 44-pixel tap targets;
+- every H5 day-navigation link targets an existing section;
+- the evidence ledger is present and collapsed by default;
+- upload instructions are outside `h5/` and are absent from `index.html`;
 - fixture or evaluation data is visibly marked as non-production.
 
 For visual QA, inspect the originals, 360x480 phone previews, and a contact

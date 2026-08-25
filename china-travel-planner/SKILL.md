@@ -4,7 +4,7 @@ description: >-
   Use when planning, auditing, or packaging a multi-day trip in China,
   especially a self-drive or family itinerary. Covers source-grounded
   research, route/time/meal feasibility, uncertainty handling, and
-  WeChat-ready image cards with optional HTML or PDF roadbooks.
+  WeChat-ready image cards, group-review H5 roadbooks, and optional PDF archives.
 ---
 
 # China Travel Planner
@@ -24,7 +24,10 @@ single source of truth, then render channel-specific outputs from it.
 | Existing `trip.json`, render only | Step 4, then Step 5 from unchanged input facts |
 | Departure refresh | Refresh due facts in Step 2, then Steps 4 and 6 plus requested outputs |
 
-Default a new planning request with no channel to the WeChat sharing pack.
+Unless the user explicitly requests one channel, default a completed plan to the
+combined WeChat review bundle: image cards for quick sharing plus a static H5 for
+continuous full-plan review. Do not make the user choose between them. Keep H5
+as the primary reading layer when the card series is long.
 
 ## Instructions
 
@@ -116,10 +119,23 @@ python3 scripts/validate_trip.py <trip.json>
 Completion criterion: validation reports zero errors, and every warning has an
 explicit planning or disclosure response.
 
-### 5. Render the Requested Channel
+### 5. Render the Review Bundle
 
 Read [`references/output-contract.md`](references/output-contract.md), then
-render only the channels the user needs.
+render both default channels unless the user explicitly limits the output.
+
+For the default image-card plus H5 bundle:
+
+```text
+python3 scripts/render_review_bundle.py <trip.json> --out <output-directory>
+```
+
+This produces `wechat/`, `h5/index.html`, and an operator-only `UPLOAD.md` next
+to them. Deliver the local paths and explicitly remind the user to upload the
+`h5/` directory themselves. Never place upload instructions inside the public
+H5 page and never initiate a cloud upload as part of ordinary rendering. Keep
+the artifact and default handoff provider-neutral. Treat named hosts such as
+EdgeOne as optional recommendations or user-selected variants, not dependencies.
 
 For a WeChat sharing pack:
 
@@ -131,11 +147,16 @@ This produces a short `summary.txt`, numbered 1080x1440 PNG cards, and a
 `manifest.json`. If Pillow is missing, report the missing dependency and ask
 before installing anything.
 
-For an optional HTML roadbook:
+For an explicitly requested H5-only roadbook:
 
 ```text
-python3 scripts/render_roadbook.py <trip.json> --output <roadbook.html>
+python3 scripts/render_roadbook.py <trip.json> --output <h5-directory>/index.html
 ```
+
+Use the self-contained H5 roadbook for full-plan review in a WeChat group. It
+keeps every day visible in one page, puts open decisions first, and collapses
+the evidence ledger without removing it. Generate a separate upload handoff from
+[`references/h5-publishing.md`](references/h5-publishing.md); do not publish it.
 
 Generate PDF only when requested. Derive it from the validated HTML, then
 render and inspect every page with the available PDF or browser workflow.
@@ -164,4 +185,5 @@ departure-day checks without reading the source ledger.
 - When a renderer fails, preserve the validated JSON and retry only the output
   stage.
 - Treat booking, payment, messaging, publishing, and external uploads as
-  separate actions requiring explicit user authorization.
+  separate actions. The default workflow stops at local artifacts and a manual
+  upload reminder.

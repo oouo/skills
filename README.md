@@ -39,7 +39,7 @@ skills/
 
 | Skill | Purpose |
 | --- | --- |
-| [`china-travel-planner`](china-travel-planner/) | Plan evidence-grounded China trips and render WeChat-ready roadbooks. |
+| [`china-travel-planner`](china-travel-planner/) | Plan evidence-grounded China trips and render WeChat cards plus static H5 roadbooks. |
 | [`codebase-reader`](codebase-reader/) | Find the real entry, execution spine, and reading order of an unfamiliar codebase. |
 | [`full-bleed-icon-creator`](full-bleed-icon-creator/) | Create validated opaque full-bleed module icon sources and PNG/SVG pairs. |
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
