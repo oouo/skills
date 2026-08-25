@@ -10,6 +10,15 @@ point; do not duplicate the full rules across both files.
 
 ## Rules
 
+### Repository Boundary
+
+- When creating or updating skills, write only inside this repository.
+- Never copy, sync, install, or mirror repository changes into active agent
+  directories such as `~/.cc-switch/skills`, `~/.codex/skills`,
+  `~/.claude/skills`, or equivalent CLI-managed locations.
+- The user owns all CC Switch and agent-CLI synchronization. If a loaded skill
+  is stale, report that fact without modifying the loaded copy.
+
 ### Skill Creation
 
 - Place new skills at the **repo root**: `<skill-name>/SKILL.md`.
