@@ -320,7 +320,7 @@ class ReviewBundleTests(unittest.TestCase):
             return {"card_count": 1}
 
         with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "review-bundle"
+            output = Path(directory) / "2026-08-wannan-chuanzangxian"
             with mock.patch.object(
                 render_review_bundle.render_wechat,
                 "render_pack",
@@ -338,23 +338,25 @@ class ReviewBundleTests(unittest.TestCase):
             public_h5 = (output / "h5" / "index.html").read_text(encoding="utf-8")
             self.assertIn("请你自己完成发布", upload_guide)
             self.assertIn("静态网站托管平台", upload_guide)
-            self.assertIn("Direct Upload", upload_guide)
+            self.assertIn("直接上传", upload_guide)
+            self.assertIn("Git 发布", upload_guide)
+            self.assertIn("对象存储", upload_guide)
             self.assertIn("复用", upload_guide)
             self.assertIn("travel-roadbook", upload_guide)
-            self.assertIn("EdgeOne Makers", upload_guide)
-            self.assertIn("Cloudflare Pages", upload_guide)
-            self.assertIn("GitHub Pages", upload_guide)
-            self.assertIn("这只是示例，不是限定", upload_guide)
-            self.assertNotIn("在 EdgeOne Makers 打开", upload_guide)
+            self.assertNotIn("EdgeOne", upload_guide)
+            self.assertNotIn("Cloudflare", upload_guide)
+            self.assertNotIn("GitHub", upload_guide)
             self.assertNotIn("手动发布说明", public_h5)
-            self.assertNotIn("EdgeOne Makers", public_h5)
+            self.assertNotIn("EdgeOne", public_h5)
+            self.assertNotIn("Cloudflare", public_h5)
+            self.assertNotIn("GitHub", public_h5)
 
     def test_bundle_cli_reminds_user_to_upload_manually(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             input_path = root / "trip.json"
             input_path.write_bytes(FIXTURE.read_bytes())
-            output = root / "review-bundle"
+            output = root / "2026-08-wannan-chuanzangxian"
 
             with mock.patch.object(
                 render_review_bundle,
@@ -371,6 +373,40 @@ class ReviewBundleTests(unittest.TestCase):
             emitted = "".join(call.args[0] for call in stream.write.call_args_list)
             self.assertIn("Upload manually", emitted)
             self.assertIn("UPLOAD.md", emitted)
+
+    def test_bundle_cli_rejects_a_generic_output_directory_name(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "trip.json"
+            input_path.write_bytes(FIXTURE.read_bytes())
+
+            with mock.patch.object(render_review_bundle, "render_bundle") as render:
+                result = render_review_bundle.main(
+                    [str(input_path), "--out", str(root / "review-bundle")]
+                )
+
+            self.assertEqual(result, 2)
+            render.assert_not_called()
+
+    def test_bundle_cli_rejects_an_output_month_different_from_start_date(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_path = root / "trip.json"
+            input_path.write_bytes(FIXTURE.read_bytes())
+
+            with mock.patch.object(render_review_bundle, "render_bundle") as render:
+                result = render_review_bundle.main(
+                    [
+                        str(input_path),
+                        "--out",
+                        str(root / "2026-09-wannan-chuanzangxian"),
+                    ]
+                )
+
+            self.assertEqual(result, 2)
+            render.assert_not_called()
 
 
 class WeChatRendererTests(unittest.TestCase):

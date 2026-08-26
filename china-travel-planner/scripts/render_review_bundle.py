@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -30,13 +31,13 @@ UPLOAD_GUIDE = """# H5 手动发布说明
 `h5/index.html` 必须位于上传内容的最外层。不要上传原始 `trip.json`、微信卡片、
 本说明文件或含令牌的链接。
 
-## 选择平台
+## 选择发布方式
 
-- 任何能托管预构建静态 HTML、提供 HTTPS 固定地址的平台都可以使用。
-- 支持文件夹直传时，可考虑 EdgeOne Makers Direct Upload、Cloudflare Pages
-  Direct Upload 或其他同类服务；这只是示例，不是限定。
-- 也可以使用 GitHub Pages 等基于 Git 的静态托管方式。
-- 是否需要自定义域名、备案或特定部署区域，以所选平台和访问地区的现行规则为准。
+- 直接上传：选择支持文件夹或 ZIP、无需构建即可发布预构建 HTML 的服务。
+- Git 发布：选择能从指定分支或目录发布静态文件的服务。
+- 对象存储：选择能以 HTTPS 固定地址提供 `index.html` 的静态网站功能。
+- 默认说明不推荐具体服务；需要平台操作步骤时，请先选定服务并核对其最新文档。
+- 是否需要自定义域名、备案或特定部署区域，以所选服务和访问地区的现行规则为准。
 
 ## 站点复用
 
@@ -48,6 +49,30 @@ UPLOAD_GUIDE = """# H5 手动发布说明
 
 class BundleError(RuntimeError):
     """Raised when the combined review bundle cannot be rendered safely."""
+
+
+OUTPUT_DIR_PATTERN = re.compile(r"^\d{4}-\d{2}-[a-z]+(?:-[a-z]+)*$")
+
+
+def validate_output_dir_name(data: dict, out_dir: Path) -> None:
+    """Require YYYY-MM-place-pinyin using the trip's start month."""
+
+    start_date = data.get("brief", {}).get("start_date")
+    if not isinstance(start_date, str) or len(start_date) < 7:
+        raise BundleError("brief.start_date is required to name the output directory")
+
+    expected_month = start_date[:7]
+    name = Path(out_dir).name
+    if not OUTPUT_DIR_PATTERN.fullmatch(name):
+        raise BundleError(
+            "Output directory name must be YYYY-MM-place-pinyin using full "
+            "lowercase toneless pinyin, for example "
+            f"{expected_month}-wannan-chuanzangxian"
+        )
+    if not name.startswith(f"{expected_month}-"):
+        raise BundleError(
+            f"Output directory month must match brief.start_date: {expected_month}"
+        )
 
 
 def _output_is_nonempty(path: Path) -> bool:
@@ -109,7 +134,13 @@ def render_bundle(data: dict, out_dir: Path, *, force: bool = False) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("trip_json", type=Path)
-    parser.add_argument("--out", required=True, type=Path, dest="out_dir")
+    parser.add_argument(
+        "--out",
+        required=True,
+        type=Path,
+        dest="out_dir",
+        help="trip directory named YYYY-MM-place-pinyin",
+    )
     parser.add_argument(
         "--force",
         action="store_true",
@@ -124,6 +155,7 @@ def main(argv: list[str] | None = None) -> int:
             raise BundleError("Output directory must not contain or overwrite trip.json")
         before = input_path.read_bytes()
         data = render_roadbook.load_trip(input_path)
+        validate_output_dir_name(data, output_path)
         manifest = render_bundle(data, output_path, force=args.force)
         if input_path.read_bytes() != before:
             raise BundleError("trip.json changed during rendering; output is not trusted")

@@ -113,6 +113,7 @@
       "expected_output": "Makes cards plus static H5 the default delivery, generates a provider-neutral manual publishing guide outside the public H5, and follows EdgeOne-specific deployment terms only because the user selected that host.",
       "expectations": [
         "Renders both the numbered WeChat card pack and the complete static H5 unless the user explicitly limits the channel.",
+        "Places both channels under a YYYY-MM-place-pinyin trip directory whose month comes from brief.start_date and whose place portion uses full lowercase toneless pinyin rather than initials.",
         "Optimizes H5 for 360-430 pixel WeChat viewports, safe areas, 16-pixel body text, and 44-pixel tap targets without required JavaScript.",
         "Places manual publishing instructions beside but outside the public h5 directory and explicitly tells the user to publish h5 themselves.",
         "Reuses one site or project with a neutral identifier such as travel-roadbook instead of creating one project per destination.",
@@ -126,6 +127,7 @@
       "prompt": "卡片和H5都生成，但我不用EdgeOne。请把H5做成能放到任意静态网站托管平台的文件，我自己决定用Cloudflare还是GitHub Pages。",
       "expected_output": "Renders the same provider-neutral static H5 artifact, gives a generic handoff based on static-hosting capabilities, and explains direct-upload versus Git publishing without steering the user back to EdgeOne.",
       "expectations": [
+        "Places wechat and h5 under one YYYY-MM-place-pinyin trip directory and keeps each artifact in its corresponding channel directory.",
         "Produces a self-contained h5/index.html that has no hosting-vendor runtime dependency.",
         "Keeps the publishing guide outside h5 and tells the user to publish only the h5 directory.",
         "Describes direct-upload and Git-based hosting as alternatives instead of assuming one provider's console terminology.",

@@ -127,15 +127,26 @@ render both default channels unless the user explicitly limits the output.
 For the default image-card plus H5 bundle:
 
 ```text
-python3 scripts/render_review_bundle.py <trip.json> --out <output-directory>
+python3 scripts/render_review_bundle.py <trip.json> \
+  --out <output-repository>/YYYY-MM-<place-pinyin>
 ```
 
-This produces `wechat/`, `h5/index.html`, and an operator-only `UPLOAD.md` next
-to them. Deliver the local paths and explicitly remind the user to upload the
-`h5/` directory themselves. Never place upload instructions inside the public
-H5 page and never initiate a cloud upload as part of ordinary rendering. Keep
-the artifact and default handoff provider-neutral. Treat named hosts such as
-EdgeOne as optional recommendations or user-selected variants, not dependencies.
+Name each trip directory `YYYY-MM-<place-pinyin>`, using the start month from
+`brief.start_date` and the full lowercase, toneless pinyin of the primary
+destination or named route. Use hyphens between multiple destination names;
+never use initials, Chinese characters, or an English translation. For example,
+a trip starting in August 2026 on the Wannan Sichuan-Tibet route uses
+`2026-08-wannan-chuanzangxian/`.
+
+This produces `wechat/`, `h5/index.html`, and an operator-only `UPLOAD.md`
+inside that trip directory. Deliver the local paths and explicitly remind the
+user to upload the `h5/` directory themselves. Never place upload instructions
+inside the public H5 page and never initiate a cloud upload as part of ordinary
+rendering. Keep the artifact and default handoff provider-neutral: describe
+required hosting capabilities and publishing patterns without naming or
+preferring a provider. Add provider-specific guidance only when the user selects
+a provider or asks for a comparison, and verify its current documentation before
+answering.
 
 For a WeChat sharing pack:
 

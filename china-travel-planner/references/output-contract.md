@@ -17,7 +17,7 @@ silently change facts inside a renderer.
 Unless the user explicitly requests a single channel, produce:
 
 ```text
-review-bundle/
+2026-08-wannan-chuanzangxian/
 ├── wechat/
 │   ├── summary.txt
 │   ├── manifest.json
@@ -27,11 +27,23 @@ review-bundle/
 └── UPLOAD.md
 ```
 
+Name the trip directory `YYYY-MM-<place-pinyin>`:
+
+- derive `YYYY-MM` from `brief.start_date`, not the generation or publication
+  date;
+- use the full lowercase, toneless pinyin of the primary destination or named
+  route;
+- join multiple public-facing destination names in route order with hyphens;
+- do not use initials, Chinese characters, or English translations;
+- use `2026-08-wannan-chuanzangxian`, not `2026-08-wnczx`, for an August 2026
+  trip on the Wannan Sichuan-Tibet route.
+
 Cards are the quick-scan and forwarding layer. H5 is the complete continuous
 review layer. Keep `UPLOAD.md` outside `h5/` so operational instructions do not
 become part of the public site. Tell the user to upload only `h5/` themselves.
-Keep the handoff valid for any static host. Mention a provider only as a
-non-exclusive example or when the user selected it.
+Keep the default handoff valid for any static host and free of provider names.
+Mention a provider only when the user selected one or explicitly requested a
+comparison.
 
 ## WeChat Sharing Pack
 
@@ -163,6 +175,10 @@ and status labels.
 Before delivery, verify that:
 
 - the validator reports zero errors;
+- the trip directory matches `YYYY-MM-<place-pinyin>` and its month matches
+  `brief.start_date`;
+- the trip directory contains the requested `wechat/` and `h5/` channel
+  directories, with each artifact in its corresponding channel;
 - every PNG is exactly 1080x1440 and opens successfully;
 - card numbering is continuous and matches `manifest.json`;
 - no text crosses a card boundary or becomes unreadably small;

@@ -19,7 +19,8 @@ Prefer the combined bundle:
 
 ```text
 python3 scripts/validate_trip.py <trip.json>
-python3 scripts/render_review_bundle.py <trip.json> --out <review-directory>
+python3 scripts/render_review_bundle.py <trip.json> \
+  --out <output-repository>/YYYY-MM-<place-pinyin>
 ```
 
 For an explicit H5-only request, write `index.html` at the root of an `h5/`
@@ -58,16 +59,18 @@ deployments, rollback, and custom-domain support when the user needs them.
 
 Use one of these patterns:
 
-| Method | Fit | Examples, not requirements |
+| Method | Fit | Required capability |
 | --- | --- | --- |
-| Direct upload | Manual folder or ZIP publishing | EdgeOne Makers Direct Upload, Cloudflare Pages Direct Upload, comparable hosts |
-| Git publishing | Users already maintain a repository | GitHub Pages, comparable repository-based hosts |
-| Static object hosting | Users already operate storage and CDN | Any service that serves `index.html` over HTTPS |
+| Direct upload | Manual folder or ZIP publishing | Accept prebuilt files without a build step |
+| Git publishing | Users already maintain a repository | Publish a selected branch or directory |
+| Static object hosting | Users already operate storage and CDN | Serve `index.html` over HTTPS |
 
-- Treat EdgeOne as an optional recommendation, never as a required dependency.
-- Follow a platform named by the user instead of replacing it with a preferred host.
-- When no platform is named, present at most two suitable options and explain the
-  operational difference between direct upload and Git publishing.
+- Do not name, rank, or recommend a provider when the user only asks for the
+  standard review bundle.
+- Follow a provider named by the user instead of replacing it with a preferred
+  host.
+- When the user asks for provider options, present at most two suitable choices
+  and explain the operational difference that matters to this artifact.
 - Verify current platform documentation before giving provider-specific steps.
 - Explain filing, region, domain, and availability constraints conditionally;
   never generalize one provider's rules to every host.
