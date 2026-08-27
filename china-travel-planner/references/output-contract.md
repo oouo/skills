@@ -141,8 +141,10 @@ asking to publish. Keep it self-contained and responsive. Include:
 Keep the itinerary expanded because it is the review subject. Collapse the
 evidence ledger by default because it supports the plan rather than leading the
 discussion. Add `noindex`, `nofollow`, and `noarchive` metadata, plus ordinary
-Open Graph title and description metadata. Do not add executable JavaScript only
-to improve link presentation.
+Open Graph title and description metadata. Keep the itinerary readable and the
+anchor links usable without JavaScript. Add only the small inline progressive
+enhancement needed to mark the day currently visible below the sticky navigation
+and horizontally reveal its day chip.
 
 Optimize the page for WeChat's narrow in-app browser:
 
@@ -192,6 +194,7 @@ Before delivery, verify that:
 - H5 has no horizontal overflow at 360, 390, or 430 pixels;
 - H5 has safe-area support, 16-pixel mobile body copy, and 44-pixel tap targets;
 - every H5 day-navigation link targets an existing section;
+- scrolling through a day updates and reveals the matching day-navigation chip;
 - the evidence ledger is present and collapsed by default;
 - upload instructions are outside `h5/` and are absent from `index.html`;
 - fixture or evaluation data is visibly marked as non-production.

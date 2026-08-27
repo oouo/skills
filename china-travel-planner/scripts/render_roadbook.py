@@ -390,6 +390,10 @@ h1 { max-width: 780px; margin-bottom: 8px; font-size: clamp(2rem, 7vw, 4.6rem); 
   scroll-snap-align: start;
 }
 .review-nav a:hover, .review-nav a:focus-visible { background: var(--mist-100); }
+.review-nav a[aria-current="location"] {
+  background: var(--pine-800);
+  color: white;
+}
 .fixture-banner, .privacy-note {
   margin: 16px 0 0;
   padding: 12px 14px;
@@ -518,6 +522,52 @@ footer { padding: 24px 6px 0; color: var(--muted); font-size: .86rem; }
   .day { break-before: page; }
   a { color: inherit; text-decoration: none; }
 }
+"""
+
+
+DAY_NAV_SCRIPT = r"""
+(() => {
+  const nav = document.querySelector('.review-nav');
+  if (!nav || !('IntersectionObserver' in window)) return;
+  const links = [...nav.querySelectorAll('a[href^="#day-"]')];
+  const sections = links
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  if (!sections.length) return;
+
+  const visible = new Set();
+  const activate = (section) => {
+    const target = `#${section.id}`;
+    links.forEach((link) => {
+      if (link.getAttribute('href') === target) {
+        link.setAttribute('aria-current', 'location');
+        nav.scrollTo({
+          left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2,
+          behavior: 'smooth',
+        });
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  };
+  const chooseVisibleDay = () => {
+    const navBottom = nav.getBoundingClientRect().bottom;
+    const candidates = visible.size ? [...visible] : sections;
+    const section = candidates.reduce((best, current) => (
+      Math.abs(current.getBoundingClientRect().top - navBottom)
+        < Math.abs(best.getBoundingClientRect().top - navBottom) ? current : best
+    ));
+    activate(section);
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) visible.add(entry.target);
+      else visible.delete(entry.target);
+    });
+    chooseVisibleDay();
+  }, {rootMargin: `-${Math.ceil(nav.getBoundingClientRect().height)}px 0px -55% 0px`});
+  sections.forEach((section) => observer.observe(section));
+})();
 """
 
 
@@ -813,6 +863,7 @@ class RoadbookRenderer:
             f'<meta name="description" content="{description}">'
             f"<title>{title}</title><style>{CSS}</style></head><body>"
             f'<div class="shell">{body}</div>'
+            f'<script>{DAY_NAV_SCRIPT}</script>'
             f'<script id="trip-data" type="application/json">'
             f'{_embedded_json(make_share_safe_trip(self.trip))}</script>'
             "</body></html>\n"

@@ -102,7 +102,7 @@
         "Keeps the complete itinerary expanded in one responsive H5 page instead of splitting delivery by day.",
         "Places open decisions before the daily timeline and provides working in-page day navigation.",
         "Keeps the complete share-safe evidence ledger present but collapsed by default.",
-        "Adds noindex metadata and embeds the sanitized trip.json without executable JavaScript.",
+        "Adds noindex metadata, embeds sanitized trip.json in a non-executable data block, and limits executable JavaScript to progressive day-navigation highlighting.",
         "Does not upload, publish, change DNS, or add WeChat OAuth or JS-SDK; it tells the user to upload the static artifact themselves."
       ],
       "files": []

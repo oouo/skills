@@ -43,6 +43,17 @@ def visible_document(document: str) -> str:
     return document.split('<script id="trip-data"', 1)[0]
 
 
+def executable_script(document: str) -> str:
+    matches = re.findall(
+        r"<script(?![^>]*type=\"application/json\")[^>]*>(.*?)</script>",
+        document,
+        flags=re.DOTALL,
+    )
+    if len(matches) != 1:
+        raise AssertionError(f"expected one executable script, found {len(matches)}")
+    return matches[0]
+
+
 def contrast_ratio(foreground: str, background: str) -> float:
     def luminance(value: str) -> float:
         channels = [int(value[index : index + 2], 16) / 255 for index in (1, 3, 5)]
@@ -112,6 +123,15 @@ class RoadbookRendererTests(unittest.TestCase):
         self.assertIn('D1', document)
         self.assertIn('D2', document)
 
+    def test_day_navigation_tracks_the_day_visible_below_the_sticky_nav(self) -> None:
+        document = render_html(load_fixture())
+        script = executable_script(document)
+
+        self.assertIn("IntersectionObserver", script)
+        self.assertIn('aria-current', script)
+        self.assertIn("nav.scrollTo", script)
+        self.assertNotIn("scrollIntoView", script)
+
     def test_evidence_ledger_is_collapsed_without_removing_content(self) -> None:
         document = render_html(load_fixture())
 
@@ -150,12 +170,17 @@ class RoadbookRendererTests(unittest.TestCase):
         for internal_status in [">verified<", ">candidate<", ">unknown<"]:
             self.assertNotIn(internal_status, document)
 
-    def test_html_is_self_contained_and_has_no_executable_script(self) -> None:
+    def test_html_is_self_contained_and_has_only_inline_navigation_script(self) -> None:
         document = render_html(load_fixture())
 
         self.assertNotIn("<link ", document)
         self.assertNotRegex(document, r"<script[^>]+src=")
-        self.assertEqual(document.count("<script"), 1)
+        self.assertEqual(document.count("<script"), 2)
+        executable_scripts = re.findall(
+            r"<script(?![^>]*type=\"application/json\")",
+            document,
+        )
+        self.assertEqual(len(executable_scripts), 1)
         self.assertIn('type="application/json"', document)
 
     def test_visible_output_redacts_private_and_sensitive_text(self) -> None:
@@ -222,7 +247,7 @@ class RoadbookRendererTests(unittest.TestCase):
 
         document = render_html(trip)
 
-        self.assertEqual(document.count("<script"), 1)
+        self.assertEqual(document.count("<script"), 2)
         self.assertNotIn("<script>alert", document)
         self.assertIn("&lt;/script&gt;", document)
         embedded = embedded_trip(document)
