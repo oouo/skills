@@ -76,4 +76,5 @@ point; do not duplicate the full rules across both files.
 
 - Frontmatter `name` and `description` load during discovery. Make `description`
   descriptive and keyword-rich because it drives routing.
-- Files in `references/` are loaded on-demand; files in the skill root are always loaded.
+- Keep the core workflow in `SKILL.md` and supporting detail in `references/`.
+  Follow the progressive-disclosure model described in `README.md`.
