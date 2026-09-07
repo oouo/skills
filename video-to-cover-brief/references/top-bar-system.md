@@ -22,15 +22,41 @@ Resolve the top-bar font through
 `resources/top-bar-font-contract.json`. The bundled default is the proportional
 `assets/fonts/LXGWWenKai-Medium.ttf` file with SHA-256
 `d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6`.
-Its approved visual treatment is called
-`lxgw-wenkai-optical-semibold-v1`: Medium plus a `4px` same-color stroke. The
-name does not describe a separate Semibold font file.
+Its approved treatment is `lxgw-wenkai-medium-stroke1-v2`:
+Medium (font weight class 500) plus a `1px` same-color **source** stroke. Do not
+call it Semibold. Keep the visible glyph height at `72px`.
+
+The approval and the four-weight review image are hash-bound in
+[the v2 approval record](../resources/top-bar-font-approval-v2.json). The user
+approved the 1px candidate on 2026-09-07 after reviewing 0/1/2/4px samples at
+72px and at 196px preview width. This is a new approved choice, not a recovered
+property of legacy covers. Retain
+[the v1 contract](../resources/history/top-bar-font-contract-v1.json) as historical
+data only; its historical approval label does not authenticate the old reference
+font. Do not relabel or rerender existing releases as v2 without authorization.
 
 An absent, changed, or unreadable bundled font returns `HOLD`; never search the
 host system for a replacement. A different font is an explicit override and
 must supply `TOP_FONT`, `TOP_FONT_SHA256`, `TOP_FONT_CONTRACT_ID`, and a
-`TOP_FONT_APPROVAL_RECORD` that names the exact contract ID and digest. Do not
-bundle an alternative whose redistribution license has not been confirmed.
+`TOP_FONT_APPROVAL_RECORD` using this minimum JSON structure:
+
+```json
+{
+  "status": "approved",
+  "contract_id": "project-approved-topbar-v1",
+  "font_sha256": "<exact 64-character lowercase SHA-256>",
+  "rendering": {"source_stroke_px": 1}
+}
+```
+
+Match the override ID, font digest, and integer source-stroke value exactly.
+Use a distinct ID from the bundled contract. Set `SOURCE_STROKE_W` explicitly
+when the approved value differs from the bundled default; use that environment
+for rendering, manifest generation, and verification. Mismatches, missing fields,
+and legacy free-text records return `HOLD`. Convert an old approval only when
+its evidence explicitly supports the recorded stroke; otherwise obtain approval
+for the exact treatment. Do not invent missing approval details or bundle a font
+whose redistribution license has not been confirmed.
 
 ## Validated 1086×1448 profile
 
@@ -43,7 +69,7 @@ The reference implementation uses:
 - transparent component height: `106px`
 - cream: `rgb(255,248,237)`
 - text: `#1654A8`
-- source type: 120pt, 2px kerning, 4px same-color stroke, then resampled to a
+- source type: 120pt, 2px kerning, 1px same-color source stroke, then resampled to a
   fixed visible glyph height of `72px` as one whole label
 - corner radius: `22px`
 - paired labels: one `14px` blue dot, with `45px` from each adjacent visible
@@ -54,6 +80,17 @@ The locked default font is a skill dependency. Record its contract ID, bundled
 path, SHA-256, source, and approval provenance in every new brief and package.
 Check every label with HarfBuzz before rendering; `.notdef` or `gid0` is a
 release failure.
+
+Apply the source stroke **before** whole-label normalization. Its final scale
+varies with the label: in the approved Shaoxing sample, 1px becomes about
+0.64–0.66px. Never apply another 1px outline after scaling. This estimate is not
+a universal final-pixel stroke width.
+
+The renderer reads the source-stroke default from the JSON contract. A conflicting
+`SOURCE_STROKE_W` under the bundled contract returns `HOLD`; a different approved
+treatment must use a distinct explicit override contract and record. Keep the same
+rendering environment when generating and verifying `TOPBAR-FONT.json`, which
+records `source_stroke_px`. Other project-specific geometry checks still apply.
 
 The 120pt-to-72px step is the validated system's one allowed
 `uniform-visible-height` normalization. It preserves the label's aspect ratio

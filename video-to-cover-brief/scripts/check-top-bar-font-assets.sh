@@ -12,10 +12,10 @@ for dependency in python3 hb-shape; do
 done
 
 resolution=$(env -u TOP_FONT -u TOP_FONT_SHA256 -u TOP_FONT_CONTRACT_ID \
-  -u TOP_FONT_APPROVAL_RECORD \
+  -u TOP_FONT_APPROVAL_RECORD -u SOURCE_STROKE_W \
   python3 "$script_dir/resolve-top-bar-font.py" --format tsv)
 IFS=$'\t' read -r font font_sha contract_id source approval_provenance \
-  approval_record_sha <<< "$resolution"
+  approval_record_sha source_stroke <<< "$resolution"
 
 shaped=$(hb-shape "$font" '绍兴简报江苏兴化盱眙第一山雪场')
 if [[ "$shaped" == *'.notdef'* || "$shaped" == *'gid0'* ]]; then
@@ -23,5 +23,5 @@ if [[ "$shaped" == *'.notdef'* || "$shaped" == *'gid0'* ]]; then
   exit 3
 fi
 
-printf 'PASS contract=%s source=%s sha256=%s approval=%s\n' \
-  "$contract_id" "$source" "$font_sha" "$approval_provenance"
+printf 'PASS contract=%s source=%s sha256=%s approval=%s source-stroke=%spx\n' \
+  "$contract_id" "$source" "$font_sha" "$approval_provenance" "$source_stroke"

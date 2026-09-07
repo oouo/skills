@@ -26,6 +26,7 @@ TOP_FONT_ENV_KEYS = (
     "TOP_FONT_SHA256",
     "TOP_FONT_CONTRACT_ID",
     "TOP_FONT_APPROVAL_RECORD",
+    "SOURCE_STROKE_W",
 )
 
 
@@ -77,7 +78,7 @@ class SkillContractTests(unittest.TestCase):
             skill,
         )
         self.assertIn("visible_glyph_height_px: 72", presets)
-        self.assertIn("lxgw-wenkai-optical-semibold-v1", combined)
+        self.assertIn("lxgw-wenkai-medium-stroke1-v2", combined)
         self.assertIn("assets/fonts/LXGWWenKai-Medium.ttf", combined)
         self.assertIn("system-font", presets)
         renderer = (SCRIPTS / "render-cover-type.sh").read_text()
@@ -89,11 +90,11 @@ class SkillContractTests(unittest.TestCase):
     def test_bundled_top_bar_font_contract_verifies(self) -> None:
         contract = json.loads(FONT_CONTRACT.read_text(encoding="utf-8"))
         self.assertEqual(
-            contract["contract_id"], "lxgw-wenkai-optical-semibold-v1"
+            contract["contract_id"], "lxgw-wenkai-medium-stroke1-v2"
         )
         self.assertEqual(contract["font"]["path"], "assets/fonts/LXGWWenKai-Medium.ttf")
         self.assertTrue(contract["font"]["proportional"])
-        self.assertEqual(contract["rendering"]["source_stroke_px"], 4)
+        self.assertEqual(contract["rendering"]["source_stroke_px"], 1)
         self.assertTrue(BUNDLED_TOP_FONT.is_file())
         self.assertTrue((ROOT / "assets" / "fonts" / "OFL.txt").is_file())
         self.assertEqual(
@@ -108,8 +109,116 @@ class SkillContractTests(unittest.TestCase):
             text=True,
             capture_output=True,
         )
-        self.assertIn("contract=lxgw-wenkai-optical-semibold-v1", result.stdout)
+        self.assertIn("contract=lxgw-wenkai-medium-stroke1-v2", result.stdout)
         self.assertIn("source=bundled", result.stdout)
+
+    def test_v2_approval_binds_font_rendering_and_review_image(self) -> None:
+        contract = json.loads(FONT_CONTRACT.read_text())
+        path = ROOT / contract["approval"]["record_path"]
+        self.assertEqual(
+            hashlib.sha256(path.read_bytes()).hexdigest(),
+            contract["approval"]["record_sha256"],
+        )
+        approved = json.loads(path.read_text())
+        self.assertEqual(approved["status"], "approved")
+        self.assertEqual(approved["contract_id"], contract["contract_id"])
+        self.assertEqual(approved["font_sha256"], contract["font"]["sha256"])
+        self.assertEqual(approved["rendering"], contract["rendering"])
+        self.assertEqual(approved["rendering"]["visible_glyph_height_px"], 72)
+        proof = ROOT / approved["review"]["path"]
+        self.assertEqual(
+            hashlib.sha256(proof.read_bytes()).hexdigest(), approved["review"]["sha256"]
+        )
+
+    def test_resolver_rejects_approval_damage_and_contract_drift(self) -> None:
+        contract = json.loads(FONT_CONTRACT.read_text())
+        with tempfile.TemporaryDirectory(prefix="video-cover-approval-") as tmp:
+            root = pathlib.Path(tmp)
+            (root / "scripts").mkdir()
+            (root / "resources").mkdir()
+            resolver = root / "scripts" / FONT_RESOLVER.name
+            shutil.copyfile(FONT_RESOLVER, resolver)
+            approval = root / contract["approval"]["record_path"]
+            original = (ROOT / contract["approval"]["record_path"]).read_bytes()
+            for damage in ("approval", "rendering"):
+                with self.subTest(damage=damage):
+                    copied = json.loads(FONT_CONTRACT.read_text())
+                    approval.write_bytes(original + (b" " if damage == "approval" else b""))
+                    if damage == "rendering":
+                        copied["rendering"]["source_stroke_px"] = 4
+                    (root / "resources" / FONT_CONTRACT.name).write_text(json.dumps(copied))
+                    result = subprocess.run(
+                        ["python3", str(resolver)], env=self._clean_top_font_env(),
+                        text=True, capture_output=True,
+                    )
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("HOLD", result.stderr)
+                    self.assertIn("approval record", result.stderr)
+
+    def test_renderer_matches_approved_one_pixel_specimen(self) -> None:
+        self._require_raster_font()
+        with tempfile.TemporaryDirectory(prefix="video-cover-stroke1-") as tmp:
+            root = pathlib.Path(tmp)
+            source, output = root / "source.png", root / "output.png"
+            self._make_source(source)
+            result = subprocess.run(
+                [str(SCRIPTS / "render-cover-type.sh"), str(source), str(output),
+                 "绍兴", "安昌古镇"],
+                env=dict(self._clean_top_font_env(), CARD_WIDTH="868"),
+                check=True, text=True, capture_output=True,
+            )
+            self.assertIn("source-stroke=1px", result.stdout)
+            self.assertIn("visible-text=72px", result.stdout)
+            self.assertEqual(self._outside_max(source, output, (109, 38, 868, 96), root), "0")
+            # Compare the entire label group against the user-approved second row.
+            # Exclude rounded card corners where the specimen has a neutral background.
+            proof = ROOT / "assets" / "top-bar-weight-review-v2.png"
+            difference = subprocess.check_output(
+                ["magick", "(", str(output), "-crop", "700x72+190+50", "+repage", ")",
+                 "(", str(proof), "-crop", "700x72+210+280", "+repage", ")",
+                 "-compose", "Difference", "-composite", "-format", "%[fx:maxima]", "info:"],
+                text=True,
+            )
+            # Allow one 8-bit level for PNG quantization, not font or stroke drift.
+            self.assertLessEqual(float(difference), 1 / 255)
+
+    def test_renderer_rejects_stale_four_pixel_override_without_output(self) -> None:
+        self._require_raster_font()
+        with tempfile.TemporaryDirectory(prefix="video-cover-stale-stroke-") as tmp:
+            root = pathlib.Path(tmp)
+            source, output = root / "source.png", root / "output.png"
+            self._make_source(source)
+            result = subprocess.run(
+                [str(SCRIPTS / "render-cover-type.sh"), str(source), str(output), "绍兴"],
+                env=dict(self._clean_top_font_env(), SOURCE_STROKE_W="4"),
+                text=True, capture_output=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("conflicts with bundled contract", result.stderr)
+            self.assertFalse(output.exists())
+
+    def test_manifest_records_source_stroke_and_rejects_tampering(self) -> None:
+        env = self._clean_top_font_env()
+        manifest = json.loads(subprocess.check_output(
+            [str(FONT_RESOLVER), "--format", "manifest"], env=env, text=True,
+        ))
+        self.assertEqual(manifest["source_stroke_px"], 1)
+        self.assertIsNotNone(manifest["approval_record_sha256"])
+        with tempfile.TemporaryDirectory(prefix="video-cover-stroke-manifest-") as tmp:
+            path = pathlib.Path(tmp) / "TOPBAR-FONT.json"
+            for stroke in (1, 4):
+                with self.subTest(stroke=stroke):
+                    manifest["source_stroke_px"] = stroke
+                    path.write_text(json.dumps(manifest))
+                    result = subprocess.run(
+                        [str(FONT_RESOLVER), "--verify-manifest", str(path)],
+                        env=env, text=True, capture_output=True,
+                    )
+                    if stroke == 1:
+                        self.assertEqual(result.returncode, 0, result.stderr)
+                    else:
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertIn("manifest does not match", result.stderr)
 
     def test_unapproved_top_bar_font_override_is_rejected(self) -> None:
         env = self._clean_top_font_env()
@@ -122,6 +231,88 @@ class SkillContractTests(unittest.TestCase):
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("explicit approval fields", result.stderr)
+
+    def test_override_approval_binds_exact_font_contract_and_source_stroke(self) -> None:
+        font_sha = hashlib.sha256(BUNDLED_TOP_FONT.read_bytes()).hexdigest()
+        approved = {
+            "status": "approved",
+            "contract_id": "test-medium-stroke1",
+            "font_sha256": font_sha,
+            "rendering": {"source_stroke_px": 1},
+        }
+        cases = [
+            ("matching", approved, "1", True),
+            ("approved alternative", dict(approved, rendering={"source_stroke_px": 4}), "4", True),
+            ("stroke mismatch", approved, "4", False),
+            ("missing stroke", dict(approved, rendering={}), "1", False),
+            ("string stroke", dict(approved, rendering={"source_stroke_px": "1"}), "1", False),
+            ("boolean stroke", dict(approved, rendering={"source_stroke_px": True}), "1", False),
+            ("wrong contract", dict(approved, contract_id="another-contract"), "1", False),
+            ("wrong font", dict(approved, font_sha256="0" * 64), "1", False),
+            ("unapproved", dict(approved, status="unapproved"), "1", False),
+            ("non-object", [], "1", False),
+        ]
+        with tempfile.TemporaryDirectory(prefix="video-cover-override-") as tmp:
+            record = pathlib.Path(tmp) / "approval.json"
+            env = dict(
+                self._clean_top_font_env(), TOP_FONT=str(BUNDLED_TOP_FONT),
+                TOP_FONT_SHA256=font_sha, TOP_FONT_CONTRACT_ID=approved["contract_id"],
+                TOP_FONT_APPROVAL_RECORD=str(record),
+            )
+            for label, payload, requested_stroke, succeeds in cases:
+                with self.subTest(label=label):
+                    record.write_text(json.dumps(payload), encoding="utf-8")
+                    result = subprocess.run(
+                        [str(FONT_RESOLVER), "--format", "manifest"],
+                        env=dict(env, SOURCE_STROKE_W=requested_stroke),
+                        text=True, capture_output=True,
+                    )
+                    if succeeds:
+                        self.assertEqual(result.returncode, 0, result.stderr)
+                        manifest = json.loads(result.stdout)
+                        self.assertEqual(manifest["source_stroke_px"], int(requested_stroke))
+                        self.assertEqual(
+                            manifest["approval_record_sha256"],
+                            hashlib.sha256(record.read_bytes()).hexdigest(),
+                        )
+                    else:
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertIn("HOLD", result.stderr)
+                        self.assertEqual(result.stdout, "")
+            record.write_text(
+                f"approved {approved['contract_id']} {font_sha}\nsource_stroke_px: 1\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [str(FONT_RESOLVER)], env=dict(env, SOURCE_STROKE_W="4"),
+                text=True, capture_output=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("HOLD", result.stderr)
+
+    def test_renderer_rejects_override_stroke_not_in_approval_without_output(self) -> None:
+        self._require_raster_font()
+        with tempfile.TemporaryDirectory(prefix="video-cover-override-render-") as tmp:
+            root = pathlib.Path(tmp)
+            source, output, record = root / "source.png", root / "output.png", root / "approval.json"
+            self._make_source(source)
+            font_sha = hashlib.sha256(BUNDLED_TOP_FONT.read_bytes()).hexdigest()
+            record.write_text(json.dumps({
+                "status": "approved", "contract_id": "test-medium-stroke1",
+                "font_sha256": font_sha, "rendering": {"source_stroke_px": 1},
+            }), encoding="utf-8")
+            env = dict(
+                self._clean_top_font_env(), TOP_FONT=str(BUNDLED_TOP_FONT),
+                TOP_FONT_SHA256=font_sha, TOP_FONT_CONTRACT_ID="test-medium-stroke1",
+                TOP_FONT_APPROVAL_RECORD=str(record), SOURCE_STROKE_W="4",
+            )
+            result = subprocess.run(
+                [str(SCRIPTS / "render-cover-type.sh"), str(source), str(output), "绍兴"],
+                env=env, text=True, capture_output=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("HOLD", result.stderr)
+            self.assertFalse(output.exists())
 
     def test_genre_is_a_routing_signal_not_an_eligibility_gate(self) -> None:
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
@@ -562,7 +753,7 @@ class SkillContractTests(unittest.TestCase):
             )
             self.assertIn("provenance=verified", result.stdout)
             self.assertIn(
-                "font-contract=lxgw-wenkai-optical-semibold-v1", result.stdout
+                "font-contract=lxgw-wenkai-medium-stroke1-v2", result.stdout
             )
 
     def test_release_checker_rejects_font_manifest_mismatch(self) -> None:

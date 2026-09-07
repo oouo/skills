@@ -6,8 +6,9 @@ separate. The brief is the portable contract.
 Keep the main-title system separate as well. An approved hand-brushed style
 comes from the series contract and its style reference, not from a travel, pet,
 or other semantic preset. When its palette is scene-adaptive, derive exact title
-colors from the inspected source frame while preserving the approved brush,
-outline/glow, and composition grammar.
+colors from the selected frame or approved illustration plate while preserving
+the approved brush, outline/glow, and composition grammar. Keep video evidence
+as the authority for factual copy in both modes.
 
 For the established series design, resolve `default-hand-brushed-title-v1` from
 `resources/hand-brushed-title-default.yaml`. Use the bundled lettering crop for

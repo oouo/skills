@@ -26,7 +26,7 @@ Optional environment variables:
   CARD_WIDTH_STEP       width rounding step; default 2
   SOURCE_POINT_SIZE     source render size; default 120
   SOURCE_KERNING        source kerning; default 2
-  SOURCE_STROKE_W       same-color source stroke; default 4
+  SOURCE_STROKE_W       contract source stroke; default 1 (before normalization)
   MIN_SOURCE_INK_H      reject unstable height normalization below this; default 60
 USAGE
 }
@@ -58,7 +58,7 @@ if ! resolution=$(python3 "$script_dir/resolve-top-bar-font.py" --format tsv); t
   exit 5
 fi
 IFS=$'\t' read -r font font_sha font_contract_id font_source \
-  font_approval_provenance font_approval_record_sha <<< "$resolution"
+  font_approval_provenance font_approval_record_sha contract_source_stroke <<< "$resolution"
 if [[ "$input" == "$output" ]] || { [[ -e "$output" ]] && [[ "$input" -ef "$output" ]]; }; then
   echo "OUTPUT must not overwrite INPUT." >&2
   exit 6
@@ -92,7 +92,7 @@ dot_diameter=${DOT_DIAMETER:-14}
 text_dot_gap=${TEXT_DOT_GAP:-45}
 source_point_size=${SOURCE_POINT_SIZE:-120}
 source_kerning=${SOURCE_KERNING:-2}
-source_stroke_w=${SOURCE_STROKE_W:-4}
+source_stroke_w=$contract_source_stroke
 min_source_ink_h=${MIN_SOURCE_INK_H:-60}
 
 for number in \
@@ -273,7 +273,7 @@ if [[ "$outside_max" != 0 && "$outside_max" != 0.0 ]]; then
   exit 16
 fi
 
-printf 'PASS %s | font-contract=%s | font-source=%s | card=%sx%s+%s+%s | visible-text=%spx | outside-max=%s\n' \
+printf 'PASS %s | font-contract=%s | font-source=%s | card=%sx%s+%s+%s | visible-text=%spx | source-stroke=%spx | outside-max=%s\n' \
   "$output" "$font_contract_id" "$font_source" \
   "$card_w" "$component_h" "$card_x" "$card_top" \
-  "$visible_text_h" "$outside_max"
+  "$visible_text_h" "$source_stroke_w" "$outside_max"

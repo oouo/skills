@@ -1,0 +1,41 @@
+{
+  "contract_id": "lxgw-wenkai-medium-stroke1-v2",
+  "status": "approved",
+  "approved_on": "2026-09-07",
+  "font_sha256": "d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6",
+  "rendering": {
+    "visual_weight_name": "medium-with-light-source-stroke",
+    "source_point_size": 120,
+    "source_kerning_px": 2,
+    "source_stroke_px": 1,
+    "visible_glyph_height_px": 72,
+    "fill": "#1654A8",
+    "stroke": "#1654A8"
+  },
+  "decision": "Keep LXGW WenKai Medium, use 1px source stroke, retain 72px visible glyph height.",
+  "approval_context": "The assistant recommended the second sample (Medium + 1px source stroke, 72px). The user accepted and explicitly requested this source skill update only.",
+  "user_acceptance_excerpt": "听你的",
+  "review": {
+    "path": "assets/top-bar-weight-review-v2.png",
+    "sha256": "423d720be714befdaf984333277c33e6c8d741292239b27dc2fc89c5897768e8",
+    "source_stroke_candidates_px": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "selected_source_stroke_px": 1,
+    "visible_glyph_height_px": 72,
+    "canvas_profile_px": [
+      1086,
+      1448
+    ],
+    "card_px": [
+      868,
+      96
+    ],
+    "profile_preview_width_px": 196,
+    "live_platform_compression_verified": false
+  },
+  "historical_boundary": "Legacy images do not authenticate the font identity or approve v2. The archived v1 record is retained unchanged for traceability."
+}

@@ -64,7 +64,7 @@ if ! resolution=$(python3 "$script_dir/resolve-top-bar-font.py" --format tsv \
   fail "Top-bar font contract or package manifest could not be verified."
 fi
 IFS=$'\t' read -r top_font top_font_sha top_font_contract_id top_font_source \
-  top_font_approval top_font_approval_sha <<< "$resolution"
+  top_font_approval top_font_approval_sha top_source_stroke <<< "$resolution"
 
 covers=()
 for candidate in "$package"/[0-9][0-9]-*.png; do

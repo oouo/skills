@@ -50,6 +50,32 @@ def load_contract() -> dict[str, object]:
         raise ContractError("Bundled top-bar font SHA-256 is invalid.")
     if not isinstance(approval.get("provenance"), str) or not approval["provenance"]:
         raise ContractError("Top-bar font contract is missing approval provenance.")
+    rendering = contract.get("rendering")
+    if not isinstance(rendering, dict) or type(rendering.get("source_stroke_px")) is not int:
+        raise ContractError("Top-bar contract is missing an integer source_stroke_px.")
+    if rendering["source_stroke_px"] < 0:
+        raise ContractError("Top-bar source_stroke_px must be non-negative.")
+    record_path = approval.get("record_path")
+    record_sha = approval.get("record_sha256")
+    if not isinstance(record_path, str) or not isinstance(record_sha, str):
+        raise ContractError("Top-bar contract is missing its approval record and hash.")
+    record = ROOT / record_path
+    if not record.is_file() or sha256(record) != record_sha:
+        raise ContractError("Bundled top-bar approval record is missing or changed.")
+    try:
+        approved = json.loads(record.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractError(f"Cannot read bundled top-bar approval record: {exc}") from exc
+    if not isinstance(approved, dict) or any(
+        approved.get(key) != expected
+        for key, expected in (
+            ("status", "approved"),
+            ("contract_id", contract["contract_id"]),
+            ("font_sha256", font["sha256"]),
+            ("rendering", rendering),
+        )
+    ):
+        raise ContractError("Bundled top-bar contract differs from its approval record.")
     return contract
 
 
@@ -64,6 +90,22 @@ def resolve() -> dict[str, object]:
     requested_sha = os.environ.get("TOP_FONT_SHA256", "").lower()
     requested_id = os.environ.get("TOP_FONT_CONTRACT_ID", "")
     approval_record = os.environ.get("TOP_FONT_APPROVAL_RECORD", "")
+
+    rendering = contract["rendering"]
+    assert isinstance(rendering, dict)
+    default_stroke = rendering["source_stroke_px"]
+    requested_stroke = os.environ.get("SOURCE_STROKE_W") or str(default_stroke)
+    if not re.fullmatch(r"[0-9]+", requested_stroke):
+        raise ContractError("SOURCE_STROKE_W must be a non-negative integer.")
+    source_stroke = int(requested_stroke)
+    if not requested_font and source_stroke != default_stroke:
+        raise ContractError(
+            f"SOURCE_STROKE_W={source_stroke} conflicts with bundled contract "
+            f"{contract['contract_id']} ({default_stroke}px). "
+            "Use a distinct explicitly approved override contract for another stroke."
+        )
+    if requested_font and requested_id == contract["contract_id"]:
+        raise ContractError("An override must use a distinct contract ID.")
 
     if not requested_font:
         stray = [
@@ -99,7 +141,8 @@ def resolve() -> dict[str, object]:
             "font_asset": str(contract_font["path"]),
             "source": "bundled",
             "approval_provenance": approval["provenance"],
-            "approval_record_sha256": None,
+            "approval_record_sha256": approval["record_sha256"],
+            "source_stroke_px": source_stroke,
         }
 
     missing = [
@@ -129,13 +172,30 @@ def resolve() -> dict[str, object]:
     if actual_sha != requested_sha:
         raise ContractError(f"TOP_FONT SHA-256 mismatch: {actual_sha}")
 
-    record_text = record_path.read_text(encoding="utf-8")
-    if requested_sha not in record_text or requested_id not in record_text:
-        raise ContractError(
-            "Font approval record must name the exact contract ID and SHA-256."
+    try:
+        approved = json.loads(record_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ContractError(f"Cannot read override approval record as JSON: {exc}") from exc
+    if not isinstance(approved, dict) or any(
+        approved.get(key) != expected
+        for key, expected in (
+            ("status", "approved"),
+            ("contract_id", requested_id),
+            ("font_sha256", requested_sha),
         )
-    if "approved" not in record_text.lower() and "批准" not in record_text:
-        raise ContractError("Font approval record must state that the font was approved.")
+    ):
+        raise ContractError(
+            "Override approval record must approve the exact contract ID and font SHA-256."
+        )
+    approved_rendering = approved.get("rendering")
+    if (
+        not isinstance(approved_rendering, dict)
+        or type(approved_rendering.get("source_stroke_px")) is not int
+        or approved_rendering["source_stroke_px"] != source_stroke
+    ):
+        raise ContractError(
+            "Override approval record must approve the exact integer rendering.source_stroke_px."
+        )
 
     return {
         "contract_id": requested_id,
@@ -145,6 +205,7 @@ def resolve() -> dict[str, object]:
         "source": "explicit-user-approved-override",
         "approval_provenance": str(record_path),
         "approval_record_sha256": sha256(record_path),
+        "source_stroke_px": source_stroke,
     }
 
 
@@ -158,6 +219,7 @@ def manifest_record(resolved: dict[str, object]) -> dict[str, object]:
             "font_asset",
             "approval_provenance",
             "approval_record_sha256",
+            "source_stroke_px",
         )
     }
 
@@ -200,6 +262,7 @@ def main() -> int:
             resolved["source"],
             resolved["approval_provenance"],
             resolved["approval_record_sha256"] or "none",
+            resolved["source_stroke_px"],
         )
         print("\t".join(str(value) for value in values))
     else:

@@ -41,15 +41,16 @@ top_bar_system:
       bundled_default_outer_padding_total_px: 320
   typography:
     language: zh-CN
-    contract_id: lxgw-wenkai-optical-semibold-v1
+    contract_id: lxgw-wenkai-medium-stroke1-v2
     family: LXGW WenKai
     style: Medium
+    weight_class: 500
     bundled_font: assets/fonts/LXGWWenKai-Medium.ttf
     bundled_font_sha256: d4bdeb38a39151d74d084cba5090f8cb7d20bf83eedb78c35939ae70b9f4e3f6
     override: explicit-user-approval-only
     source_point_size: 120
     source_kerning_px: 2
-    source_stroke_px: 4
+    source_stroke_px: 1
     visible_glyph_height_px: 72
     normalization:
       method: uniform-visible-height

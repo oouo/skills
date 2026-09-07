@@ -67,7 +67,9 @@ the reference and do not improvise an undocumented title style.
 
 ## Derive the candidate contract
 
-Inspect the style reference and the authoritative source frame separately.
+Inspect the style reference and the authoritative visual source separately.
+Use the selected video frame in `source-frame` mode or the exact approved plate
+in `original-illustration` mode; keep the original video as factual evidence.
 Record:
 
 - brush anatomy: stroke weight range, pressure contrast, dry-brush texture,
@@ -81,7 +83,7 @@ Record:
   background, and which strokes must survive downsampling
 
 For a scene-adaptive palette, do not copy the reference's hues by default.
-Choose exact candidate colors from the new frame after inspection:
+Choose exact candidate colors from that visual source after inspection:
 
 1. Avoid the dominant background colors behind each title segment.
 2. Prefer two or three high-saturation roles with clear warm/cool or
@@ -112,7 +114,7 @@ Generate the lettering separately from the cover visual:
    canvas and place it at its proposed final size and coordinates. This
    canonicalized layer, not the raw model output, is the object under review.
 7. Present an enlarged isolated-title view and an exact-cell cover mockup for
-   each surviving candidate. Keep the authoritative source frame unchanged in
+   each surviving candidate. Keep the authoritative visual source unchanged in
    the mockup outside the candidate alpha.
 
 ## Approval gate
@@ -128,7 +130,7 @@ Review all of the following:
   clipped
 - irregularity reads as intentional hand lettering, not broken typography
 - the title is legible at the exact profile-cell size
-- palette contrasts with the actual source frame and follows the approved fixed
+- palette contrasts with the actual visual source and follows the approved fixed
   or scene-adaptive rule
 - title placement does not hide protected source evidence
 

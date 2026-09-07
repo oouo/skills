@@ -17,9 +17,9 @@ Video ID: <ID or slug>
 Original Video: <path>
 Contact Sheet: <path>
 Visual Source Mode: <source-frame or original-illustration>
-Authoritative Subject Source: <frame or cover path>
+Authoritative Subject Source: <selected frame, approved illustration plate, or cover path>
 Locked Material: <identity-bearing subjects/evidence-bearing regions/title pixels>
-Generation Authorization: <background-only, clean-top-only, full visual, or none>
+Generation Authorization: <background-only, clean-top-only, full-visual, or none>
 Source-Frame Attempt: <first candidate or brief direction presented to the user>
 Source-Frame Review: <strengths, limitations, and user-visible status>
 User Feedback Trigger: <exact dissatisfaction/cartoon request or not applicable>
@@ -44,13 +44,15 @@ Platform Overlay: protect the measured bottom-left play-count zone
 
 ## Top Bar
 Text: <single factual label or left · right pair>
-Font Contract ID: <bundled lxgw-wenkai-optical-semibold-v1 or explicit approved override ID>
+Font Contract ID: <bundled lxgw-wenkai-medium-stroke1-v2 or explicit approved override ID>
 Font Source: <bundled or explicit-user-approved-override>
 Font: <exact bundled asset path or approved override path>
 Font SHA-256: <exact digest>
-Approval Provenance: <historical-user-approved-series-top-bar or exact override record>
+Approval Provenance: <user-approved-72px-stroke-comparison-2026-09-07 or exact override record>
+Approval Record SHA-256: <resolved approval_record_sha256>
 Card: <top, card height, component height, fill, corner radius>
-Typography: <visible glyph height, fill, stroke, kerning; no auto-fit>
+Typography: <72px visible glyph height; 120pt source size, 2px source kerning,
+  1px same-color source stroke before normalization for bundled v2; fill; no auto-fit>
 Width Rule: content-driven from measured text plus fixed padding
 Collision Plan: <evidence-specific clean-source plan>
 
@@ -156,11 +158,14 @@ Upload Recommendation: forbidden before exact user approval and a separate live-
 - A specialized preset is used only when its evidence signals match or the user
   explicitly approves it.
 - `Generation Authorization` is narrower than or equal to the user's request.
-- `Locked Material` names recognizable source-frame elements explicitly.
+- `Locked Material` names protected elements of the selected frame or approved
+  illustration plate explicitly.
 - The canvas and profile cell are measured rather than guessed.
-- The top-bar font contract ID, source, path, SHA-256, and approval provenance
-  are pinned before final typography. New briefs use the bundled
-  `lxgw-wenkai-optical-semibold-v1` contract unless the user explicitly approves
+- The top-bar font contract ID, source, path, SHA-256, approval provenance,
+  approval-record SHA-256, and source-stroke value are pinned before final
+  typography. Copy resolved values rather than reconstructing them from prose.
+  New briefs use the bundled
+  `lxgw-wenkai-medium-stroke1-v2` contract unless the user explicitly approves
   a fully recorded override; system-font fallback is forbidden.
 - A new hand-brushed title records its approved style-reference path and hash,
   style contract ID, exact copy and line break, brush grammar, palette behavior,
@@ -171,7 +176,8 @@ Upload Recommendation: forbidden before exact user approval and a separate live-
 - Text, locations, subjects, and scenery inside a style reference are not copied
   into the new cover unless separately supported by evidence.
 - A scene-adaptive title palette records exact candidate colors derived from the
-  inspected source frame; it does not blindly inherit the reference hues.
+  selected frame or approved illustration plate; it does not blindly inherit the
+  style reference's hues.
 - New covers in the validated profile use `72px` visible top-bar glyph height
   while preserving the approved card and component geometry.
 - Published legacy covers keep their measured typography by default; do not

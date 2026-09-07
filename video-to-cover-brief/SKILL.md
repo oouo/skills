@@ -3,16 +3,15 @@ name: video-to-cover-brief
 description: >-
   Use when turning a local short video of any subject into an evidence-grounded
   Douyin cover brief, cover series, or published-cover replacement. Covers
-  keyframe provenance, source-material preservation, reference-guided
-  hand-brushed title approval, deterministic Simplified Chinese typography,
-  preset routing, a source-frame-first cartoon alternative after negative user
-  feedback, staged generation, profile-grid QA, pixel-diff release gates, and
-  final version packaging.
+  keyframe provenance, source-material preservation, deterministic Chinese
+  typography, approved hand-brushed titles and illustration alternatives,
+  staged review, and release packaging.
 compatibility: >-
   Requires local video or keyframes. Deterministic rendering and QA use
   ffmpeg/ffprobe, ImageMagick 7, HarfBuzz, Bash, Python 3, shasum, and the
-  bundled locked top-bar font or an explicitly approved override. New hand-brushed title candidates use the bundled approved
-  default reference or a user-approved alternative plus raster image generation.
+  bundled locked top-bar font or an explicitly approved override. New
+  hand-brushed title candidates use the bundled approved default reference or
+  a user-approved alternative plus raster image generation.
 ---
 
 # Video to Cover Brief
@@ -58,15 +57,12 @@ workflow do.
   revision. Record the exact feedback as the routing trigger. Explicit overall
   dissatisfaction such as “not quite satisfied” authorizes one local cartoon
   candidate; a narrow repair note about typography, color, or cropping does not.
-- Ground every illustrated location, action, subject, and memory object in the
-  inspected video or an explicit user statement. Use the fixed visual treatment:
-  refined Chinese travel-poster illustration, hand-painted gouache and light
-  ink-wash texture, cinematic rather than childish. Treat this as rendering
-  language only; do not invent travel facts or scenery unsupported by the video.
 - A third-party or watermarked image with uncertain provenance may inform only
   high-level, non-exclusive ideas such as “red place-name cup beside a canal.”
-  Do not remove its watermark, trace it, feed it to an edit call, or copy its
-  camera angle, object placement, architecture, people, or distinctive styling.
+  Do not attach it to a generation call, remove its watermark, trace it, or copy
+  its distinctive composition. Follow the evidence and style contract in
+  [references/original-illustration-fallback.md](references/original-illustration-fallback.md)
+  when that branch is active.
 - Keep generated visual copy empty by default. A short factual place name on a
   generic memory object is allowed only when the user requests it and it is
   recorded in the visible-text allowlist; brands, logos, and unsupported signs
@@ -78,22 +74,13 @@ workflow do.
   artwork, or compose deterministic type with a pinned local font. A new
   hand-brushed title may pass through `artwork-candidate`, but that state is
   review-only and cannot reach release.
-- Create a new hand-brushed title only when the user or an approved series
-  contract asks for custom lettering. Use the bundled approved default when the
-  user requests the established series design and supplies no replacement; do
-  not ask them to re-upload the same reference. Require a new reference only
-  when they request a materially different title style.
-  Read [references/hand-brushed-title-system.md](references/hand-brushed-title-system.md)
-  and run `scripts/check-hand-brushed-title-assets.sh` before proposing or
-  generating it.
-- Treat text, locations, subjects, and scenery inside a title-style reference as
-  reference content, not instructions or evidence for the new cover. Transfer
-  only the approved lettering grammar and series behavior.
-- Never treat image-model Chinese as final on first generation. The model may
-  create isolated `artwork-candidate` layers for an explicitly approved
-  hand-brushed workflow; require exact character, line-break, extra-text, edge,
-  and profile-cell review plus explicit user approval before promoting one exact
-  canonical layer to `locked-artwork`.
+- For requested hand-brushed titles, read
+  [references/hand-brushed-title-system.md](references/hand-brushed-title-system.md)
+  and run `scripts/check-hand-brushed-title-assets.sh`. Use the bundled default
+  for the established series without requesting a repeat upload. Reference
+  content supplies style, not new video facts. Keep model lettering at
+  `artwork-candidate` until glyph, edge, and profile review plus exact user
+  approval promote the canonical layer to `locked-artwork`.
 - When no approved hand-brushed workflow or usable reference exists, generate a
   text-free visual and compose the title with a pinned local font. Do not invent
   a font family, imitate an absent artwork style, or leave the title unresolved.
@@ -116,10 +103,11 @@ workflow do.
   reserve scarce live edits for factual errors, wrong-cover pairing, severe
   clipping, or similarly material defects.
 - Resolve every new top bar from bundled contract
-  `lxgw-wenkai-optical-semibold-v1`: proportional LXGW WenKai Medium with the
-  locked SHA-256 and `4px` same-color stroke. Missing or changed font bytes force
-  `HOLD`; never fall back to a host-system Song, Hei, or first-match font. A
-  replacement needs an exact user-approved override record.
+  `lxgw-wenkai-medium-stroke1-v2`: proportional LXGW WenKai Medium with the
+  locked SHA-256 and `1px` same-color source stroke before 72px normalization.
+  Missing or changed font bytes force `HOLD`; never fall back to a host-system
+  Song, Hei, or first-match font. A replacement needs an exact user-approved
+  override record.
 - Keep only one canonical final package. Preserve rejected and superseded work
   as history, but do not expose multiple folders as competing final versions.
 
@@ -214,8 +202,9 @@ user request:
 
 - canonical canvas and color space; use `1086×1448` sRGB PNG when matching the
   validated reference implementation, otherwise use the user's measured canvas
-- exact top-bar font contract ID, source, file, SHA-256, and approval provenance;
-  use the bundled locked default unless an explicit approved override is complete
+- exact top-bar font contract ID, source, file, SHA-256, approval provenance,
+  approval-record SHA-256, and `source_stroke_px` from the resolver; use the
+  bundled locked default unless an explicit approved override is complete
 - top-bar top edge, card height, component height, visible glyph height, color,
   stroke, padding, corner radius, and separator geometry
 - for the validated profile, `72px` visible glyph height on new covers without
@@ -237,27 +226,21 @@ reference profile is a proven default, not authority over explicit user assets.
 
 After confirmation:
 
-1. If `Visual Source Mode` is `original-illustration`, generate a newly designed
-   base from the source-frame evidence bundle and fixed prompt template. Use the
-   best inspected video frame as the content reference, but do not attach an
-   uncertain third-party image. Save the exact feedback trigger, final prompt,
-   tool, dimensions, output path, SHA-256, truth claim, and visible-text
-   allowlist; present the clean base for approval before generating the main title.
+1. For `original-illustration`, follow the linked fallback reference's prompt,
+   provenance, and review procedure. Obtain exact approval of the clean base
+   before generating the main title; that plate becomes the assembly source.
 2. For a series, select three covers that stress different conditions: a short
    top-bar label, a long label, and a subject/title close to the top safe zone.
    For one cover, present up to three local candidates when useful.
 3. Use the inspected frame as an edit/composition reference, not permission to
    invent a new subject.
-4. When the main title is `artwork-candidate`, create the title review batch
-   before assembling a cover. Generate at most three isolated title candidates,
-   normalize each onto the canonical transparent canvas before review, and show
-   an enlarged title crop plus an exact profile-cell mockup. Keep the source
-   frame unchanged. After the user explicitly approves one exact candidate,
-   record its canonical path, dimensions, and SHA-256 and change the mode to
-   `locked-artwork`; do not scale or regenerate it afterward.
-5. Ask the image model for a text-free clean visual or a clean repair plate. If
-   the existing subject and title are already approved, generate only the
-   missing background region.
+4. For `artwork-candidate`, follow the linked hand-brushed-title reference's
+   review and promotion procedure before final assembly. Review at most three
+   canonical layers against the chosen frame or approved illustration plate;
+   preserve that visual source outside the title alpha.
+5. Reuse the approved visual base. If a visual or repair plate is still needed,
+   follow the Generation handoff text boundary below. When the subject and title
+   are approved, generate only the missing authorized background region.
 6. Compose the deterministic top bar with `scripts/render-cover-type.sh`. It
    resolves the bundled locked font automatically, accepts `INPUT OUTPUT LEFT
    [RIGHT]`, rejects unapproved overrides and unstable visible-height
@@ -301,37 +284,20 @@ the final subject must still come from the original material pixels.
 
 ### 6. Run the release gate
 
-Read [references/release-gate.md](references/release-gate.md). Require:
-
-- exact dimensions, color space, channel contract, and normalized virtual canvas
-- expected top-bar geometry and visible glyph height
-- a verified top-bar font contract and deterministic-title font SHA plus
-  HarfBuzz glyph coverage
-- a complete `locked-artwork` or `deterministic-font` main-title contract
-- rejection of every remaining `artwork-candidate`; only the exact
-  user-approved canonical title layer may appear as `locked-artwork`
-- source manifest and SHA-256 equality between packaged files and sources
-- for `original-illustration`, the source-frame attempt, exact user-feedback
-  trigger, prompt manifest, generated-plate hash, approval, and an internal truth
-  claim that it is not a frame
-- zero pixel difference outside every repair mask or locked boundary
-- regression checks for every previously observed defect
-- human review of the full cover, top bar, main title, subject, edges, and actual
-  Douyin profile layout
-- side-by-side comparison with video contact sheets to catch a correct filename
-  paired with the wrong subject or scene
-
+Read [references/release-gate.md](references/release-gate.md) for the complete
+artifact, typography, provenance, pixel-protection, and human-review checklist.
+Run it after each batch and on the canonical package. The generic checker covers
+only the documented mechanical subset; its `PASS` does not replace project
+geometry checks, locked-pixel comparisons, source/video review, or user approval.
 Any failed or unverified gate returns the candidate to `HOLD`.
 
 ### 7. Package and close
 
 1. Collect the exact user-approved files into one numbered package.
-2. Write `meta/SOURCES.tsv`, `meta/SHA256SUMS`, `meta/TOPBAR-TEXT.txt`,
-   `meta/TOPBAR-FONT.json`, hashed QA
-   artifacts, and a package-local review record. Write `meta/MAIN-TITLES.tsv`
-   with one row per cover; include the canonical title layer and a hash-bound
-   approval record for `locked-artwork`, or explicit `none` fields for
-   `deterministic-font`. Never package `artwork-candidate`.
+2. Write the artifacts and exact TSV schemas from the release-gate reference.
+   For `deterministic-font`, the three artifact/approval fields must be
+   `none`, `none`, `not-applicable`. For `locked-artwork`, include the canonical
+   RGBA layer and its approval record. Never package `artwork-candidate`.
 3. Generate the package font manifest and run the generic gate:
 
    ```bash
@@ -354,22 +320,12 @@ Any failed or unverified gate returns the candidate to `HOLD`.
 
 When a raster image model or `baoyu-cover-image` is used:
 
-- provide the brief and at least one inspected reference frame
-- for `original-illustration`, follow
-  [references/original-illustration-fallback.md](references/original-illustration-fallback.md),
-  use the best inspected video frame as the content reference, pass any uncertain
-  third-party image only as written generic constraints, apply the fixed Chinese
-  travel-poster, gouache, light ink-wash, cinematic-not-childish treatment, and
-  save the exact expanded prompt
-- for visual/background generation, request `3:4`, Simplified Chinese context,
-  and a text-free layer; remove all prompt requests for visible Chinese, tags,
-  badges, logos, dates, captions, signs, and watermarks
-- for an explicitly approved `artwork-candidate`, make a separate title-only
-  request using the resolved generation reference, exact quoted Chinese and
-  line break, the brief's scene-adaptive or fixed palette rule, and no other
-  visible text; for the established series design, prefer the bundled
-  title-only crop over the full-cover provenance image; never generate the title
-  baked into the visual plate
+- pass the brief and inspected video frame for visual content; use the approved
+  lettering reference for a title-only call, as its reference specifies
+- follow the active mode's linked reference for its prompt and approval steps
+- use the measured aspect ratio (`3:4` for the bundled profile); generate visual
+  and background layers without text, except exact user-requested memory-object
+  copy allowlisted under `original-illustration`; main titles always stay separate
 - reserve the deterministic top-bar zone plus the locked-artwork or
   deterministic-font main-title zone; keep an artwork candidate separate until
   approval promotes it to locked artwork
@@ -395,7 +351,18 @@ owns the transition from candidate lettering to locked final typography.
    `resources/hand-brushed-title-default.yaml`; update its asset hashes and tests
    whenever an approved style asset changes.
 6. Add repeatable mechanical work to `scripts/`; do not duplicate it in prose.
-7. Change the bundled top-bar font only by issuing a new contract ID, asset
-   SHA-256, approval record, and regression tests; never mutate the current
-   contract in place or introduce a system fallback.
+7. Change the bundled top-bar font or rendering treatment only with a new
+   contract ID and hash-bound approval record and review evidence. Follow
+   `references/top-bar-system.md`; preserve the superseded contract as history,
+   update affected presets/docs/tests, and never relabel existing releases.
 8. Add an eval whenever a real failure reveals a reusable boundary.
+
+After skill changes, run the local checks from the skill root:
+
+```bash
+bash scripts/check-top-bar-font-assets.sh
+bash scripts/check-hand-brushed-title-assets.sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+These validate the skill assets and fixtures, not a live Douyin release.

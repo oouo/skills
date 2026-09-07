@@ -102,13 +102,31 @@
     {
       "id": 17,
       "prompt": "给绍兴这条视频写封面简报，顶栏就写‘绍兴简报’。我这次没再说字体，直接沿用我们之前定下来的系列字体，别变成默认宋体。",
-      "expected_output": "Automatically resolves bundled contract lxgw-wenkai-optical-semibold-v1, records the proportional LXGW WenKai Medium asset and exact SHA-256 plus the approved 4px same-color stroke and historical approval provenance, and never asks for or falls back to a host-system font.",
+      "expected_output": "Automatically resolves bundled contract lxgw-wenkai-medium-stroke1-v2, records the proportional LXGW WenKai Medium asset and exact SHA-256 plus the approved 1px same-color source stroke before 72px normalization and hash-bound 2026-09-07 approval record, and never asks for or falls back to a host-system font.",
       "files": []
     },
     {
       "id": 18,
       "prompt": "机器上随便找个系统宋体顶一下吧，不用记字体文件和哈希，反正只做这一张。",
       "expected_output": "Refuses silent system-font substitution and keeps HOLD. It uses the verified bundled default instead, or requires an explicit replacement contract ID, font SHA-256, and approval record before accepting a different font.",
+      "files": []
+    },
+    {
+      "id": 19,
+      "prompt": "已批准霞鹜文楷 Medium + 1px 源描边，字高固定 72px。旧封面是 4px；把旧脚本 SOURCE_STROKE_W=4 直接用于新版，再在成片加 1px 边可以吗？只更新源码，不安装技能。",
+      "expected_output": "Uses bundled lxgw-wenkai-medium-stroke1-v2 with 1px source stroke before whole-label normalization to 72px; rejects a stale 4px override under that contract and adds no post-scale stroke. Keeps existing releases and installed skills unchanged; records the new contract, approval hash, and source_stroke_px in new package metadata.",
+      "files": []
+    },
+    {
+      "id": 20,
+      "prompt": "已批准的插画底图和手绘标题都在，帮我按技能说明整理最终包。我准备把 SOURCES.tsv 写成序号、文件名、视频ID、原始插画、备注五列；另一张用字体渲染的标题，MAIN-TITLES.tsv 后三列都填 none。脚本 PASS 就可以标 FINAL 吗？",
+      "expected_output": "Corrects SOURCES.tsv to the six-column sequence, filename, video_id, theme, source, note schema; source names the final assembled PNG relative to PROJECT_ROOT, with the approved illustration retained in the evidence chain. Uses none, none, not-applicable for deterministic-font title fields. Records the canonical full-canvas RGBA layer and hash-bound approval for locked-artwork. Treats generic PASS as mechanical verification only and requires the remaining geometry, pixel-lock, visual, and exact package approval gates before FINAL.",
+      "files": []
+    },
+    {
+      "id": 21,
+      "prompt": "我有一个自定义顶栏字体批准记录，里面批准的是1px源描边，但这次环境里 SOURCE_STROKE_W=4。合同ID和字体哈希没变，直接沿用批准记录生成并封版吧。",
+      "expected_output": "Keeps HOLD because the requested source stroke differs from the exact integer rendering.source_stroke_px in the JSON approval record. Matching the font hash and contract ID alone is insufficient. Restores the approved 1px environment or obtains approval for the distinct treatment; it does not rewrite approval evidence to match the current environment.",
       "files": []
     }
   ]
