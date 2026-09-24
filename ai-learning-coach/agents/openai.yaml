@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Learning Coach"
+  short_description: "Build a staged path to verified understanding"
+  default_prompt: "Use $ai-learning-coach to guide me step by step from a clear goal to verified understanding."

@@ -39,6 +39,7 @@ skills/
 
 | Skill | Purpose |
 | --- | --- |
+| [`ai-learning-coach`](ai-learning-coach/) | Guide staged learning from goal alignment to evidence-based mastery checks. |
 | [`china-travel-planner`](china-travel-planner/) | Plan evidence-grounded China trips and render WeChat cards plus static H5 roadbooks. |
 | [`codebase-reader`](codebase-reader/) | Find the real entry, execution spine, and reading order of an unfamiliar codebase. |
 | [`full-bleed-icon-creator`](full-bleed-icon-creator/) | Create validated opaque full-bleed module icon sources and PNG/SVG pairs. |
