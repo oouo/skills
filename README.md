@@ -45,6 +45,7 @@ skills/
 | [`full-bleed-icon-creator`](full-bleed-icon-creator/) | Create validated opaque full-bleed module icon sources and PNG/SVG pairs. |
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
+| [`session-cleanup`](session-cleanup/) | Clean one task's temporary files on explicit invocation, preserving outputs and backups. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
 | [`video-to-cover-brief`](video-to-cover-brief/) | Build source-frame-first Douyin covers with an approved original-illustration fallback, deterministic Chinese typography, and staged release QA. |
 

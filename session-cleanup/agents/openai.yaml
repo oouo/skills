@@ -1,0 +1,7 @@
+interface:
+  display_name: "Session Cleanup"
+  short_description: "Clean one task's temporary files only on explicit request"
+  default_prompt: "Use $session-cleanup to clean this task's disposable temporary files while preserving final outputs and backups."
+
+policy:
+  allow_implicit_invocation: false
