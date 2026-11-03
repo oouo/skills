@@ -45,6 +45,7 @@ skills/
 | [`full-bleed-icon-creator`](full-bleed-icon-creator/) | Create validated opaque full-bleed module icon sources and PNG/SVG pairs. |
 | [`git-commit-push-zh`](git-commit-push-zh/) | Review changes, create Chinese commit messages, and optionally push or open a PR. |
 | [`github-trending-report`](github-trending-report/) | Produce daily or weekly GitHub Trending reports for console or Feishu. |
+| [`java-best-practices`](java-best-practices/) | Write and review Java with Google formatting, defensive coding, and project-compatible language features. |
 | [`session-cleanup`](session-cleanup/) | Clean one task's temporary files on explicit invocation, preserving outputs and backups. |
 | [`social-video-archiver`](social-video-archiver/) | Archive authorized Douyin image posts plus Douyin, Xiaohongshu, and YouTube videos. |
 | [`video-to-cover-brief`](video-to-cover-brief/) | Build source-frame-first Douyin covers with an approved original-illustration fallback, deterministic Chinese typography, and staged release QA. |
@@ -70,6 +71,36 @@ npx skills add https://github.com/oouo/skills/tree/main/<skill-name>
 # Via git submodule
 git submodule add git@github.com:oouo/skills.git .agents/skills
 ```
+
+### Use Java Best Practices
+
+After installing or syncing `java-best-practices` through your usual client workflow:
+
+- **Manual:** in Codex, use `$java-best-practices` or select it in the skill picker, followed by
+  the task, for example: `Use $java-best-practices to review OrderService.java for concurrency bugs.`
+- **Automatic:** its description targets Java implementation, refactoring, tests, debugging,
+  and review. Relevant `.java` files can establish the language even when the request omits "Java".
+  Documentation-only or non-Java tasks fall outside that boundary.
+- **Codex policy:** `agents/openai.yaml` explicitly allows implicit invocation. This permits
+  model selection; it does not install a file watcher or guarantee activation on every Java edit.
+
+For stronger project guidance, add a rule to that project's `AGENTS.md` after installation:
+
+```text
+Before writing, modifying, or reviewing Java source or tests, load and apply java-best-practices.
+```
+
+Keep mandatory formatting and static checks in the project's build or CI. Skill selection is
+model-driven, so use manual invocation when you need to make the choice explicit.
+See the [Codex skills documentation](https://learn.chatgpt.com/docs/build-skills) for invocation behavior.
+
+The skill draws on the **Google Java Style Guide** and the **Alibaba Java Development Manual
+(Taishan / Huangshan editions)** (《阿里巴巴 Java 开发手册（泰山版/黄山版）》), with the
+linked Alibaba Cloud article providing practical examples. It follows the project's configured
+Java release and existing contracts; it does not require a JDK upgrade or convert every model
+to a record.
+See its [source notes](java-best-practices/references/source-notes.md) for attribution and
+interpretations of the two guides, the companion article, and JDK contracts.
 
 ### Create a new skill
 

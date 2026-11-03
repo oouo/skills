@@ -1,0 +1,7 @@
+interface:
+  display_name: "Java Best Practices"
+  short_description: "Apply version-aware Java coding and review practices"
+  default_prompt: "Use $java-best-practices for this Java task, preserving the project's JDK baseline and contracts."
+
+policy:
+  allow_implicit_invocation: true
