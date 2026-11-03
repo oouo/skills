@@ -15,8 +15,9 @@ in `SKILL.md` for coding tasks.
   [supplied article][article], published on April 10, 2020, as companion practical reading.
   Attribute examples inspected there to the article; consult the relevant handbook edition
   before making edition-specific or full-compliance claims.
-- **JDK documentation:** use version-specific API contracts and language specifications for
-  correctness. Modern language and virtual-thread guidance are later supplements to the article.
+- **JDK documentation:** use the target release's API contracts and language specifications for
+  correctness. The [Java 17 API][java17] and [Java 21 language updates][java21] are release-specific
+  references. Modern language and virtual-thread guidance are later supplements to the article.
 
 ## Interpretation Decisions
 
@@ -45,3 +46,5 @@ in `SKILL.md` for coding tasks.
 [pattern]: https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html
 [handbook]: https://github.com/alibaba/p3c
 [article]: https://www.alibabacloud.com/blog/quickly-learn-how-you-can-improve-your-java-coding_596101
+[java17]: https://docs.oracle.com/en/java/javase/17/docs/api/index.html
+[java21]: https://docs.oracle.com/en/java/javase/21/language/java-language-changes.html
