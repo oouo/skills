@@ -3,7 +3,8 @@ name: java-best-practices
 description: >-
   Use when writing, modifying, debugging, or reviewing Java source or tests, or answering questions
   about Java behavior. Relevant .java files can establish the language when the request omits it.
-  Covers Google Java formatting, JDK compatibility, and defensive coding. Skip build-only tasks.
+  Covers Google Java formatting, comments, JDK compatibility, and defensive coding.
+  Skip build-only tasks.
 ---
 
 # Java Best Practices
@@ -16,8 +17,9 @@ guidance, consult the [source notes](references/source-notes.md).
 
 ## When to Use
 
-- For implementation and debugging, follow the target module's conventions and limit edits to
-  the requested behavior. A build, deployment, or documentation task alone is outside scope.
+- For implementation, debugging, and Java comment or Javadoc edits, follow the target module's
+  conventions and limit edits to the requested scope. Standalone documentation, build, and
+  deployment tasks are outside scope.
 - For a review, keep the worktree read-only and apply the rules relevant to the diff.
 - For a Java behavior question, go directly to the relevant contract. Ask for the JDK version
   only when it changes the answer and the target release cannot be inferred.
@@ -54,10 +56,21 @@ when one expression involves several contracts (for example, decimal equality in
 
 - Use early returns or continues for exceptional cases. Split independent business steps into
   action-named methods. Name intermediate values, business thresholds, and sentinel values.
+- For comment style, inspect any user-named reference class before choosing a template. Match its
+  comment forms and level of detail within explicit user and repository rules; use general style
+  defaults where no local convention exists.
+- Keep class Javadoc focused on the class's responsibility. Put field semantics at declarations,
+  method contracts in method Javadoc, and branch-specific rationale beside the relevant code.
+  Preserve caller-visible constraints when shortening comments.
 - Explain business rules, units, and exceptional boundaries in the project's comment language
-  with English half-width punctuation. Document units, nullability, and boundaries of public
-  and protected APIs in Javadoc.
+  with English half-width punctuation and the project's sentence-ending convention. Explain
+  non-obvious field units, special values, collection keys/values, and array indexes as needed.
+  Document units, nullability, and boundaries of public and protected APIs in Javadoc.
   Reuse inherited documentation and omit redundant descriptions of obvious accessors.
+- Add `@author` and `@since` when the project's or user-designated reference's convention calls for
+  them. Verify values for the target class or change; matching a reference's style does not
+  establish its author or release as the values for this change.
+  Ask only when a required value cannot be established; never invent an author or release.
 - Use explicit imports, conventional modifier order, braces around control-flow bodies, and
   uppercase `L` for long literals. Group overloads and constructors, use `@Override` where
   legal, qualify static members with their class, and keep type-use annotations with their type.
