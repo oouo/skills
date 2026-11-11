@@ -56,12 +56,13 @@ when one expression involves several contracts (for example, decimal equality in
 
 - Use early returns or continues for exceptional cases. Split independent business steps into
   action-named methods. Name intermediate values, business thresholds, and sentinel values.
-- For comment style, inspect any user-named reference class before choosing a template. Match its
-  comment forms and level of detail within explicit user and repository rules; use general style
-  defaults where no local convention exists.
-- Keep class Javadoc focused on the class's responsibility. Put field semantics at declarations,
-  method contracts in method Javadoc, and branch-specific rationale beside the relevant code.
-  Preserve caller-visible constraints when shortening comments.
+- Inspect any user-named reference class for comment language, terminology, and level of detail.
+  Follow explicit user and repository rules; otherwise apply the comment forms below.
+- Use `/** ... */` Javadoc for class, field, and method declaration comments, including non-public
+  members. Describe class responsibilities, field semantics, and method contracts; include
+  threading requirements, idempotency, and boundary behavior where relevant.
+- Put implementation-specific rationale beside the relevant statements inside the method,
+  using `//` or `/* ... */`. Preserve caller-visible constraints when shortening comments.
 - Explain business rules, units, and exceptional boundaries in the project's comment language
   with English half-width punctuation and the project's sentence-ending convention. Explain
   non-obvious field units, special values, collection keys/values, and array indexes as needed.
@@ -89,6 +90,9 @@ when one expression involves several contracts (for example, decimal equality in
 
 ### Verify and report
 
+- Inspect every added or modified comment in the diff: check its form, placement, business meaning,
+  and the project's language and punctuation rules. Check documentation separately from formatting
+  and compilation; successful tool checks do not establish that comments follow these rules.
 - For implementation changes, verify the affected caller contracts, such as null or empty results,
   numeric precision, ownership, or framework mappings. Exercise the relevant boundary in a targeted
   test or check. Run the module's relevant compilation, tests, and static checks. Report the change,

@@ -21,6 +21,10 @@ in `SKILL.md` for coding tasks.
 
 ## Interpretation Decisions
 
+- For declaration comments, follow [Alibaba's Code Comments rules 1 and 4][code-comments] and
+  [Google section 7.3.4][javadoc-non-required]: describe classes and members with Javadoc, and place
+  implementation comments inside methods. Threading and idempotency requirements belong in method
+  Javadoc when callers must observe them. For Java 8, use the traditional `/** ... */` form.
 - The article's emptiness wording conflates null references with empty collections. The
   [Collection contract][collection] defines element absence and promises no universal O(1) cost.
   Its empty-return examples also show empty arrays/collections despite the misleading heading.
@@ -48,3 +52,6 @@ in `SKILL.md` for coding tasks.
 [article]: https://www.alibabacloud.com/blog/quickly-learn-how-you-can-improve-your-java-coding_596101
 [java17]: https://docs.oracle.com/en/java/javase/17/docs/api/index.html
 [java21]: https://docs.oracle.com/en/java/javase/21/language/java-language-changes.html
+
+[code-comments]: https://alibaba.github.io/Alibaba-Java-Coding-Guidelines/#code-comments
+[javadoc-non-required]: https://google.github.io/styleguide/javaguide.html#s7.3.4-javadoc-non-required
